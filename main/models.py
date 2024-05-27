@@ -82,7 +82,7 @@ class PlantImage(models.Model):
     plant = models.ForeignKey(
         Plant, on_delete=models.CASCADE, help_text=_("The plant the image belongs to.")
     )
-    image = models.ImageField(help_text=_("An image of the plant."))
+    image = models.ImageField(upload_to="plant/", help_text=_("An image of the plant."))
     alt_text = models.CharField(
         max_length=255, help_text=_("A brief description of the image.")
     )

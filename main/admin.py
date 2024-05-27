@@ -54,6 +54,7 @@ class PlantAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "name",
+                    "slug",
                     "category",
                     "scientific_name",
                     "family",

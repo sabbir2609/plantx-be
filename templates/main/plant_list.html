@@ -8,7 +8,7 @@
     {% for plant in plants %}
     <div class="col-md-4 mb-4">
         <div class="card">
-            <img src="{{ plant.image_url }}" class="card-img-top" alt="{{ plant.name }}">
+            <img src="{{ plant.image.url }}" class="card-img-top" alt="{{ plant.name }}">
             <div class="card-body">
                 <h5 class="card-title">{{ plant.name }}</h5>
                 <p class="card-text">{{ plant.description|truncatewords:20 }}</p>

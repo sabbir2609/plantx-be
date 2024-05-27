@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>{{ plant.name }}</h1>
-<img src="{{ plant.image_url }}" class="img-fluid mb-3" alt="{{ plant.name }}">
+<img src="{{ plant.image.image }}" class="img-fluid mb-3" alt="{{ plant.name }}">
 <div class="card">
     <div class="card-body">
         <p><strong>Scientific Name:</strong> {{ plant.scientific_name }}</p>
