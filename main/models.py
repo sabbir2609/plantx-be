@@ -8,6 +8,9 @@ class Category(models.Model):
     name = models.CharField(
         max_length=255, unique=True, help_text=_("The name of the category.")
     )
+    slug = models.SlugField(
+        max_length=255, unique=True, help_text=_("A unique slug for the category.")
+    )
     description = models.TextField(help_text=_("A brief description of the category."))
 
     class Meta:
@@ -21,6 +24,9 @@ class Category(models.Model):
 class Plant(models.Model):
     name = models.CharField(
         max_length=255, unique=True, help_text=_("The common name of the plant.")
+    )
+    slug = models.SlugField(
+        max_length=255, unique=True, help_text=_("A unique slug for the plant.")
     )
     category = models.ForeignKey(
         Category,

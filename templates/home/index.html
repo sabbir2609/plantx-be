@@ -1,0 +1,69 @@
+{% extends 'base/_base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="jumbotron jumbotron-fluid text-center bg-primary text-white">
+    <div class="container">
+        <h1 class="display-4">Welcome to Indoor Plants Showcase</h1>
+        <p class="lead">Discover the best indoor plants for your home and office</p>
+        <a href="{% url 'main:plant-list' %}" class="btn btn-light btn-lg">Browse Plants</a>
+    </div>
+</div>
+
+<!-- Featured Plants Section -->
+<div class="container my-5">
+    <h2 class="text-center">Featured Plants</h2>
+    <div class="row">
+        {% for plant in featured_plants %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ plant.image_url }}" class="card-img-top" alt="{{ plant.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ plant.name }}</h5>
+                    <p class="card-text">{{ plant.description|truncatewords:20 }}</p>
+                    <a href="{% url 'main:plant-detail' plant.slug %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Popular Categories Section -->
+<div class="container my-5">
+    <h2 class="text-center">Popular Categories</h2>
+    <div class="row">
+        {% for category in popular_categories %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ category.name }}</h5>
+                    <p class="card-text">{{ category.description|truncatewords:20 }}</p>
+                    <a href="{% url 'main:category-detail' category.slug %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Recent Blog Posts Section -->
+<div class="container my-5">
+    <h2 class="text-center">Recent Blog Posts</h2>
+    <div class="row">
+        {% for post in recent_posts %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                    <a href="{% url 'blog:blog-detail' post.slug %}" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

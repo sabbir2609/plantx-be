@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main.models import Category, Plant, PlantImage, Review
+from main.models import Category, Plant, PlantImage, Review, ReviewImage
 
 
 @admin.register(Category)
@@ -8,6 +8,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ("name", "description")
     ordering = ("name",)
     list_per_page = 20
+    prepopulated_fields = {"slug": ["name"]}
 
 
 class PlantImageInline(admin.TabularInline):
@@ -75,9 +76,15 @@ class PlantAdmin(admin.ModelAdmin):
             {"fields": ("care_instructions",)},
         ),
     )
+    prepopulated_fields = {"slug": ["name"]}
     ordering = ("name",)
     list_per_page = 20
     inlines = [PlantImageInline]
+
+
+class ReviewImageInline(admin.TabularInline):
+    model = ReviewImage
+    extra = 1
 
 
 @admin.register(Review)
@@ -86,3 +93,4 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ("plant", "rating", "comment")
     ordering = ("-created_at",)
     list_per_page = 20
+    inlines = [ReviewImageInline]
