@@ -110,3 +110,20 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.plant.name}"
+
+
+class ReviewImage(models.Model):
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        help_text=_("The review the image belongs to."),
+    )
+    image = models.ImageField(help_text=_("An image related to the review."))
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Review Image")
+        verbose_name_plural = _("Review Images")
+
+    def __str__(self):
+        return self.review.plant.name

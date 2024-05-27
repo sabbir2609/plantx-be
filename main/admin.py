@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main.models import Category, Plant, Review
+from main.models import Category, Plant, PlantImage, Review
 
 
 @admin.register(Category)
@@ -8,6 +8,11 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ("name", "description")
     ordering = ("name",)
     list_per_page = 20
+
+
+class PlantImageInline(admin.TabularInline):
+    model = PlantImage
+    extra = 1
 
 
 @admin.register(Plant)
@@ -42,8 +47,37 @@ class PlantAdmin(admin.ModelAdmin):
         "soil_type",
         "toxicity",
     )
+    fieldsets = (
+        (
+            "Plant Information",
+            {
+                "fields": (
+                    "name",
+                    "category",
+                    "scientific_name",
+                    "family",
+                    "origin",
+                    "light_requirements",
+                    "water_requirements",
+                    "temperature_range",
+                    "humidity",
+                    "soil_type",
+                    "toxicity",
+                )
+            },
+        ),
+        (
+            "Description",
+            {"fields": ("description",)},
+        ),
+        (
+            "Care Instructions",
+            {"fields": ("care_instructions",)},
+        ),
+    )
     ordering = ("name",)
     list_per_page = 20
+    inlines = [PlantImageInline]
 
 
 @admin.register(Review)
