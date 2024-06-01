@@ -35,7 +35,8 @@ class PlantAdmin(admin.ModelAdmin):
                     "scientific_name",
                     "slug",
                     "category",
-                    "is_pate_safe",
+                    "toxicity",
+                    "is_pet_safe",
                     "is_air_purifying",
                 )
             },
@@ -47,6 +48,10 @@ class PlantAdmin(admin.ModelAdmin):
         (
             "Care Instructions",
             {"fields": ("care_instructions",)},
+        ),
+        (
+            "Tags",
+            {"fields": ("tags",)},
         ),
     )
     prepopulated_fields = {"slug": ["name"]}

@@ -7,14 +7,15 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("api/v1/plants/", include("plant.urls")),
     path("api/v1/design/", include("design.urls")),
+    path("", include("blog.urls")),
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
 ]
 
 # Admin Site Config
-admin.site.site_header = "Turbo School Management System"
-admin.site.site_title = "Turbo School Management System"
-admin.site.index_title = "Welcome to Turbo School Management System"
+admin.site.site_header = "Inde Core Admin"
+admin.site.site_title = "Inde Core"
+admin.site.index_title = "Welcome to Inde Core"
 
 
 if settings.DEBUG:

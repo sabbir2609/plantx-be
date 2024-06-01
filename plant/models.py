@@ -51,10 +51,12 @@ class Plant(models.Model):
         max_length=255,
         help_text=_("Information about the plant's toxicity to pets and humans."),
     )
-    is_pate_safe = models.BooleanField(
+
+    is_pet_safe = models.BooleanField(
         default=True,
         help_text=_("Whether the plant is safe for pets."),
     )
+
     is_air_purifying = models.BooleanField(
         default=False,
         help_text=_("Whether the plant is an air purifier."),
