@@ -1,8 +1,8 @@
 from django.contrib import admin
-from main.models import Category, Plant, PlantImage, Review, ReviewImage
+from plant.models import PlantCategory, Plant, PlantImage, Review, ReviewImage
 
 
-@admin.register(Category)
+@admin.register(PlantCategory)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name", "description")
@@ -21,32 +21,10 @@ class PlantAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "category",
-        "scientific_name",
-        "family",
-        "origin",
-        "description",
-        "care_instructions",
-        "light_requirements",
-        "water_requirements",
-        "temperature_range",
-        "humidity",
-        "soil_type",
-        "toxicity",
     )
     search_fields = (
         "name",
         "category",
-        "scientific_name",
-        "family",
-        "origin",
-        "description",
-        "care_instructions",
-        "light_requirements",
-        "water_requirements",
-        "temperature_range",
-        "humidity",
-        "soil_type",
-        "toxicity",
     )
     fieldsets = (
         (
@@ -54,17 +32,11 @@ class PlantAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "name",
+                    "scientific_name",
                     "slug",
                     "category",
-                    "scientific_name",
-                    "family",
-                    "origin",
-                    "light_requirements",
-                    "water_requirements",
-                    "temperature_range",
-                    "humidity",
-                    "soil_type",
-                    "toxicity",
+                    "is_pate_safe",
+                    "is_air_purifying",
                 )
             },
         ),

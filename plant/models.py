@@ -4,14 +4,20 @@ from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 
 
-class Category(models.Model):
+class PlantCategory(models.Model):
     name = models.CharField(
         max_length=255, unique=True, help_text=_("The name of the category.")
     )
     slug = models.SlugField(
         max_length=255, unique=True, help_text=_("A unique slug for the category.")
     )
-    description = models.TextField(help_text=_("A brief description of the category."))
+    description = models.TextField(
+        null=True, blank=True, help_text=_("A brief description of the category.")
+    )
+    image = models.ImageField(
+        upload_to="plant_category/",
+        help_text=_("An image representing the category."),
+    )
 
     class Meta:
         verbose_name = _("Category")
@@ -29,42 +35,46 @@ class Plant(models.Model):
         max_length=255, unique=True, help_text=_("A unique slug for the plant.")
     )
     category = models.ForeignKey(
-        Category,
+        PlantCategory,
         on_delete=models.CASCADE,
         help_text=_("The category to which the plant belongs."),
+        related_name="plant_category",
     )
     scientific_name = models.CharField(
-        max_length=255, help_text=_("The scientific name of the plant.")
+        null=True,
+        blank=True,
+        max_length=255,
+        help_text=_("The scientific name of the plant."),
     )
-    family = models.CharField(
-        max_length=255, help_text=_("The family to which the plant belongs.")
-    )
-    origin = models.CharField(
-        max_length=255, help_text=_("The geographic origin of the plant.")
-    )
-    description = models.TextField(help_text=_("A brief description of the plant."))
-    care_instructions = models.TextField(
-        help_text=_("Instructions on how to care for the plant.")
-    )
-    light_requirements = models.CharField(
-        max_length=255, help_text=_("The amount of light the plant requires.")
-    )
-    water_requirements = models.CharField(
-        max_length=255, help_text=_("The water needs of the plant.")
-    )
-    temperature_range = models.CharField(
-        max_length=255, help_text=_("The ideal temperature range for the plant.")
-    )
-    humidity = models.CharField(
-        max_length=255, help_text=_("The humidity requirements for the plant.")
-    )
-    soil_type = models.CharField(
-        max_length=255, help_text=_("The preferred soil type for the plant.")
-    )
+
     toxicity = models.CharField(
         max_length=255,
         help_text=_("Information about the plant's toxicity to pets and humans."),
     )
+    is_pate_safe = models.BooleanField(
+        default=True,
+        help_text=_("Whether the plant is safe for pets."),
+    )
+    is_air_purifying = models.BooleanField(
+        default=False,
+        help_text=_("Whether the plant is an air purifier."),
+    )
+
+    description = models.TextField(
+        null=True, blank=True, help_text=_("A brief description of the plant.")
+    )
+    care_instructions = models.TextField(
+        null=True, blank=True, help_text=_("Instructions on how to care for the plant.")
+    )
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text=_("The price of the plant."),
+    )
+
     tags = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -80,13 +90,21 @@ class Plant(models.Model):
 
 class PlantImage(models.Model):
     plant = models.ForeignKey(
-        Plant, on_delete=models.CASCADE, help_text=_("The plant the image belongs to.")
+        Plant,
+        on_delete=models.CASCADE,
+        help_text=_("The plant the image belongs to."),
     )
     image = models.ImageField(upload_to="plant/", help_text=_("An image of the plant."))
     alt_text = models.CharField(
-        max_length=255, help_text=_("A brief description of the image.")
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_("A brief description of the image."),
     )
-    source = models.CharField(max_length=255, help_text=_("The source of the image."))
+    source = models.CharField(
+        max_length=255, null=True, blank=True, help_text=_("The source of the image.")
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
