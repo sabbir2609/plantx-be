@@ -28,6 +28,7 @@ class PlantAdmin(admin.ModelAdmin):
     search_fields = ("name", "category")
     list_filter = ("plant_type", "category")
     inlines = [PlantImageInline]
+    list_per_page = 10
 
 
 # Inline model for PlanterImage
@@ -49,6 +50,7 @@ class PlanterAdmin(admin.ModelAdmin):
     search_fields = ("model", "planter_type")
     list_filter = ("planter_type", "size")
     inlines = [PlanterImageInline]
+    list_per_page = 10
 
 
 # Inline model for InteriorDesignServiceImage

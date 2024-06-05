@@ -8,6 +8,8 @@ from .models import (
     InteriorDesignServiceImage,
 )
 
+from taggit.serializers import TagListSerializerField
+
 
 class PlantImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,6 +19,7 @@ class PlantImageSerializer(serializers.ModelSerializer):
 
 class PlantSerializer(serializers.ModelSerializer):
     images = PlantImageSerializer(many=True, read_only=True)
+    tags = TagListSerializerField()
 
     class Meta:
         model = Plant

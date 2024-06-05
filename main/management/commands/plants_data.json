@@ -1,0 +1,227 @@
+[
+    {
+        "name": "Fiddle Leaf Fig",
+        "plant_type": "indoor",
+        "category": "flowering",
+        "description": "A beautiful indoor plant.",
+        "care_instructions": "Water once a week.",
+        "is_pet_friendly": true,
+        "benefits": "Air purification.",
+        "tags": [
+            "indoor",
+            "flowering"
+        ],
+        "inventory": 10,
+        "price": 29.99
+    },
+    {
+        "name": "Snake Plant",
+        "plant_type": "indoor",
+        "category": "succulent",
+        "description": "Easy to care for succulent.",
+        "care_instructions": "Water sparingly.",
+        "is_pet_friendly": false,
+        "benefits": "Low maintenance.",
+        "tags": [
+            "indoor",
+            "succulent"
+        ],
+        "inventory": 15,
+        "price": 19.99
+    },
+    {
+        "name": "Aloe Vera",
+        "plant_type": "indoor",
+        "category": "succulent",
+        "description": "Great for skin care.",
+        "care_instructions": "Water every 3 weeks.",
+        "is_pet_friendly": false,
+        "benefits": "Medicinal properties.",
+        "tags": [
+            "indoor",
+            "succulent"
+        ],
+        "inventory": 20,
+        "price": 14.99
+    },
+    {
+        "name": "Spider Plant",
+        "plant_type": "indoor",
+        "category": "non-flowering",
+        "description": "Easy to grow indoor plant.",
+        "care_instructions": "Water twice a week.",
+        "is_pet_friendly": true,
+        "benefits": "Air purification.",
+        "tags": [
+            "indoor",
+            "non-flowering"
+        ],
+        "inventory": 12,
+        "price": 12.99
+    },
+    {
+        "name": "Boston Fern",
+        "plant_type": "indoor",
+        "category": "non-flowering",
+        "description": "Popular houseplant.",
+        "care_instructions": "Keep soil moist.",
+        "is_pet_friendly": true,
+        "benefits": "Air purification.",
+        "tags": [
+            "indoor",
+            "non-flowering"
+        ],
+        "inventory": 8,
+        "price": 22.99
+    },
+    {
+        "name": "Jade Plant",
+        "plant_type": "indoor",
+        "category": "succulent",
+        "description": "Symbol of good luck.",
+        "care_instructions": "Water once a month.",
+        "is_pet_friendly": false,
+        "benefits": "Low maintenance.",
+        "tags": [
+            "indoor",
+            "succulent"
+        ],
+        "inventory": 5,
+        "price": 18.99
+    },
+    {
+        "name": "Peace Lily",
+        "plant_type": "indoor",
+        "category": "flowering",
+        "description": "Elegant houseplant with white flowers.",
+        "care_instructions": "Water once a week.",
+        "is_pet_friendly": false,
+        "benefits": "Air purification.",
+        "tags": [
+            "indoor",
+            "flowering"
+        ],
+        "inventory": 10,
+        "price": 25.99
+    },
+    {
+        "name": "English Ivy",
+        "plant_type": "indoor",
+        "category": "non-flowering",
+        "description": "Climbing plant for indoor decoration.",
+        "care_instructions": "Water weekly.",
+        "is_pet_friendly": false,
+        "benefits": "Air purification.",
+        "tags": [
+            "indoor",
+            "non-flowering"
+        ],
+        "inventory": 7,
+        "price": 15.99
+    },
+    {
+        "name": "Lavender",
+        "plant_type": "outdoor",
+        "category": "flowering",
+        "description": "Fragrant purple flowers.",
+        "care_instructions": "Water every two weeks.",
+        "is_pet_friendly": true,
+        "benefits": "Stress relief.",
+        "tags": [
+            "outdoor",
+            "flowering"
+        ],
+        "inventory": 18,
+        "price": 9.99
+    },
+    {
+        "name": "Rosemary",
+        "plant_type": "outdoor",
+        "category": "herb",
+        "description": "Aromatic herb for cooking.",
+        "care_instructions": "Water weekly.",
+        "is_pet_friendly": true,
+        "benefits": "Culinary uses.",
+        "tags": [
+            "outdoor",
+            "herb"
+        ],
+        "inventory": 25,
+        "price": 8.99
+    },
+    {
+        "name": "Basil",
+        "plant_type": "outdoor",
+        "category": "herb",
+        "description": "Essential herb for Italian cuisine.",
+        "care_instructions": "Water every other day.",
+        "is_pet_friendly": true,
+        "benefits": "Culinary uses.",
+        "tags": [
+            "outdoor",
+            "herb"
+        ],
+        "inventory": 30,
+        "price": 7.99
+    },
+    {
+        "name": "Mint",
+        "plant_type": "outdoor",
+        "category": "herb",
+        "description": "Refreshing herb for beverages and cooking.",
+        "care_instructions": "Keep soil moist.",
+        "is_pet_friendly": true,
+        "benefits": "Culinary uses.",
+        "tags": [
+            "outdoor",
+            "herb"
+        ],
+        "inventory": 22,
+        "price": 6.99
+    },
+    {
+        "name": "Pothos",
+        "plant_type": "indoor",
+        "category": "non-flowering",
+        "description": "Popular trailing indoor plant.",
+        "care_instructions": "Water every 1-2 weeks.",
+        "is_pet_friendly": false,
+        "benefits": "Air purification.",
+        "tags": [
+            "indoor",
+            "non-flowering"
+        ],
+        "inventory": 14,
+        "price": 13.99
+    },
+    {
+        "name": "Money Tree",
+        "plant_type": "indoor",
+        "category": "non-flowering",
+        "description": "Symbol of good fortune.",
+        "care_instructions": "Water every 2-3 weeks.",
+        "is_pet_friendly": true,
+        "benefits": "Low maintenance.",
+        "tags": [
+            "indoor",
+            "non-flowering"
+        ],
+        "inventory": 11,
+        "price": 27.99
+    },
+    {
+        "name": "Tomato Plant",
+        "plant_type": "outdoor",
+        "category": "fruit",
+        "description": "Produces fresh tomatoes.",
+        "care_instructions": "Water daily.",
+        "is_pet_friendly": true,
+        "benefits": "Culinary uses.",
+        "tags": [
+            "outdoor",
+            "fruit"
+        ],
+        "inventory": 16,
+        "price": 10.99
+    }
+]
