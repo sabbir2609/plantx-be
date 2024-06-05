@@ -14,7 +14,26 @@ from taggit.serializers import TagListSerializerField
 class PlantImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlantImage
-        fields = ["id", "image", "plant"]
+        fields = [
+            "id",
+            "image",
+        ]  # , "plant" removed to avoid circular import [PlantSerializer]
+
+
+class PlantListSerializer(serializers.ModelSerializer):
+    images = PlantImageSerializer(many=True, read_only=True)
+    tags = TagListSerializerField()
+
+    class Meta:
+        model = Plant
+        fields = [
+            "id",
+            "name",
+            "category",
+            "price",
+            "tags",
+            "images",
+        ]
 
 
 class PlantSerializer(serializers.ModelSerializer):

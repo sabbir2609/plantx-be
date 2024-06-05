@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from .pagination import DefaultPagination
 from .models import Plant, Planter, InteriorDesignService
 from .serializers import (
+    PlantListSerializer,
     PlantSerializer,
     PlanterSerializer,
     InteriorDesignServiceSerializer,
@@ -13,8 +14,12 @@ from .serializers import (
 
 class PlantViewSet(viewsets.ModelViewSet):
     queryset = Plant.objects.all()
-    serializer_class = PlantSerializer
     pagination_class = DefaultPagination
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PlantListSerializer
+        return PlantSerializer
 
     @action(detail=False, methods=["get"])
     def indoor(self, request):
