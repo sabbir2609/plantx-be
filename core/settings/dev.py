@@ -1,4 +1,4 @@
-from .base import *
+from .base import *  # noqa: F403
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -34,3 +34,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
