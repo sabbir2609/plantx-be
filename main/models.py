@@ -1,45 +1,62 @@
 from django.db import models
-from taggit.managers import TaggableManager
+from django.utils.translation import gettext_lazy as _
 
 
-class Plant(models.Model):
-    class PlantType(models.TextChoices):
-        INDOOR = "indoor", "Indoor"
-        OUTDOOR = "outdoor", "Outdoor"
-        BOTH = "both", "Both"
-
-    class PlantCategory(models.TextChoices):
-        FLOWERING = "flowering", "Flowering"
-        NON_FLOWERING = "non-flowering", "Non-flowering"
-        SUCCULENT = "succulent", "Succulent"
-        TROPICAL = "tropical", "Tropical"
-        HERB = "herb", "Herb"
-        FRUIT = "fruit", "Fruit"
-
-    name = models.CharField(max_length=255, unique=True)
-    plant_type = models.CharField(
-        max_length=10, choices=PlantType.choices, default=PlantType.INDOOR, blank=True
+class PlantCategory(models.Model):
+    name = models.CharField(
+        max_length=100, help_text=_("Enter the name of the plant category.")
     )
-    category = models.CharField(
-        max_length=20,
-        choices=PlantCategory.choices,
-        default=PlantCategory.FLOWERING,
-        blank=True,
+    description = models.TextField(
+        help_text=_("Provide a description for the plant category.")
     )
-    description = models.TextField(null=True, blank=True)
-    care_instructions = models.TextField(null=True, blank=True)
-    is_pet_friendly = models.BooleanField(default=True)
-    benefits = models.TextField(null=True, blank=True)
-    tags = TaggableManager()
+    image = models.ImageField(
+        upload_to="plant_categories/",
+        help_text=_("Upload an image for the plant category."),
+    )
 
-    inventory = models.PositiveIntegerField(default=0, null=True, blank=True)
-    price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        verbose_name = "Plant Category"
+        verbose_name_plural = "Plant Categories"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
+
+
+class Plant(models.Model):
+    class IndoorOutdoorChoices(models.TextChoices):
+        INDOOR = "Indoor", _("Indoor")
+        OUTDOOR = "Outdoor", _("Outdoor")
+
+    class SizeChoices(models.TextChoices):
+        SMALL = "Small", _("Small")
+        MEDIUM = "Medium", _("Medium")
+        LARGE = "Large", _("Large")
+        EXTRA_LARGE = "Extra Large", _("Extra Large")
+
+    category = models.ForeignKey(
+        PlantCategory,
+        on_delete=models.CASCADE,
+        help_text=_("Select the category for the plant."),
+    )
+    indoor_or_outdoor = models.CharField(
+        max_length=10,
+        choices=IndoorOutdoorChoices.choices,
+        help_text=_("Select whether the plant is meant for indoor or outdoor use."),
+    )
+    size = models.CharField(
+        max_length=20,
+        choices=SizeChoices.choices,
+        help_text=_("Select the size of the plant."),
+    )
+    description = models.TextField(help_text=_("Provide a description for the plant."))
+    care_instructions = models.TextField(
+        help_text=_("Provide care instructions for the plant.")
+    )
+    tags = models.ManyToManyField(
+        "Tag", help_text=_("Select any relevant tags for the plant.")
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -48,95 +65,147 @@ class Plant(models.Model):
 
 
 class PlantImage(models.Model):
-    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="plants/")
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to="plant_images/", help_text=_("Upload an image for the plant.")
+    )
+    short_description = models.CharField(
+        max_length=255, help_text=_("Enter a short description for the plant image.")
+    )
 
-    def __str__(self):
-        return f"{self.plant.name} Image"
+
+class PlanterCategory(models.Model):
+    name = models.CharField(
+        max_length=100, help_text=_("Enter the name of the planter category.")
+    )
+    description = models.TextField(
+        help_text=_("Provide a description for the planter category.")
+    )
+    image = models.ImageField(
+        upload_to="planter_categories/",
+        help_text=_("Upload an image for the planter category."),
+    )
 
     class Meta:
-        verbose_name = "Plant Image"
-        verbose_name_plural = "Plant Images"
-
-
-class Planter(models.Model):
-    class PlanterType(models.TextChoices):
-        CERAMIC = "ceramic", "Ceramic"
-        PLASTIC = "plastic", "Plastic"
-        METAL = "metal", "Metal"
-        WOOD = "wood", "Wood"
-        STONE = "stone", "Stone"
-        Terracotta = "terracotta", "Terracotta"
-
-    class PlanterSize(models.TextChoices):
-        SMALL = "small", "Small"
-        MEDIUM = "medium", "Medium"
-        LARGE = "large", "Large"
-        XLARGE = "xlarge", "X-Large"
-
-    model = models.CharField(max_length=255, unique=True)
-    planter_type = models.CharField(
-        max_length=20, choices=PlanterType.choices, default=PlanterType.CERAMIC
-    )
-    size = models.CharField(
-        max_length=10, choices=PlanterSize.choices, default=PlanterSize.MEDIUM
-    )
-    color = models.CharField(max_length=50, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-
-    inventory = models.PositiveIntegerField(default=0)
-    price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.model
-
-    class Meta:
-        ordering = ["-created_at"]
-        verbose_name = "Planter"
-        verbose_name_plural = "Planters"
-
-
-class PlanterImage(models.Model):
-    planter = models.ForeignKey(
-        Planter, on_delete=models.CASCADE, related_name="images"
-    )
-    image = models.ImageField(upload_to="planters/")
-
-    def __str__(self):
-        return f"{self.planter.model} Image"
-
-    class Meta:
-        verbose_name = "Planter Image"
-        verbose_name_plural = "Planter Images"
-
-
-class InteriorDesignService(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    description = models.TextField(null=True, blank=True)
-    price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
+        verbose_name = "Planter Category"
+        verbose_name_plural = "Planter Categories"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
 
-    class Meta:
-        ordering = ["-created_at"]
-        verbose_name = "Interior Design Service"
-        verbose_name_plural = "Interior Design Services"
 
-
-class InteriorDesignServiceImage(models.Model):
-    service = models.ForeignKey(
-        InteriorDesignService, on_delete=models.CASCADE, related_name="images"
+class Planter(models.Model):
+    model = models.CharField(
+        max_length=100, help_text=_("Enter the model of the planter.")
     )
-    image = models.ImageField(upload_to="services/")
+    size = models.CharField(
+        max_length=20, help_text=_("Enter the size of the planter.")
+    )
+    description = models.TextField(
+        help_text=_("Provide a description for the planter.")
+    )
+    color = models.CharField(
+        max_length=50, help_text=_("Enter the color of the planter.")
+    )
+    category = models.ForeignKey(
+        PlanterCategory,
+        on_delete=models.CASCADE,
+        help_text=_("Select the category for the planter."),
+    )
+
+    class Meta:
+        verbose_name = "Planter"
+        verbose_name_plural = "Planters"
+        ordering = ["model"]
+
+
+class PlanterImage(models.Model):
+    planter = models.ForeignKey(Planter, on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to="planter_images/", help_text=_("Upload an image for the planter.")
+    )
+    short_description = models.CharField(
+        max_length=255, help_text=_("Enter a short description for the planter image.")
+    )
+
+
+class ServiceCategory(models.Model):
+    title = models.CharField(
+        max_length=100, help_text=_("Enter the title of the service category.")
+    )
+    description = models.TextField(
+        help_text=_("Provide a description for the service category.")
+    )
+    image = models.ImageField(
+        upload_to="service_categories/",
+        help_text=_("Upload an image for the service category."),
+    )
+
+    class Meta:
+        verbose_name = "Service Category"
+        verbose_name_plural = "Service Categories"
+        ordering = ["title"]
 
     def __str__(self):
-        return f"{self.service.name} Image"
+        return self.title
+
+
+class ServiceType(models.Model):
+    title = models.CharField(
+        max_length=100, help_text=_("Enter the title of the service type.")
+    )
+    description = models.TextField(
+        help_text=_("Provide a description for the service type.")
+    )
+    image = models.ImageField(
+        upload_to="service_types/", help_text=_("Upload an image for the service type.")
+    )
+    budget_range = models.CharField(
+        max_length=50, help_text=_("Enter the budget range for the service type.")
+    )
 
     class Meta:
-        verbose_name = "Interior Design Service Image"
-        verbose_name_plural = "Interior Design Service Images"
+        verbose_name = "Service Type"
+        verbose_name_plural = "Service Types"
+        ordering = ["title"]
+
+
+class Service(models.Model):
+    title = models.CharField(
+        max_length=100, help_text=_("Enter the title of the service.")
+    )
+    description = models.TextField(
+        help_text=_("Provide a description for the service.")
+    )
+    image = models.ImageField(
+        upload_to="services/", help_text=_("Upload an image for the service.")
+    )
+    budget_range = models.CharField(
+        max_length=50, help_text=_("Enter the budget range for the service.")
+    )
+    category = models.ForeignKey(
+        ServiceCategory,
+        on_delete=models.CASCADE,
+        help_text=_("Select the category for the service."),
+    )
+    type = models.ForeignKey(
+        ServiceType,
+        on_delete=models.CASCADE,
+        help_text=_("Select the type for the service."),
+    )
+
+    class Meta:
+        verbose_name = "Service"
+        verbose_name_plural = "Services"
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, help_text=_("Enter the name of the tag."))
+
+    def __str__(self):
+        return self.name

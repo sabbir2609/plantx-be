@@ -1,67 +1,107 @@
 from django.contrib import admin
 from .models import (
+    PlantCategory,
     Plant,
     PlantImage,
+    PlanterCategory,
     Planter,
     PlanterImage,
-    InteriorDesignService,
-    InteriorDesignServiceImage,
+    ServiceCategory,
+    ServiceType,
+    Service,
+    Tag,
 )
 
 
-# Inline model for PlantImage
 class PlantImageInline(admin.TabularInline):
     model = PlantImage
     extra = 1
 
 
-# Plant admin
 @admin.register(Plant)
 class PlantAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-        "plant_type",
-        "category",
-        "inventory",
-        "price",
-    )
-    search_fields = ("name", "category")
-    list_filter = ("plant_type", "category")
     inlines = [PlantImageInline]
-    list_per_page = 10
+    list_display = ("category", "indoor_or_outdoor", "size", "created_at")
+    search_fields = ("category__name", "indoor_or_outdoor", "size")
+    list_filter = ("category", "indoor_or_outdoor", "size")
+    filter_horizontal = ("tags",)
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "category",
+                    "indoor_or_outdoor",
+                    "size",
+                    "description",
+                    "care_instructions",
+                    "tags",
+                )
+            },
+        ),
+    )
 
 
-# Inline model for PlanterImage
+@admin.register(PlantCategory)
+class PlantCategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "description")
+    search_fields = ("name",)
+
+
 class PlanterImageInline(admin.TabularInline):
     model = PlanterImage
     extra = 1
 
 
-# Planter admin
 @admin.register(Planter)
 class PlanterAdmin(admin.ModelAdmin):
-    list_display = (
-        "model",
-        "planter_type",
-        "size",
-        "inventory",
-        "price",
-    )
-    search_fields = ("model", "planter_type")
-    list_filter = ("planter_type", "size")
     inlines = [PlanterImageInline]
-    list_per_page = 10
+    list_display = ("model", "size", "color", "category")
+    search_fields = ("model", "size", "color")
+    list_filter = ("category", "size", "color")
 
 
-# Inline model for InteriorDesignServiceImage
-class InteriorDesignServiceImageInline(admin.TabularInline):
-    model = InteriorDesignServiceImage
-    extra = 1
-
-
-# Interior Design Service admin
-@admin.register(InteriorDesignService)
-class InteriorDesignServiceAdmin(admin.ModelAdmin):
-    list_display = ("name", "price", "created_at")
+@admin.register(PlanterCategory)
+class PlanterCategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "description")
     search_fields = ("name",)
-    inlines = [InteriorDesignServiceImageInline]
+
+
+@admin.register(ServiceCategory)
+class ServiceCategoryAdmin(admin.ModelAdmin):
+    list_display = ("title", "description")
+    search_fields = ("title",)
+
+
+@admin.register(ServiceType)
+class ServiceTypeAdmin(admin.ModelAdmin):
+    list_display = ("title", "description", "budget_range")
+    search_fields = ("title", "budget_range")
+
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ("title", "description", "budget_range", "category", "type")
+    search_fields = ("title", "budget_range")
+    list_filter = ("category", "type")
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "title",
+                    "category",
+                    "type",
+                    "description",
+                    "image",
+                    "budget_range",
+                )
+            },
+        ),
+    )
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)

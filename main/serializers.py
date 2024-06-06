@@ -1,99 +1,103 @@
 from rest_framework import serializers
 from .models import (
+    PlantCategory,
     Plant,
     PlantImage,
+    PlanterCategory,
     Planter,
     PlanterImage,
-    InteriorDesignService,
-    InteriorDesignServiceImage,
+    ServiceCategory,
+    ServiceType,
+    Service,
+    Tag,
 )
 
-from taggit.serializers import TagListSerializerField
+
+class PlantCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlantCategory
+        fields = ["id", "name", "description", "image"]
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ["id", "name"]
 
 
 class PlantImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlantImage
-        fields = [
-            "id",
-            "image",
-        ]  # , "plant" removed to avoid circular import [PlantSerializer]
-
-
-class PlantListSerializer(serializers.ModelSerializer):
-    images = PlantImageSerializer(many=True, read_only=True)
-    tags = TagListSerializerField()
-
-    class Meta:
-        model = Plant
-        fields = [
-            "id",
-            "name",
-            "category",
-            "price",
-            "tags",
-            "images",
-        ]
+        fields = ["id", "plant", "image", "short_description"]
 
 
 class PlantSerializer(serializers.ModelSerializer):
-    images = PlantImageSerializer(many=True, read_only=True)
-    tags = TagListSerializerField()
+    category = PlantCategorySerializer(read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    images = PlantImageSerializer(source="plantimage_set", many=True, read_only=True)
 
     class Meta:
         model = Plant
         fields = [
             "id",
-            "name",
-            "plant_type",
             "category",
+            "indoor_or_outdoor",
+            "size",
             "description",
             "care_instructions",
-            "is_pet_friendly",
-            "benefits",
             "tags",
-            "inventory",
-            "price",
             "created_at",
-            "updated_at",
             "images",
         ]
+
+
+class PlanterCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlanterCategory
+        fields = ["id", "name", "description", "image"]
 
 
 class PlanterImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanterImage
-        fields = ["id", "image", "planter"]
+        fields = ["id", "planter", "image", "short_description"]
 
 
 class PlanterSerializer(serializers.ModelSerializer):
-    images = PlanterImageSerializer(many=True, read_only=True)
+    category = PlanterCategorySerializer(read_only=True)
+    images = PlanterImageSerializer(
+        source="planterimage_set", many=True, read_only=True
+    )
 
     class Meta:
         model = Planter
+        fields = ["id", "model", "size", "description", "color", "category", "images"]
+
+
+class ServiceCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceCategory
+        fields = ["id", "title", "description", "image"]
+
+
+class ServiceTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceType
+        fields = ["id", "title", "description", "image", "budget_range"]
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    category = ServiceCategorySerializer(read_only=True)
+    type = ServiceTypeSerializer(read_only=True)
+
+    class Meta:
+        model = Service
         fields = [
             "id",
-            "model",
-            "planter_type",
-            "size",
-            "color",
+            "title",
             "description",
-            "inventory",
-            "price",
-            "created_at",
-            "images",
+            "image",
+            "budget_range",
+            "category",
+            "type",
         ]
-
-
-class InteriorDesignServiceImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InteriorDesignServiceImage
-        fields = ["id", "image", "service"]
-
-
-class InteriorDesignServiceSerializer(serializers.ModelSerializer):
-    images = InteriorDesignServiceImageSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = InteriorDesignService
-        fields = ["id", "name", "description", "price", "created_at", "images"]
