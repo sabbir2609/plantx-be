@@ -30,6 +30,7 @@ class PlantAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
+                    "title",
                     "category",
                     "indoor_or_outdoor",
                     "size",
@@ -40,6 +41,8 @@ class PlantAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    list_per_page = 10
 
 
 @admin.register(PlantCategory)

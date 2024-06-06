@@ -40,6 +40,7 @@ class PlantSerializer(serializers.ModelSerializer):
         model = Plant
         fields = [
             "id",
+            "title",
             "category",
             "indoor_or_outdoor",
             "size",

@@ -1,8 +1,8 @@
 import json
 import os
 from django.core.management.base import BaseCommand
-from main.models import Plant
-from taggit.models import Tag
+from main.models import Plant, PlantCategory
+from datetime import datetime
 
 
 class Command(BaseCommand):
@@ -18,22 +18,26 @@ class Command(BaseCommand):
 
         # Create Plant objects
         for item in data:
-            plant = Plant.objects.create(
-                name=item["name"],
-                plant_type=item["plant_type"],
-                category=item["category"],
+            # Extract category ID from the data
+            category_id = item.pop("category")
+
+            # Fetch the corresponding PlantCategory instance
+            category = PlantCategory.objects.get(id=category_id)
+
+            # Create Plant object
+            plant = Plant(
+                title=item["title"],
+                category=category,
+                indoor_or_outdoor=item["indoor_or_outdoor"],
+                size=item["size"],
                 description=item.get("description", ""),
                 care_instructions=item.get("care_instructions", ""),
-                is_pet_friendly=item.get("is_pet_friendly", True),
-                benefits=item.get("benefits", ""),
-                inventory=item.get("inventory", 0),
-                price=item.get("price", 0.0),
+                created_at=datetime.strptime(item["created_at"], "%Y-%m-%dT%H:%M:%SZ"),
             )
+            plant.save()
 
             # Add tags
-            for tag_name in item["tags"]:
-                plant.tags.add(tag_name)
-
-            plant.save()
+            tags = item.get("tags", [])
+            plant.tags.set(tags)
 
         self.stdout.write(self.style.SUCCESS("Successfully generated plant data"))

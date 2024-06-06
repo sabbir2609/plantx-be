@@ -34,6 +34,10 @@ class Plant(models.Model):
         LARGE = "Large", _("Large")
         EXTRA_LARGE = "Extra Large", _("Extra Large")
 
+    title = models.CharField(
+        max_length=100, help_text=_("Enter the name of the plant.")
+    )
+
     category = models.ForeignKey(
         PlantCategory,
         on_delete=models.CASCADE,
