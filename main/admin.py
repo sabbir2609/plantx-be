@@ -21,7 +21,7 @@ class PlantImageInline(admin.TabularInline):
 @admin.register(Plant)
 class PlantAdmin(admin.ModelAdmin):
     inlines = [PlantImageInline]
-    list_display = ("category", "indoor_or_outdoor", "size", "created_at")
+    list_display = ("title", "indoor_or_outdoor", "size", "category")
     search_fields = ("category__name", "indoor_or_outdoor", "size")
     list_filter = ("category", "indoor_or_outdoor", "size")
     filter_horizontal = ("tags",)
