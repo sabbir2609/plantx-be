@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv()
 
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+SECRET_KEY = "4%kruhj1q6jo$+wrkt+djo5_m)13pi49_d25)r7th1z1wnco8l"
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
