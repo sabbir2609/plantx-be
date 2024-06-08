@@ -4,6 +4,7 @@
         "CLOUDINARY",
         "corsheaders",
         "dotenv",
+        "filebrowser",
         "Inde",
         "plantimage",
         "plantx",

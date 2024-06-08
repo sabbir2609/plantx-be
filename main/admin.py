@@ -12,6 +12,9 @@ from .models import (
     Tag,
 )
 
+from django_ckeditor_5.widgets import CKEditor5Widget
+from django.db import models
+
 
 class PlantImageInline(admin.TabularInline):
     model = PlantImage
@@ -41,7 +44,7 @@ class PlantAdmin(admin.ModelAdmin):
             },
         ),
     )
-
+    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
     list_per_page = 10
 
 
