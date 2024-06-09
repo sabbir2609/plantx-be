@@ -66,6 +66,8 @@ class PlanterAdmin(admin.ModelAdmin):
     search_fields = ("model", "size", "color")
     list_filter = ("category", "size", "color")
 
+    list_per_page = 10
+
 
 @admin.register(PlanterCategory)
 class PlanterCategoryAdmin(admin.ModelAdmin):

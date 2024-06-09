@@ -6,8 +6,12 @@
         "dotenv",
         "filebrowser",
         "Inde",
+        "plantercategory",
+        "planterimage",
         "plantimage",
         "plantx",
+        "servicecategory",
+        "servicetype",
         "taggit",
         "viewsets",
         "whitenoise"

@@ -65,7 +65,7 @@ class PlanterImageSerializer(serializers.ModelSerializer):
 
 
 class PlanterSerializer(serializers.ModelSerializer):
-    category = PlanterCategorySerializer(read_only=True)
+    category = PlanterCategorySerializer()
     images = PlanterImageSerializer(
         source="planterimage_set", many=True, read_only=True
     )

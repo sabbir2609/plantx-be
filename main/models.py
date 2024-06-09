@@ -7,11 +7,15 @@ class PlantCategory(models.Model):
         max_length=100, help_text=_("Enter the name of the plant category.")
     )
     description = models.TextField(
-        help_text=_("Provide a description for the plant category.")
+        help_text=_("Provide a description for the plant category."),
+        null=True,
+        blank=True,
     )
     image = models.ImageField(
         upload_to="plant_categories/",
         help_text=_("Upload an image for the plant category."),
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -74,6 +78,9 @@ class Plant(models.Model):
         verbose_name = "Plant"
         verbose_name_plural = "Plants"
 
+    def __str__(self):
+        return self.title
+
 
 class PlantImage(models.Model):
     plant = models.ForeignKey(Plant, on_delete=models.CASCADE)
@@ -130,6 +137,9 @@ class Planter(models.Model):
         verbose_name_plural = "Planters"
         ordering = ["model"]
 
+    def __str__(self):
+        return self.model
+
 
 class PlanterImage(models.Model):
     planter = models.ForeignKey(Planter, on_delete=models.CASCADE)
@@ -180,6 +190,9 @@ class ServiceType(models.Model):
         verbose_name = "Service Type"
         verbose_name_plural = "Service Types"
         ordering = ["title"]
+
+    def __str__(self):
+        return self.title
 
 
 class Service(models.Model):
