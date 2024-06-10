@@ -41,8 +41,16 @@ router.register(
 )
 router.register("service_types", ServiceTypeViewSet, basename="servicetype")
 
+service_categories_router = routers.NestedDefaultRouter(
+    router, "service_categories", lookup="service_category"
+)
+service_categories_router.register(
+    "service", ServiceViewSet, basename="service-category-service"
+)
+
 urlpatterns = [
     path("", include(router.urls)),
     path("", include(plant_categories_router.urls)),
     path("", include(planter_categories_router.urls)),
+    path("", include(service_categories_router.urls)),
 ]

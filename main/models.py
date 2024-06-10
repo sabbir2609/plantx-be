@@ -131,6 +131,9 @@ class Planter(models.Model):
         on_delete=models.CASCADE,
         help_text=_("Select the category for the planter."),
     )
+    is_custom = models.BooleanField(
+        default=False, help_text=_("Check if the planter is custom-made.")
+    )
 
     class Meta:
         verbose_name = "Planter"

@@ -79,6 +79,16 @@ class PlanterViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(category_id=planter_category_pk)
         return queryset
 
+    @action(detail=False, url_path="custom")
+    def custom(self, request, planter_category_pk=None):
+        queryset = self.get_queryset().filter(is_custom=True)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class ServiceCategoryViewSet(viewsets.ModelViewSet):
     queryset = ServiceCategory.objects.all()
