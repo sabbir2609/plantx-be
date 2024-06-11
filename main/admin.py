@@ -8,6 +8,7 @@ from .models import (
     PlanterImage,
     ServiceCategory,
     ServiceType,
+    ServiceTypeFeature,
     Service,
     Tag,
 )
@@ -81,10 +82,16 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
 
+class ServiceTypeFeatureInline(admin.TabularInline):
+    model = ServiceTypeFeature
+    extra = 1
+
+
 @admin.register(ServiceType)
 class ServiceTypeAdmin(admin.ModelAdmin):
     list_display = ("title", "description", "budget_range")
     search_fields = ("title", "budget_range")
+    inlines = [ServiceTypeFeatureInline]
 
 
 @admin.register(Service)
@@ -107,6 +114,8 @@ class ServiceAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
 
 
 @admin.register(Tag)

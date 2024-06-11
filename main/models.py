@@ -159,11 +159,15 @@ class ServiceCategory(models.Model):
         max_length=100, help_text=_("Enter the title of the service category.")
     )
     description = models.TextField(
-        help_text=_("Provide a description for the service category.")
+        help_text=_("Provide a description for the service category."),
+        null=True,
+        blank=True,
     )
     image = models.ImageField(
         upload_to="service_categories/",
         help_text=_("Upload an image for the service category."),
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -183,10 +187,16 @@ class ServiceType(models.Model):
         help_text=_("Provide a description for the service type.")
     )
     image = models.ImageField(
-        upload_to="service_types/", help_text=_("Upload an image for the service type.")
+        upload_to="service_types/",
+        help_text=_("Upload an image for the service type."),
+        null=True,
+        blank=True,
     )
     budget_range = models.CharField(
-        max_length=50, help_text=_("Enter the budget range for the service type.")
+        max_length=50,
+        help_text=_("Enter the budget range for the service type."),
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -198,18 +208,46 @@ class ServiceType(models.Model):
         return self.title
 
 
+class ServiceTypeFeature(models.Model):
+    title = models.CharField(
+        max_length=100, help_text=_("Enter the title of the feature.")
+    )
+    service_type = models.ForeignKey(
+        "ServiceType",
+        on_delete=models.CASCADE,
+        help_text=_("Select the service type for the feature."),
+        related_name="service_type_features",
+    )
+
+    class Meta:
+        verbose_name = "Service Type Feature"
+        verbose_name_plural = "Service Type Features"
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
+
+
 class Service(models.Model):
     title = models.CharField(
         max_length=100, help_text=_("Enter the title of the service.")
     )
     description = models.TextField(
-        help_text=_("Provide a description for the service.")
+        help_text=_("Provide a description for the service."),
+        null=True,
+        blank=True,
     )
     image = models.ImageField(
-        upload_to="services/", help_text=_("Upload an image for the service.")
+        upload_to="services/",
+        help_text=_("Upload an image for the service."),
+        null=True,
+        blank=True,
     )
     budget_range = models.CharField(
-        max_length=50, help_text=_("Enter the budget range for the service.")
+        max_length=50,
+        help_text=_("Enter the budget range for the service."),
+        null=True,
+        blank=True,
     )
     category = models.ForeignKey(
         ServiceCategory,

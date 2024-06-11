@@ -36,6 +36,7 @@ planter_categories_router.register(
     "planters", PlanterViewSet, basename="planter-category-planters"
 )
 
+router.register("services", ServiceViewSet, basename="service")
 router.register(
     "service_categories", ServiceCategoryViewSet, basename="servicecategory"
 )

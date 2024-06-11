@@ -8,6 +8,7 @@ from .models import (
     PlanterImage,
     ServiceCategory,
     ServiceType,
+    ServiceTypeFeature,
     Service,
     Tag,
 )
@@ -81,10 +82,25 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
         fields = ["id", "title", "description", "image"]
 
 
+class ServiceTypeFeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceTypeFeature
+        fields = ["id", "title"]
+
+
 class ServiceTypeSerializer(serializers.ModelSerializer):
+    service_type_features = ServiceTypeFeatureSerializer(many=True, read_only=True)
+
     class Meta:
         model = ServiceType
-        fields = ["id", "title", "description", "image", "budget_range"]
+        fields = [
+            "id",
+            "title",
+            "description",
+            "image",
+            "budget_range",
+            "service_type_features",
+        ]
 
 
 class ServiceSerializer(serializers.ModelSerializer):
