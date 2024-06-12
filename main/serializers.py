@@ -103,9 +103,21 @@ class ServiceTypeSerializer(serializers.ModelSerializer):
         ]
 
 
+class LimitedServiceTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceType
+        fields = ["id", "title"]
+
+
+class LimitedServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ["id", "title"]
+
+
 class ServiceSerializer(serializers.ModelSerializer):
-    category = ServiceCategorySerializer(read_only=True)
-    type = ServiceTypeSerializer(read_only=True)
+    category = LimitedServiceSerializer(read_only=True)
+    type = LimitedServiceTypeSerializer(read_only=True)
 
     class Meta:
         model = Service

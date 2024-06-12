@@ -104,7 +104,7 @@ class ServiceTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("title", "description", "budget_range", "category", "type")
+    list_display = ("title", "budget_range", "category", "type")
     search_fields = ("title", "budget_range")
     list_filter = ("category", "type")
     fieldsets = (

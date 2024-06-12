@@ -103,3 +103,4 @@ class ServiceTypeViewSet(viewsets.ModelViewSet):
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
+    pagination_class = DefaultPagination
