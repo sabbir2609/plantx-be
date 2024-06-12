@@ -236,6 +236,7 @@ CKEDITOR_5_CONFIGS = {
                 "alignRight",
                 "alignCenter",
             ],
+            "mediaEmbed": {"previewsInData": "true"},
         },
         "table": {
             "contentToolbar": [

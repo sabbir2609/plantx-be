@@ -180,6 +180,11 @@ class ServiceCategory(models.Model):
 
 
 class ServiceType(models.Model):
+    serial = models.IntegerField(
+        help_text=_("Enter the serial number for the service type."),
+        null=True,
+        blank=True,
+    )
     title = models.CharField(
         max_length=100, help_text=_("Enter the title of the service type.")
     )
@@ -200,15 +205,20 @@ class ServiceType(models.Model):
     )
 
     class Meta:
-        verbose_name = "Service Type"
-        verbose_name_plural = "Service Types"
-        ordering = ["title"]
+        verbose_name = "Service Plan"
+        verbose_name_plural = "Service Plans"
+        ordering = ["serial"]
 
     def __str__(self):
         return self.title
 
 
 class ServiceTypeFeature(models.Model):
+    serial = models.IntegerField(
+        help_text=_("Enter the serial number for the feature."),
+        null=True,
+        blank=True,
+    )
     title = models.CharField(
         max_length=100, help_text=_("Enter the title of the feature.")
     )
@@ -222,7 +232,7 @@ class ServiceTypeFeature(models.Model):
     class Meta:
         verbose_name = "Service Type Feature"
         verbose_name_plural = "Service Type Features"
-        ordering = ["title"]
+        ordering = ["serial"]
 
     def __str__(self):
         return self.title

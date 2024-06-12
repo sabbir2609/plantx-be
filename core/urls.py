@@ -13,9 +13,9 @@ urlpatterns = [
 ]
 
 # Admin Site Config
-admin.site.site_header = "Inde Core Admin"
-admin.site.site_title = "Inde Core"
-admin.site.index_title = "Welcome to Inde Core"
+admin.site.site_header = "Viriditas Admin"
+admin.site.site_title = "Viriditas"
+admin.site.index_title = "Welcome to Viriditas Administration"
 
 
 if settings.DEBUG:

@@ -22,6 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://192.168.1.7:3000",
     "https://sabbir2609.pythonanywhere.com",
     "https://plantx-fe.vercel.app",
     "https://viriditas.vercel.app",

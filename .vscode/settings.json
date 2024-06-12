@@ -15,6 +15,7 @@
         "servicetype",
         "taggit",
         "viewsets",
+        "Viriditas",
         "whitenoise"
     ]
 }

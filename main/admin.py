@@ -54,6 +54,8 @@ class PlantCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
 
+    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
+
 
 class PlanterImageInline(admin.TabularInline):
     model = PlanterImage
@@ -69,17 +71,23 @@ class PlanterAdmin(admin.ModelAdmin):
 
     list_per_page = 10
 
+    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
+
 
 @admin.register(PlanterCategory)
 class PlanterCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
 
+    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
+
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
-    list_display = ("title", "description")
+    list_display = ("title",)
     search_fields = ("title",)
+
+    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
 
 
 class ServiceTypeFeatureInline(admin.TabularInline):
@@ -89,7 +97,7 @@ class ServiceTypeFeatureInline(admin.TabularInline):
 
 @admin.register(ServiceType)
 class ServiceTypeAdmin(admin.ModelAdmin):
-    list_display = ("title", "description", "budget_range")
+    list_display = ("title", "budget_range")
     search_fields = ("title", "budget_range")
     inlines = [ServiceTypeFeatureInline]
 
