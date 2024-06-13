@@ -13,7 +13,7 @@ from .models import (
     Tag,
 )
 
-from django_ckeditor_5.widgets import CKEditor5Widget
+from ckeditor.widgets import CKEditorWidget
 from django.db import models
 
 
@@ -45,7 +45,7 @@ class PlantAdmin(admin.ModelAdmin):
             },
         ),
     )
-    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
+    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
     list_per_page = 10
 
 
@@ -54,7 +54,7 @@ class PlantCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
 
-    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
+    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
 
 class PlanterImageInline(admin.TabularInline):
@@ -71,7 +71,7 @@ class PlanterAdmin(admin.ModelAdmin):
 
     list_per_page = 10
 
-    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
+    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
 
 @admin.register(PlanterCategory)
@@ -79,15 +79,13 @@ class PlanterCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
 
-    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
+    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
-
-    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
 
 
 class ServiceTypeFeatureInline(admin.TabularInline):
@@ -123,7 +121,8 @@ class ServiceAdmin(admin.ModelAdmin):
         ),
     )
 
-    formfield_overrides = {models.TextField: {"widget": CKEditor5Widget}}
+    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
+    list_per_page = 10
 
 
 @admin.register(Tag)
