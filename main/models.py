@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from taggit.managers import TaggableManager
 
 
 class PlantCategory(models.Model):
@@ -27,8 +28,15 @@ class PlantCategory(models.Model):
         return self.name
 
 
-class Tag(models.Model):
-    name = models.CharField(max_length=50, help_text=_("Enter the name of the tag."))
+class Features(models.Model):
+    name = models.CharField(
+        max_length=50, help_text=_("Enter the name of the features.")
+    )
+
+    class Meta:
+        verbose_name = "Feature"
+        verbose_name_plural = "Features"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -68,9 +76,12 @@ class Plant(models.Model):
     care_instructions = models.TextField(
         help_text=_("Provide care instructions for the plant.")
     )
-    tags = models.ManyToManyField(
-        "Tag", help_text=_("Select any relevant tags for the plant.")
+    features = models.ManyToManyField(
+        Features,
+        help_text=_("Select the features that describe the plant."),
+        blank=True,
     )
+    tags = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -134,6 +145,7 @@ class Planter(models.Model):
     is_custom = models.BooleanField(
         default=False, help_text=_("Check if the planter is custom-made.")
     )
+    tags = TaggableManager()
 
     class Meta:
         verbose_name = "Planter"
@@ -269,10 +281,34 @@ class Service(models.Model):
         on_delete=models.CASCADE,
         help_text=_("Select the type for the service."),
     )
+    tags = TaggableManager()
 
     class Meta:
         verbose_name = "Service"
         verbose_name_plural = "Services"
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
+
+
+class Ideas(models.Model):
+    title = models.CharField(
+        max_length=100, help_text=_("Enter the title of the idea.")
+    )
+    description = models.TextField(help_text=_("Provide a description for the idea."))
+    image = models.ImageField(
+        upload_to="ideas/",
+        help_text=_("Upload an image for the idea."),
+        null=True,
+        blank=True,
+    )
+    tags = TaggableManager()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Idea"
+        verbose_name_plural = "Ideas"
         ordering = ["title"]
 
     def __str__(self):

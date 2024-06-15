@@ -12,6 +12,7 @@ from .models import (
     ServiceCategory,
     ServiceType,
     Service,
+    Ideas,
 )
 from .serializers import (
     PlantCategorySerializer,
@@ -21,6 +22,7 @@ from .serializers import (
     ServiceCategorySerializer,
     ServiceTypeSerializer,
     ServiceSerializer,
+    IdeasSerializer,
 )
 
 
@@ -104,3 +106,8 @@ class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     pagination_class = DefaultPagination
+
+
+class IdeasViewSet(viewsets.ModelViewSet):
+    queryset = Ideas.objects.all()
+    serializer_class = IdeasSerializer

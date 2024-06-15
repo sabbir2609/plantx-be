@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # my apps
-    "blog",
     "main",
     # third-party apps
     "corsheaders",

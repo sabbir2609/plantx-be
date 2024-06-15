@@ -10,16 +10,29 @@ from .models import (
     ServiceType,
     ServiceTypeFeature,
     Service,
-    Tag,
+    Features,
+    Ideas,
 )
 
 from ckeditor.widgets import CKEditorWidget
 from django.db import models
 
 
+@admin.register(PlantCategory)
+class PlantCategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "description")
+    search_fields = ("name",)
+
+
 class PlantImageInline(admin.TabularInline):
     model = PlantImage
     extra = 1
+
+
+@admin.register(Features)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
 
 
 @admin.register(Plant)
@@ -28,7 +41,7 @@ class PlantAdmin(admin.ModelAdmin):
     list_display = ("title", "indoor_or_outdoor", "size", "category")
     search_fields = ("category__name", "indoor_or_outdoor", "size")
     list_filter = ("category", "indoor_or_outdoor", "size")
-    filter_horizontal = ("tags",)
+    filter_horizontal = ("features",)
     fieldsets = (
         (
             None,
@@ -40,6 +53,7 @@ class PlantAdmin(admin.ModelAdmin):
                     "size",
                     "description",
                     "care_instructions",
+                    "features",
                     "tags",
                 )
             },
@@ -47,14 +61,6 @@ class PlantAdmin(admin.ModelAdmin):
     )
     formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
     list_per_page = 10
-
-
-@admin.register(PlantCategory)
-class PlantCategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "description")
-    search_fields = ("name",)
-
-    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
 
 class PlanterImageInline(admin.TabularInline):
@@ -78,8 +84,6 @@ class PlanterAdmin(admin.ModelAdmin):
 class PlanterCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
-
-    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
 
 @admin.register(ServiceCategory)
@@ -116,6 +120,7 @@ class ServiceAdmin(admin.ModelAdmin):
                     "description",
                     "image",
                     "budget_range",
+                    "tags",
                 )
             },
         ),
@@ -125,7 +130,21 @@ class ServiceAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name",)
+@admin.register(Ideas)
+class IdeasAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "title",
+                    "description",
+                    "image",
+                    "tags",
+                )
+            },
+        ),
+    )
+
+    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
+    list_per_page = 10
