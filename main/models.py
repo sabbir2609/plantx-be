@@ -127,6 +127,20 @@ class PlanterCategory(models.Model):
         return self.name
 
 
+class PlanterFeatures(models.Model):
+    name = models.CharField(
+        max_length=50, help_text=_("Enter the name of the planter features.")
+    )
+
+    class Meta:
+        verbose_name = "Planter Feature"
+        verbose_name_plural = "Planter Features"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class Planter(models.Model):
     model = models.CharField(
         max_length=100, help_text=_("Enter the model of the planter.")
@@ -136,6 +150,11 @@ class Planter(models.Model):
     )
     description = models.TextField(
         help_text=_("Provide a description for the planter.")
+    )
+    features = models.ManyToManyField(
+        PlanterFeatures,
+        help_text=_("Select the features that describe the planter."),
+        blank=True,
     )
     color = models.CharField(
         max_length=50, help_text=_("Enter the color of the planter.")
@@ -148,7 +167,9 @@ class Planter(models.Model):
     is_custom = models.BooleanField(
         default=False, help_text=_("Check if the planter is custom-made.")
     )
-    tags = TaggableManager()
+    tags = TaggableManager(
+        help_text=_("Add tags that describe the planter."), blank=True
+    )
 
     class Meta:
         verbose_name = "Planter"

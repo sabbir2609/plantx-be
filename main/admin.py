@@ -4,6 +4,7 @@ from .models import (
     Plant,
     PlantImage,
     PlanterCategory,
+    PlanterFeatures,
     Planter,
     PlanterImage,
     ServiceCategory,
@@ -68,12 +69,19 @@ class PlanterImageInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(PlanterFeatures)
+class PlanterFeaturesAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+
+
 @admin.register(Planter)
 class PlanterAdmin(admin.ModelAdmin):
     inlines = [PlanterImageInline]
     list_display = ("model", "size", "color", "category")
     search_fields = ("model", "size", "color")
     list_filter = ("category", "size", "color")
+    filter_horizontal = ("features",)
 
     list_per_page = 10
 

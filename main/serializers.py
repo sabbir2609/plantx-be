@@ -5,6 +5,7 @@ from .models import (
     Plant,
     PlantImage,
     PlanterCategory,
+    PlanterFeatures,
     Planter,
     PlanterImage,
     ServiceCategory,
@@ -63,6 +64,12 @@ class PlanterCategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "image"]
 
 
+class PlanterFeaturesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlanterFeatures
+        fields = ["id", "name"]
+
+
 class PlanterImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanterImage
@@ -71,6 +78,7 @@ class PlanterImageSerializer(serializers.ModelSerializer):
 
 class PlanterSerializer(TaggitSerializer, serializers.ModelSerializer):
     category = PlanterCategorySerializer()
+    features = PlanterFeaturesSerializer(many=True)
     images = PlanterImageSerializer(
         source="planterimage_set", many=True, read_only=True
     )
@@ -85,6 +93,7 @@ class PlanterSerializer(TaggitSerializer, serializers.ModelSerializer):
             "description",
             "color",
             "category",
+            "features",
             "images",
             "tags",
         ]
