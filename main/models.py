@@ -28,14 +28,14 @@ class PlantCategory(models.Model):
         return self.name
 
 
-class Features(models.Model):
+class PlantFeatures(models.Model):
     name = models.CharField(
-        max_length=50, help_text=_("Enter the name of the features.")
+        max_length=50, help_text=_("Enter the name of the plant features.")
     )
 
     class Meta:
-        verbose_name = "Feature"
-        verbose_name_plural = "Features"
+        verbose_name = "Plant Feature"
+        verbose_name_plural = "Plant Features"
         ordering = ["name"]
 
     def __str__(self):
@@ -77,11 +77,11 @@ class Plant(models.Model):
         help_text=_("Provide care instructions for the plant.")
     )
     features = models.ManyToManyField(
-        Features,
+        PlantFeatures,
         help_text=_("Select the features that describe the plant."),
         blank=True,
     )
-    tags = TaggableManager()
+    tags = TaggableManager(help_text=_("Add tags that describe the plant."), blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -99,7 +99,10 @@ class PlantImage(models.Model):
         upload_to="plant_images/", help_text=_("Upload an image for the plant.")
     )
     short_description = models.CharField(
-        max_length=255, help_text=_("Enter a short description for the plant image.")
+        max_length=255,
+        help_text=_("Enter a short description for the plant image."),
+        blank=True,
+        null=True,
     )
 
 

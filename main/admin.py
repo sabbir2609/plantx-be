@@ -10,7 +10,7 @@ from .models import (
     ServiceType,
     ServiceTypeFeature,
     Service,
-    Features,
+    PlantFeatures,
     Ideas,
 )
 
@@ -29,7 +29,7 @@ class PlantImageInline(admin.TabularInline):
     extra = 1
 
 
-@admin.register(Features)
+@admin.register(PlantFeatures)
 class TagAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)

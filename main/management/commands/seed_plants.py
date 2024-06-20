@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from main.models import PlantCategory, Features, Plant
+from main.models import PlantCategory, PlantFeatures, Plant
 
 
 class Command(BaseCommand):
@@ -56,7 +56,7 @@ class Command(BaseCommand):
         ]
 
         for feature_data in features:
-            Features.objects.get_or_create(name=feature_data["name"])
+            PlantFeatures.objects.get_or_create(name=feature_data["name"])
 
     def seed_plants(self):
         plants = [
@@ -337,7 +337,7 @@ class Command(BaseCommand):
             category = PlantCategory.objects.get(name=category_name)
 
             features = plant_data.pop("features")
-            feature_objs = Features.objects.filter(name__in=features)
+            feature_objs = PlantFeatures.objects.filter(name__in=features)
 
             plant_data["category"] = category
 

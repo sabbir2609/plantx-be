@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     PlantCategory,
-    Features,
+    PlantFeatures,
     Plant,
     PlantImage,
     PlanterCategory,
@@ -24,7 +24,7 @@ class PlantCategorySerializer(serializers.ModelSerializer):
 
 class FeaturesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Features
+        model = PlantFeatures
         fields = ["id", "name"]
 
 

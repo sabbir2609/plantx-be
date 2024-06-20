@@ -8,6 +8,7 @@ from .views import (
     ServiceCategoryViewSet,
     ServiceTypeViewSet,
     ServiceViewSet,
+    IdeasViewSet,
 )
 
 app_name = "main"
@@ -48,6 +49,8 @@ service_categories_router = routers.NestedDefaultRouter(
 service_categories_router.register(
     "service", ServiceViewSet, basename="service-category-service"
 )
+
+router.register("ideas", IdeasViewSet, basename="ideas")
 
 urlpatterns = [
     path("", include(router.urls)),

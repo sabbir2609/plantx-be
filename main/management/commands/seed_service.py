@@ -7,7 +7,40 @@ from main.models import Service, ServiceCategory, ServiceType
 class Command(BaseCommand):
     help = "Populate the database with service data"
 
+    def populate_service_categories(self):
+        service_categories = [
+            {
+                "title": "Design Consultation",
+                "description": "Professional advice on plant design and arrangement.",
+            },
+            {
+                "title": "Plant Maintenance",
+                "description": "Regular care and upkeep of plants.",
+            },
+            {
+                "title": "Installation Services",
+                "description": "Setting up plants in desired locations.",
+            },
+            {
+                "title": "Seasonal and Themed Decor",
+                "description": "Plant decor for specific seasons and themes.",
+            },
+            {
+                "title": "Custom Plant Solutions",
+                "description": "Tailored plant solutions for unique spaces.",
+            },
+        ]
+
+        for category in service_categories:
+            ServiceCategory.objects.get_or_create(
+                title=category["title"],
+                defaults={
+                    "description": category["description"],
+                },
+            )
+
     def handle(self, *args, **kwargs):
+        self.populate_service_categories()
         data = [
             {
                 "id": 1,
