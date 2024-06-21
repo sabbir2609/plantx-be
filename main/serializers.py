@@ -91,6 +91,7 @@ class PlanterSerializer(TaggitSerializer, serializers.ModelSerializer):
             "model",
             "size",
             "description",
+            "short_description",
             "color",
             "category",
             "features",

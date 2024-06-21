@@ -100,7 +100,7 @@ class PlantImage(models.Model):
     )
     short_description = models.CharField(
         max_length=255,
-        help_text=_("Enter a short description for the plant image."),
+        help_text=_("Enter a short description for the image."),
         blank=True,
         null=True,
     )
@@ -151,6 +151,12 @@ class Planter(models.Model):
     description = models.TextField(
         help_text=_("Provide a description for the planter.")
     )
+    short_description = models.CharField(
+        max_length=255,
+        help_text=_("Enter a short description for the plant."),
+        blank=True,
+        null=True,
+    )
     features = models.ManyToManyField(
         PlanterFeatures,
         help_text=_("Select the features that describe the planter."),
@@ -186,7 +192,10 @@ class PlanterImage(models.Model):
         upload_to="planter_images/", help_text=_("Upload an image for the planter.")
     )
     short_description = models.CharField(
-        max_length=255, help_text=_("Enter a short description for the planter image.")
+        max_length=255,
+        help_text=_("Enter a short description for the image."),
+        blank=True,
+        null=True,
     )
 
 
