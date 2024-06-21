@@ -15,9 +15,9 @@ app_name = "main"
 
 # the root router
 router = routers.DefaultRouter()
+
 router.register("plant_categories", PlantCategoryViewSet, basename="plantcategory")
 router.register("plants", PlantViewSet, basename="plant")
-
 plant_categories_router = routers.NestedDefaultRouter(
     router, "plant_categories", lookup="plant_category"
 )

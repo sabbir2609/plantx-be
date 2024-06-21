@@ -63,6 +63,12 @@ class PlantViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, url_path="featured")
+    def featured(self, request, plant_category_pk=None):
+        queryset = self.get_queryset().filter(tags__name__in=["featured"])
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class PlanterCategoryViewSet(viewsets.ModelViewSet):
     queryset = PlanterCategory.objects.all()
@@ -91,6 +97,12 @@ class PlanterViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, url_path="featured")
+    def featured(self, request, planter_category_pk=None):
+        queryset = self.get_queryset().filter(tags__name__in=["featured"])
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class ServiceCategoryViewSet(viewsets.ModelViewSet):
     queryset = ServiceCategory.objects.all()
@@ -107,7 +119,20 @@ class ServiceViewSet(viewsets.ModelViewSet):
     serializer_class = ServiceSerializer
     pagination_class = DefaultPagination
 
+    @action(detail=False, url_path="featured")
+    def featured(self, request):
+        queryset = self.get_queryset().filter(tags__name__in=["featured"])
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class IdeasViewSet(viewsets.ModelViewSet):
     queryset = Ideas.objects.all()
     serializer_class = IdeasSerializer
+
+    @action(detail=False, url_path="featured")
+    def featured(self, request):
+        queryset = self.get_queryset().filter(tags__name__in=["featured"])
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

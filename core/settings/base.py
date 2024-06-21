@@ -139,6 +139,8 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
+DEFAULT_IMAGE = "image_not_found.webp"
+
 # CKEditor Settings
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
