@@ -6,7 +6,6 @@ from .views import (
     PlanterCategoryViewSet,
     PlanterViewSet,
     ServiceCategoryViewSet,
-    ServiceTypeViewSet,
     ServiceViewSet,
     IdeasViewSet,
 )
@@ -41,7 +40,6 @@ router.register("services", ServiceViewSet, basename="service")
 router.register(
     "service_categories", ServiceCategoryViewSet, basename="servicecategory"
 )
-router.register("service_types", ServiceTypeViewSet, basename="servicetype")
 
 service_categories_router = routers.NestedDefaultRouter(
     router, "service_categories", lookup="service_category"

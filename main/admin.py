@@ -8,8 +8,6 @@ from .models import (
     Planter,
     PlanterImage,
     ServiceCategory,
-    ServiceType,
-    ServiceTypeFeature,
     Service,
     PlantFeatures,
     Ideas,
@@ -96,27 +94,22 @@ class PlanterCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
-    list_display = ("title",)
+    list_display = (
+        "title",
+        "type",
+    )
     search_fields = ("title",)
-
-
-class ServiceTypeFeatureInline(admin.TabularInline):
-    model = ServiceTypeFeature
-    extra = 1
-
-
-@admin.register(ServiceType)
-class ServiceTypeAdmin(admin.ModelAdmin):
-    list_display = ("title", "budget_range")
-    search_fields = ("title", "budget_range")
-    inlines = [ServiceTypeFeatureInline]
 
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("title", "budget_range", "category", "type")
+    list_display = (
+        "title",
+        "budget_range",
+        "category",
+    )
     search_fields = ("title", "budget_range")
-    list_filter = ("category", "type")
+    list_filter = ("category",)
     fieldsets = (
         (
             None,
@@ -124,7 +117,6 @@ class ServiceAdmin(admin.ModelAdmin):
                 "fields": (
                     "title",
                     "category",
-                    "type",
                     "description",
                     "image",
                     "budget_range",

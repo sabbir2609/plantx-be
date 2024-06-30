@@ -200,14 +200,34 @@ class PlanterImage(models.Model):
 
 
 class ServiceCategory(models.Model):
+
+    class TypeChoices(models.TextChoices):
+        COMMERCIAL = "Commercial", _("Commercial")
+        RESIDENTIAL = "Residential", _("Residential")
+
+    no = models.PositiveIntegerField(
+        unique=True, help_text=_("Enter the number of the service category.")
+    )
+
+    type = models.CharField(
+        default=TypeChoices.RESIDENTIAL,
+        null=True,
+        blank=True,
+        max_length=20,
+        choices=TypeChoices.choices,
+        help_text=_("Select the type of service."),
+    )
+
     title = models.CharField(
         max_length=100, help_text=_("Enter the title of the service category.")
     )
+
     description = models.TextField(
         help_text=_("Provide a description for the service category."),
         null=True,
         blank=True,
     )
+
     image = models.ImageField(
         upload_to="service_categories/",
         help_text=_("Upload an image for the service category."),
@@ -216,104 +236,47 @@ class ServiceCategory(models.Model):
     )
 
     class Meta:
+        unique_together = ["title", "type"]
         verbose_name = "Service Category"
         verbose_name_plural = "Service Categories"
-        ordering = ["title"]
+        ordering = ["no"]
 
     def __str__(self):
-        return self.title
-
-
-class ServiceType(models.Model):
-    serial = models.IntegerField(
-        help_text=_("Enter the serial number for the service type."),
-        null=True,
-        blank=True,
-    )
-    title = models.CharField(
-        max_length=100, help_text=_("Enter the title of the service type.")
-    )
-    description = models.TextField(
-        help_text=_("Provide a description for the service type.")
-    )
-    image = models.ImageField(
-        upload_to="service_types/",
-        help_text=_("Upload an image for the service type."),
-        null=True,
-        blank=True,
-    )
-    budget_range = models.CharField(
-        max_length=50,
-        help_text=_("Enter the budget range for the service type."),
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        verbose_name = "Service Plan"
-        verbose_name_plural = "Service Plans"
-        ordering = ["serial"]
-
-    def __str__(self):
-        return self.title
-
-
-class ServiceTypeFeature(models.Model):
-    serial = models.IntegerField(
-        help_text=_("Enter the serial number for the feature."),
-        null=True,
-        blank=True,
-    )
-    title = models.CharField(
-        max_length=100, help_text=_("Enter the title of the feature.")
-    )
-    service_type = models.ForeignKey(
-        "ServiceType",
-        on_delete=models.CASCADE,
-        help_text=_("Select the service type for the feature."),
-        related_name="service_type_features",
-    )
-
-    class Meta:
-        verbose_name = "Service Type Feature"
-        verbose_name_plural = "Service Type Features"
-        ordering = ["serial"]
-
-    def __str__(self):
-        return self.title
+        return f"{self.type}-{self.title}"
 
 
 class Service(models.Model):
+
     title = models.CharField(
         max_length=100, help_text=_("Enter the title of the service.")
     )
+
     description = models.TextField(
         help_text=_("Provide a description for the service."),
         null=True,
         blank=True,
     )
+
     image = models.ImageField(
         upload_to="services/",
         help_text=_("Upload an image for the service."),
         null=True,
         blank=True,
     )
+
     budget_range = models.CharField(
         max_length=50,
         help_text=_("Enter the budget range for the service."),
         null=True,
         blank=True,
     )
+
     category = models.ForeignKey(
         ServiceCategory,
         on_delete=models.CASCADE,
         help_text=_("Select the category for the service."),
     )
-    type = models.ForeignKey(
-        ServiceType,
-        on_delete=models.CASCADE,
-        help_text=_("Select the type for the service."),
-    )
+
     tags = TaggableManager()
 
     class Meta:

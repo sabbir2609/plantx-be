@@ -10,7 +10,6 @@ from .models import (
     PlanterCategory,
     Planter,
     ServiceCategory,
-    ServiceType,
     Service,
     Ideas,
 )
@@ -20,7 +19,6 @@ from .serializers import (
     PlanterCategorySerializer,
     PlanterSerializer,
     ServiceCategorySerializer,
-    ServiceTypeSerializer,
     ServiceSerializer,
     IdeasSerializer,
 )
@@ -108,23 +106,23 @@ class ServiceCategoryViewSet(viewsets.ModelViewSet):
     queryset = ServiceCategory.objects.all()
     serializer_class = ServiceCategorySerializer
 
+    @action(detail=False, url_path="commercial")
+    def commercial(self, request):
+        queryset = self.get_queryset().filter(type__iexact="Commercial")
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
-class ServiceTypeViewSet(viewsets.ModelViewSet):
-    queryset = ServiceType.objects.all()
-    serializer_class = ServiceTypeSerializer
+    @action(detail=False, url_path="residential")
+    def residential(self, request):
+        queryset = self.get_queryset().filter(type__iexact="Residential")
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     pagination_class = DefaultPagination
-
-    @action(detail=False, url_path="featured")
-    def featured(self, request):
-        queryset = self.get_queryset().filter(tags__name__in=["featured"])
-        page = self.paginate_queryset(queryset)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class IdeasViewSet(viewsets.ModelViewSet):

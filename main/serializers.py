@@ -9,8 +9,6 @@ from .models import (
     Planter,
     PlanterImage,
     ServiceCategory,
-    ServiceType,
-    ServiceTypeFeature,
     Service,
     Ideas,
 )
@@ -103,34 +101,7 @@ class PlanterSerializer(TaggitSerializer, serializers.ModelSerializer):
 class ServiceCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceCategory
-        fields = ["id", "title", "description", "image"]
-
-
-class ServiceTypeFeatureSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ServiceTypeFeature
-        fields = ["id", "title"]
-
-
-class ServiceTypeSerializer(serializers.ModelSerializer):
-    service_type_features = ServiceTypeFeatureSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = ServiceType
-        fields = [
-            "id",
-            "title",
-            "description",
-            "image",
-            "budget_range",
-            "service_type_features",
-        ]
-
-
-class LimitedServiceTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ServiceType
-        fields = ["id", "title"]
+        fields = ["id", "no", "title", "type", "description", "image"]
 
 
 class LimitedServiceSerializer(serializers.ModelSerializer):
@@ -141,7 +112,6 @@ class LimitedServiceSerializer(serializers.ModelSerializer):
 
 class ServiceSerializer(TaggitSerializer, serializers.ModelSerializer):
     category = LimitedServiceSerializer(read_only=True)
-    type = LimitedServiceTypeSerializer(read_only=True)
     tags = TagListSerializerField()
 
     class Meta:
@@ -153,7 +123,6 @@ class ServiceSerializer(TaggitSerializer, serializers.ModelSerializer):
             "image",
             "budget_range",
             "category",
-            "type",
             "tags",
         ]
 
