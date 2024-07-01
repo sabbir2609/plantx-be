@@ -36,16 +36,18 @@ planter_categories_router.register(
     "planters", PlanterViewSet, basename="planter-category-planters"
 )
 
-router.register("services", ServiceViewSet, basename="service")
+
 router.register(
     "service_categories", ServiceCategoryViewSet, basename="servicecategory"
 )
+
+router.register("services", ServiceViewSet, basename="service")
 
 service_categories_router = routers.NestedDefaultRouter(
     router, "service_categories", lookup="service_category"
 )
 service_categories_router.register(
-    "service", ServiceViewSet, basename="service-category-service"
+    "services", ServiceViewSet, basename="service-category-service"
 )
 
 router.register("ideas", IdeasViewSet, basename="ideas")
