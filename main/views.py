@@ -124,6 +124,13 @@ class ServiceViewSet(viewsets.ModelViewSet):
     serializer_class = ServiceSerializer
     pagination_class = DefaultPagination
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        service_category_pk = self.kwargs.get("service_category_pk")
+        if service_category_pk:
+            queryset = queryset.filter(category_id=service_category_pk)
+        return queryset
+
 
 class IdeasViewSet(viewsets.ModelViewSet):
     queryset = Ideas.objects.all()

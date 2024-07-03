@@ -41,13 +41,13 @@ router.register(
     "service_categories", ServiceCategoryViewSet, basename="servicecategory"
 )
 
-router.register("services", ServiceViewSet, basename="service")
+router.register("services", ServiceViewSet, basename="services")
 
 service_categories_router = routers.NestedDefaultRouter(
     router, "service_categories", lookup="service_category"
 )
 service_categories_router.register(
-    "services", ServiceViewSet, basename="service-category-service"
+    "services", ServiceViewSet, basename="service-category-services"
 )
 
 router.register("ideas", IdeasViewSet, basename="ideas")
