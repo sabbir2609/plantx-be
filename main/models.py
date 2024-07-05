@@ -309,3 +309,78 @@ class Ideas(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Testimonial(models.Model):
+    name = models.CharField(
+        max_length=100, help_text=_("Enter the name of the testimonial author.")
+    )
+    image = models.ImageField(
+        upload_to="testimonials/",
+        help_text=_("Upload an image for the testimonial author."),
+        null=True,
+        blank=True,
+    )
+    content = models.TextField(help_text=_("Enter the content of the testimonial."))
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Testimonial"
+        verbose_name_plural = "Testimonials"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.name
+
+
+class Team(models.Model):
+    name = models.CharField(
+        max_length=100, help_text=_("Enter the name of the team member.")
+    )
+    position = models.CharField(
+        max_length=100, help_text=_("Enter the position of the team member.")
+    )
+    image = models.ImageField(
+        upload_to="team_members/",
+        help_text=_("Upload an image for the team member."),
+        null=True,
+        blank=True,
+    )
+    phone_number = models.CharField(
+        max_length=15,
+        help_text=_("Enter the phone number of the team member."),
+        null=True,
+        blank=True,
+    )
+    facebook_url = models.URLField(
+        help_text=_("Enter the Facebook URL of the team member."),
+        null=True,
+        blank=True,
+    )
+    twitter_url = models.URLField(
+        help_text=_("Enter the Twitter URL of the team member."),
+        null=True,
+        blank=True,
+    )
+    linkedin_url = models.URLField(
+        help_text=_("Enter the LinkedIn URL of the team member."),
+        null=True,
+        blank=True,
+    )
+    instagram_url = models.URLField(
+        help_text=_("Enter the Instagram URL of the team member."),
+        null=True,
+        blank=True,
+    )
+    bio = models.TextField(
+        null=True, blank=True, help_text=_("Enter the bio of the team member.")
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Team Member"
+        verbose_name_plural = "Team Members"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.name

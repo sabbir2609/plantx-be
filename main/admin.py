@@ -11,6 +11,8 @@ from .models import (
     Service,
     PlantFeatures,
     Ideas,
+    Testimonial,
+    Team,
 )
 
 from ckeditor.widgets import CKEditorWidget
@@ -147,4 +149,17 @@ class IdeasAdmin(admin.ModelAdmin):
     )
 
     formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
+    list_per_page = 10
+
+
+@admin.register(Testimonial)
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = ("name", "created_at")
+    list_per_page = 10
+
+
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
+    list_display = ("name", "position")
+    search_fields = ("name", "position")
     list_per_page = 10

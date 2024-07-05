@@ -12,6 +12,8 @@ from .models import (
     ServiceCategory,
     Service,
     Ideas,
+    Testimonial,
+    Team,
 )
 from .serializers import (
     PlantCategorySerializer,
@@ -21,6 +23,8 @@ from .serializers import (
     ServiceCategorySerializer,
     ServiceSerializer,
     IdeasSerializer,
+    TestimonialSerializer,
+    TeamSerializer,
 )
 
 
@@ -141,3 +145,13 @@ class IdeasViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(tags__name__in=["featured"])
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class TestimonialViewSet(viewsets.ModelViewSet):
+    queryset = Testimonial.objects.all()
+    serializer_class = TestimonialSerializer
+
+
+class TeamViewSet(viewsets.ModelViewSet):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer

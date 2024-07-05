@@ -11,6 +11,8 @@ from .models import (
     ServiceCategory,
     Service,
     Ideas,
+    Testimonial,
+    Team,
 )
 from taggit.serializers import TagListSerializerField, TaggitSerializer
 
@@ -133,3 +135,15 @@ class IdeasSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Ideas
         fields = ["id", "title", "description", "image", "tags", "created_at"]
+
+
+class TestimonialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Testimonial
+        fields = "__all__"
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = "__all__"
