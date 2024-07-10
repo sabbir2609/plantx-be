@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # my apps
     "main",
+    "home",
     # third-party apps
     "corsheaders",
     "taggit",
