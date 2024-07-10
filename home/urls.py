@@ -9,11 +9,11 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register("banners", BannerImageViewSet)
-router.register("contact-info", ContactInfoViewSet)
-router.register("about-us", AboutUsViewSet)
-router.register("our-clients", OurClientsViewSet)
-router.register("legal-documents", LegalDocumentViewSet)
+router.register("banners", BannerImageViewSet, basename="banner-image")
+router.register("contact-info", ContactInfoViewSet, basename="contact-info")
+router.register("about-us", AboutUsViewSet, basename="about-us")
+router.register("our-clients", OurClientsViewSet, basename="our-clients")
+router.register("legal-documents", LegalDocumentViewSet, basename="legal-document")
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -7,8 +7,8 @@ from home.views import HomePageTemplateView
 
 urlpatterns = [
     path("", HomePageTemplateView.as_view(), name="home"),
-    path("api/", include("main.urls")),
-    path("api/", include("home.urls")),
+    path("api/main/", include("main.urls")),
+    path("api/home/", include("home.urls")),
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
 ]
