@@ -8,6 +8,7 @@ from .models import (
     Planter,
     PlanterImage,
     ServiceCategory,
+    ServiceImage,
     Service,
     PlantFeatures,
     Ideas,
@@ -82,9 +83,7 @@ class PlanterAdmin(admin.ModelAdmin):
     search_fields = ("model", "size", "color")
     list_filter = ("category", "size", "color")
     filter_horizontal = ("features",)
-
     list_per_page = 10
-
     formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
 
@@ -103,33 +102,37 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
 
+class ServiceImageInline(admin.TabularInline):
+    model = ServiceImage
+    extra = 1
+
+
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "budget_range",
-        "category",
     )
     search_fields = ("title", "budget_range")
-    list_filter = ("category",)
+    list_filter = ("categories",)
+    filter_horizontal = ("categories",)
     fieldsets = (
         (
             None,
             {
                 "fields": (
                     "title",
-                    "category",
+                    "categories",
                     "description",
-                    "image",
                     "budget_range",
                     "tags",
                 )
             },
         ),
     )
-
     formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
     list_per_page = 10
+    inlines = [ServiceImageInline]
 
 
 @admin.register(Ideas)

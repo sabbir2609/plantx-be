@@ -46,10 +46,10 @@ router.register(
 router.register("services", ServiceViewSet, basename="services")
 
 service_categories_router = routers.NestedDefaultRouter(
-    router, "service_categories", lookup="service_category"
+    router, "service_categories", lookup="service_categories"
 )
 service_categories_router.register(
-    "services", ServiceViewSet, basename="service-category-services"
+    "services", ServiceViewSet, basename="service-categories-services"
 )
 
 router.register("ideas", IdeasViewSet, basename="ideas")

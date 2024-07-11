@@ -246,37 +246,37 @@ class ServiceCategory(models.Model):
 
 
 class Service(models.Model):
-
     title = models.CharField(
         max_length=100, help_text=_("Enter the title of the service.")
     )
-
     description = models.TextField(
         help_text=_("Provide a description for the service."),
         null=True,
         blank=True,
     )
-
-    image = models.ImageField(
-        upload_to="services/",
-        help_text=_("Upload an image for the service."),
-        null=True,
-        blank=True,
-    )
-
     budget_range = models.CharField(
         max_length=50,
         help_text=_("Enter the budget range for the service."),
         null=True,
         blank=True,
     )
-
-    category = models.ForeignKey(
+    categories = models.ManyToManyField(
         ServiceCategory,
-        on_delete=models.CASCADE,
-        help_text=_("Select the category for the service."),
+        help_text=_("Select the categories that describe the service."),
+        blank=True,
+        related_name="services",
     )
-
+    client = models.CharField(
+        max_length=100,
+        help_text=_("Enter the name of the client."),
+        null=True,
+        blank=True,
+    )
+    year = models.PositiveIntegerField(
+        help_text=_("Enter the year when the service was provided."),
+        null=True,
+        blank=True,
+    )
     tags = TaggableManager()
 
     class Meta:
@@ -286,6 +286,26 @@ class Service(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ServiceImage(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to="service_images/", help_text=_("Upload an image for the service.")
+    )
+    short_description = models.CharField(
+        max_length=255,
+        help_text=_("Enter a short description for the image."),
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.short_description
+
+    class Meta:
+        verbose_name = "Service Image"
+        verbose_name_plural = "Service Images"
 
 
 class Ideas(models.Model):

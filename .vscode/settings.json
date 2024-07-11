@@ -12,6 +12,7 @@
         "plantimage",
         "plantx",
         "servicecategory",
+        "serviceimage",
         "servicetype",
         "taggit",
         "viewsets",

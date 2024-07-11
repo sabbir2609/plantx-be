@@ -9,6 +9,7 @@ from .models import (
     Planter,
     PlanterImage,
     ServiceCategory,
+    ServiceImage,
     Service,
     Ideas,
     Testimonial,
@@ -106,15 +107,24 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
         fields = ["id", "no", "title", "type", "description", "image"]
 
 
-class LimitedServiceSerializer(serializers.ModelSerializer):
+class LimitedServiceCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Service
-        fields = ["id", "title"]
+        model = ServiceCategory
+        fields = ["id", "title", "type"]
+
+
+class ServiceImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceImage
+        fields = ["id", "image", "short_description"]
 
 
 class ServiceSerializer(TaggitSerializer, serializers.ModelSerializer):
-    category = LimitedServiceSerializer(read_only=True)
+    categories = LimitedServiceCategorySerializer(read_only=True, many=True)
     tags = TagListSerializerField()
+    images = ServiceImageSerializer(
+        source="serviceimage_set", many=True, read_only=True
+    )
 
     class Meta:
         model = Service
@@ -122,9 +132,9 @@ class ServiceSerializer(TaggitSerializer, serializers.ModelSerializer):
             "id",
             "title",
             "description",
-            "image",
+            "images",
             "budget_range",
-            "category",
+            "categories",
             "tags",
         ]
 

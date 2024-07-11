@@ -130,9 +130,9 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        service_category_pk = self.kwargs.get("service_category_pk")
+        service_category_pk = self.kwargs.get("service_categories_pk")
         if service_category_pk:
-            queryset = queryset.filter(category_id=service_category_pk)
+            queryset = queryset.filter(categories__pk=service_category_pk)
         return queryset
 
 
