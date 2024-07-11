@@ -76,6 +76,13 @@ class PlanterCategoryViewSet(viewsets.ModelViewSet):
     queryset = PlanterCategory.objects.all()
     serializer_class = PlanterCategorySerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        planter_category_pk = self.kwargs.get("planter_category_pk")
+        if planter_category_pk:
+            queryset = queryset.filter(category_id=planter_category_pk)
+        return queryset
+
 
 class PlanterViewSet(viewsets.ModelViewSet):
     queryset = Planter.objects.all()
