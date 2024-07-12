@@ -191,8 +191,10 @@ class ProjectImageSerializer(serializers.ModelSerializer):
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
-    images = ProjectImageSerializer(many=True, read_only=True)
     tags = TagListSerializerField()
+    images = ProjectImageSerializer(
+        source="projectimage_set", many=True, read_only=True
+    )
 
     class Meta:
         model = Projects

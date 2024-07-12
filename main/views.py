@@ -175,3 +175,4 @@ class TeamViewSet(viewsets.ModelViewSet):
 class ProjectsViewSet(viewsets.ModelViewSet):
     queryset = Projects.objects.all()
     serializer_class = ProjectsSerializer
+    pagination_class = DefaultPagination

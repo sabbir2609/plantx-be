@@ -220,3 +220,5 @@ class ProjectsAdmin(admin.ModelAdmin):
     search_fields = ("title", "client", "year")
     list_filter = ("year",)
     ordering = ("title",)
+
+    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
