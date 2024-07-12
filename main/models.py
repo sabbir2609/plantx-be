@@ -443,7 +443,7 @@ class ProjectImage(models.Model):
     )
 
     def __str__(self):
-        return self.short_description
+        return self.image.url
 
     class Meta:
         verbose_name = "Project Image"
