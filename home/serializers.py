@@ -1,23 +1,17 @@
 from rest_framework import serializers
-from .models import BannerImage, ContactInfo, AboutUs, OurClients, LegalDocument
+from .models import BannerImage, ContactInfo, OurClients, LegalDocument
 
 
 class BannerImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = BannerImage
-        fields = "__all__"
+        fields = ["id", "image", "alt_text"]
 
 
 class ContactInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactInfo
-        fields = "__all__"
-
-
-class AboutUsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AboutUs
-        fields = "__all__"
+        fields = ["address", "phone", "email"]
 
 
 class OurClientsSerializer(serializers.ModelSerializer):

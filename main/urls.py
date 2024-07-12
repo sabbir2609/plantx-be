@@ -10,6 +10,7 @@ from .views import (
     IdeasViewSet,
     TestimonialViewSet,
     TeamViewSet,
+    ProjectsViewSet,
 )
 
 app_name = "main"
@@ -56,6 +57,8 @@ router.register("ideas", IdeasViewSet, basename="ideas")
 
 router.register("testimonials", TestimonialViewSet, basename="testimonials")
 router.register("team", TeamViewSet, basename="team")
+
+router.register("projects", ProjectsViewSet, basename="projects")
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -8,6 +8,8 @@ from .models import (
     PlanterFeatures,
     Planter,
     PlanterImage,
+    ProjectImage,
+    Projects,
     ServiceCategory,
     ServiceImage,
     Service,
@@ -133,10 +135,33 @@ class ServiceSerializer(TaggitSerializer, serializers.ModelSerializer):
             "title",
             "description",
             "images",
-            "budget_range",
             "categories",
             "tags",
         ]
+
+
+class LimitedServiceSerializer(serializers.ModelSerializer):
+    categories = LimitedServiceCategorySerializer(read_only=True, many=True)
+    tags = TagListSerializerField()
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Service
+        fields = [
+            "id",
+            "title",
+            "image",
+            "categories",
+            "tags",
+        ]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        first_image_instance = obj.serviceimage_set.first()
+        if first_image_instance:
+            image_url = first_image_instance.image.url
+            return request.build_absolute_uri(image_url) if request else image_url
+        return None
 
 
 class IdeasSerializer(TaggitSerializer, serializers.ModelSerializer):
@@ -150,10 +175,34 @@ class IdeasSerializer(TaggitSerializer, serializers.ModelSerializer):
 class TestimonialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Testimonial
-        fields = "__all__"
+        fields = ["id", "name", "image", "content"]
 
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
+
+
+class ProjectImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectImage
+        fields = ["id", "image", "short_description"]
+
+
+class ProjectsSerializer(serializers.ModelSerializer):
+    images = ProjectImageSerializer(many=True, read_only=True)
+    tags = TagListSerializerField()
+
+    class Meta:
+        model = Projects
+        fields = [
+            "id",
+            "title",
+            "categories",
+            "description",
+            "client",
+            "year",
+            "tags",
+            "images",
+        ]

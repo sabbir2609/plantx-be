@@ -254,28 +254,11 @@ class Service(models.Model):
         null=True,
         blank=True,
     )
-    budget_range = models.CharField(
-        max_length=50,
-        help_text=_("Enter the budget range for the service."),
-        null=True,
-        blank=True,
-    )
     categories = models.ManyToManyField(
         ServiceCategory,
         help_text=_("Select the categories that describe the service."),
         blank=True,
         related_name="services",
-    )
-    client = models.CharField(
-        max_length=100,
-        help_text=_("Enter the name of the client."),
-        null=True,
-        blank=True,
-    )
-    year = models.PositiveIntegerField(
-        help_text=_("Enter the year when the service was provided."),
-        null=True,
-        blank=True,
     )
     tags = TaggableManager()
 
@@ -404,3 +387,64 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Projects(models.Model):
+    title = models.CharField(
+        max_length=100, help_text=_("Enter the title of the project.")
+    )
+    categories = models.CharField(
+        max_length=100,
+        help_text=_("Enter the categories for the project."),
+        null=True,
+        blank=True,
+    )
+    description = models.TextField(
+        help_text=_("Provide a description for the project."),
+        null=True,
+        blank=True,
+    )
+    client = models.CharField(
+        max_length=100,
+        help_text=_("Enter the name of the client."),
+        null=True,
+        blank=True,
+    )
+    year = models.PositiveIntegerField(
+        help_text=_("Enter the year when the project was completed."),
+        null=True,
+        blank=True,
+    )
+
+    tags = TaggableManager(
+        help_text=_("Add tags that describe the project."), blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
+
+
+class ProjectImage(models.Model):
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to="project_images/", help_text=_("Upload an image for the project.")
+    )
+    short_description = models.CharField(
+        max_length=255,
+        help_text=_("Enter a short description for the image."),
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.short_description
+
+    class Meta:
+        verbose_name = "Project Image"
+        verbose_name_plural = "Project Images"

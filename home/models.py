@@ -13,7 +13,7 @@ class BannerImage(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return self.image.name
 
     class Meta:
         verbose_name = "Banner Image"
@@ -33,18 +33,6 @@ class ContactInfo(models.Model):
     class Meta:
         verbose_name = "Contact Information"
         verbose_name_plural = "Contact Information"
-
-
-class AboutUs(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = "About Us"
-        verbose_name_plural = "About Us"
 
 
 class OurClients(models.Model):

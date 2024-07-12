@@ -1,10 +1,9 @@
 from django.views.generic import TemplateView
 from rest_framework import viewsets
-from .models import BannerImage, ContactInfo, AboutUs, OurClients, LegalDocument
+from .models import BannerImage, ContactInfo, OurClients, LegalDocument
 from .serializers import (
     BannerImageSerializer,
     ContactInfoSerializer,
-    AboutUsSerializer,
     OurClientsSerializer,
     LegalDocumentSerializer,
 )
@@ -22,11 +21,6 @@ class BannerImageViewSet(viewsets.ModelViewSet):
 class ContactInfoViewSet(viewsets.ModelViewSet):
     queryset = ContactInfo.objects.all()
     serializer_class = ContactInfoSerializer
-
-
-class AboutUsViewSet(viewsets.ModelViewSet):
-    queryset = AboutUs.objects.all()
-    serializer_class = AboutUsSerializer
 
 
 class OurClientsViewSet(viewsets.ModelViewSet):

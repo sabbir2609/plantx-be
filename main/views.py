@@ -14,6 +14,7 @@ from .models import (
     Ideas,
     Testimonial,
     Team,
+    Projects,
 )
 from .serializers import (
     PlantCategorySerializer,
@@ -22,9 +23,11 @@ from .serializers import (
     PlanterSerializer,
     ServiceCategorySerializer,
     ServiceSerializer,
+    LimitedServiceSerializer,
     IdeasSerializer,
     TestimonialSerializer,
     TeamSerializer,
+    ProjectsSerializer,
 )
 
 
@@ -132,8 +135,13 @@ class ServiceCategoryViewSet(viewsets.ModelViewSet):
 
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
-    serializer_class = ServiceSerializer
     pagination_class = DefaultPagination
+
+    def get_serializer_class(self):
+        print(f"Current action: {self.action}")  # Debugging line
+        if self.action == "list":
+            return LimitedServiceSerializer
+        return ServiceSerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -162,3 +170,8 @@ class TestimonialViewSet(viewsets.ModelViewSet):
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
+
+
+class ProjectsViewSet(viewsets.ModelViewSet):
+    queryset = Projects.objects.all()
+    serializer_class = ProjectsSerializer

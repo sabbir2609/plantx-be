@@ -7,6 +7,8 @@ from .models import (
     PlanterFeatures,
     Planter,
     PlanterImage,
+    ProjectImage,
+    Projects,
     ServiceCategory,
     ServiceImage,
     Service,
@@ -19,6 +21,8 @@ from .models import (
 from ckeditor.widgets import CKEditorWidget
 from django.db import models
 
+from django.utils.html import format_html
+
 
 @admin.register(PlantCategory)
 class PlantCategoryAdmin(admin.ModelAdmin):
@@ -29,6 +33,14 @@ class PlantCategoryAdmin(admin.ModelAdmin):
 class PlantImageInline(admin.TabularInline):
     model = PlantImage
     extra = 1
+    readonly_fields = ("thumbnail",)
+
+    def thumbnail(self, instance):
+        if instance.image.name != "":
+            return format_html(
+                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
+            )
+        return ""
 
 
 @admin.register(PlantFeatures)
@@ -68,6 +80,14 @@ class PlantAdmin(admin.ModelAdmin):
 class PlanterImageInline(admin.TabularInline):
     model = PlanterImage
     extra = 1
+    readonly_fields = ("thumbnail",)
+
+    def thumbnail(self, instance):
+        if instance.image.name != "":
+            return format_html(
+                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
+            )
+        return ""
 
 
 @admin.register(PlanterFeatures)
@@ -105,15 +125,20 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
 class ServiceImageInline(admin.TabularInline):
     model = ServiceImage
     extra = 1
+    readonly_fields = ("thumbnail",)
+
+    def thumbnail(self, instance):
+        if instance.image.name != "":
+            return format_html(
+                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
+            )
+        return ""
 
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = (
-        "title",
-        "budget_range",
-    )
-    search_fields = ("title", "budget_range")
+    list_display = ("title",)
+    search_fields = ("title",)
     list_filter = ("categories",)
     filter_horizontal = ("categories",)
     fieldsets = (
@@ -124,7 +149,6 @@ class ServiceAdmin(admin.ModelAdmin):
                     "title",
                     "categories",
                     "description",
-                    "budget_range",
                     "tags",
                 )
             },
@@ -159,6 +183,14 @@ class IdeasAdmin(admin.ModelAdmin):
 class TestimonialAdmin(admin.ModelAdmin):
     list_display = ("name", "created_at")
     list_per_page = 10
+    readonly_fields = ("thumbnail",)
+
+    def thumbnail(self, instance):
+        if instance.image.name != "":
+            return format_html(
+                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
+            )
+        return ""
 
 
 @admin.register(Team)
@@ -166,3 +198,25 @@ class TeamAdmin(admin.ModelAdmin):
     list_display = ("name", "position")
     search_fields = ("name", "position")
     list_per_page = 10
+
+
+class ProjectImageInline(admin.TabularInline):
+    model = ProjectImage
+    extra = 1
+    readonly_fields = ("thumbnail",)
+
+    def thumbnail(self, instance):
+        if instance.image.name != "":
+            return format_html(
+                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
+            )
+        return ""
+
+
+@admin.register(Projects)
+class ProjectsAdmin(admin.ModelAdmin):
+    inlines = [ProjectImageInline]
+    list_display = ("title", "client", "year", "created_at")
+    search_fields = ("title", "client", "year")
+    list_filter = ("year",)
+    ordering = ("title",)
