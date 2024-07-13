@@ -1,25 +1,15 @@
 import os
-from pathlib import Path
-from .base import *  # noqa: F403
+from .base import *
+from os import getenv
 from dotenv import load_dotenv
-
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 load_dotenv()
 
 SECRET_KEY = os.environ["SECRET_KEY"]
 
-DEBUG = os.environ["DEBUG"]
-
 ALLOWED_HOSTS = (
     [os.environ["WEBSITE_HOSTNAME"]] if "WEBSITE_HOSTNAME" in os.environ else []
 )
-
-website_hostname = os.environ["WEBSITE_HOSTNAME"]
-print(website_hostname)
-
-CORS_ALLOWED_ORIGINS = os.environ["CORS_ALLOWED_ORIGINS"]
-CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = (
     ["https://" + os.environ["WEBSITE_HOSTNAME"]]
@@ -27,12 +17,28 @@ CSRF_TRUSTED_ORIGINS = (
     else []
 )
 
+DEBUG = False
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": getenv("PGDATABASE"),
+        "USER": getenv("PGUSER"),
+        "PASSWORD": getenv("PGPASSWORD"),
+        "HOST": getenv("PGHOST"),
+        "PORT": getenv("PGPORT", 5432),
+        "OPTIONS": {
+            "sslmode": "require",
+        },
     }
 }
+
+
+INSTALLED_APPS += [
+    # Media Cloudinary
+    "cloudinary",
+    "cloudinary_storage",
+]
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.environ["CLOUDINARY_CLOUD_NAME"],
