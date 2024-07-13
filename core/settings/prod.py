@@ -21,7 +21,6 @@ CSRF_TRUSTED_ORIGINS = (
     else []
 )
 
-
 DEBUG = True
 
 SITE_NAME = os.environ["WEBSITE_HOSTNAME"]
