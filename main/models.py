@@ -260,7 +260,9 @@ class Service(models.Model):
         blank=True,
         related_name="services",
     )
-    tags = TaggableManager()
+    tags = TaggableManager(
+        help_text=_("Add tags that describe the service."), blank=True
+    )
 
     class Meta:
         verbose_name = "Service"

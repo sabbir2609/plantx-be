@@ -10,7 +10,7 @@ urlpatterns = [
     path("api/main/", include("main.urls")),
     path("api/home/", include("home.urls")),
     path("admin/", admin.site.urls),
-    path("api-auth/", include("rest_framework.urls")),
+    # path("api-auth/", include("rest_framework.urls")),
 ]
 
 # Admin Site Config
@@ -18,6 +18,12 @@ admin.site.site_header = "Viriditas Admin"
 admin.site.site_title = "Viriditas"
 admin.site.index_title = "Welcome to Viriditas Administration"
 
+
+urlpatterns.extend(
+    [
+        path("ckeditor/", include("ckeditor_uploader.urls")),
+    ]
+)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

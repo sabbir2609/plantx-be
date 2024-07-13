@@ -2,6 +2,7 @@ import os
 from .base import *
 from os import getenv
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -11,34 +12,25 @@ ALLOWED_HOSTS = (
     [os.environ["WEBSITE_HOSTNAME"]] if "WEBSITE_HOSTNAME" in os.environ else []
 )
 
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
+CORS_ALLOW_CREDENTIALS = True
+
 CSRF_TRUSTED_ORIGINS = (
     ["https://" + os.environ["WEBSITE_HOSTNAME"]]
     if "WEBSITE_HOSTNAME" in os.environ
     else []
 )
 
-DEBUG = False
+
+DEBUG = True
+
+SITE_NAME = os.environ["WEBSITE_HOSTNAME"]
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": getenv("PGDATABASE"),
-        "USER": getenv("PGUSER"),
-        "PASSWORD": getenv("PGPASSWORD"),
-        "HOST": getenv("PGHOST"),
-        "PORT": getenv("PGPORT", 5432),
-        "OPTIONS": {
-            "sslmode": "require",
-        },
-    }
+    "default": dj_database_url.config(
+        default=os.environ["DATABASE_URL"], conn_max_age=600
+    )
 }
-
-
-INSTALLED_APPS += [
-    # Media Cloudinary
-    "cloudinary",
-    "cloudinary_storage",
-]
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.environ["CLOUDINARY_CLOUD_NAME"],
@@ -46,4 +38,5 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.environ["CLOUDINARY_API_SECRET"],
 }
 
+MEDIA_URL = "plantx/media/"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
