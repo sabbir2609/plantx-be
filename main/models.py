@@ -385,7 +385,7 @@ class Team(models.Model):
     class Meta:
         verbose_name = "Team Member"
         verbose_name_plural = "Team Members"
-        ordering = ["-created_at"]
+        ordering = ["id"]
 
     def __str__(self):
         return self.name
