@@ -27,7 +27,7 @@ from django.utils.html import format_html
 
 
 @admin.register(PlantCategory)
-class PlantCategoryAdmin(admin.ModelAdmin):
+class PlantCategoryAdmin(ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
 
@@ -46,13 +46,13 @@ class PlantImageInline(admin.TabularInline):
 
 
 @admin.register(PlantFeatures)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
 
 
 @admin.register(Plant)
-class PlantAdmin(admin.ModelAdmin):
+class PlantAdmin(ModelAdmin):
     inlines = [PlantImageInline]
     list_display = ("title", "indoor_or_outdoor", "size", "category")
     search_fields = ("category__name", "indoor_or_outdoor", "size")
@@ -93,13 +93,13 @@ class PlanterImageInline(admin.TabularInline):
 
 
 @admin.register(PlanterFeatures)
-class PlanterFeaturesAdmin(admin.ModelAdmin):
+class PlanterFeaturesAdmin(ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
 
 
 @admin.register(Planter)
-class PlanterAdmin(admin.ModelAdmin):
+class PlanterAdmin(ModelAdmin):
     inlines = [PlanterImageInline]
     list_display = ("model", "size", "color", "category")
     search_fields = ("model", "size", "color")
@@ -110,13 +110,13 @@ class PlanterAdmin(admin.ModelAdmin):
 
 
 @admin.register(PlanterCategory)
-class PlanterCategoryAdmin(admin.ModelAdmin):
+class PlanterCategoryAdmin(ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
 
 
 @admin.register(ServiceCategory)
-class ServiceCategoryAdmin(admin.ModelAdmin):
+class ServiceCategoryAdmin(ModelAdmin):
     list_display = (
         "title",
         "type",
@@ -138,7 +138,7 @@ class ServiceImageInline(admin.TabularInline):
 
 
 @admin.register(Service)
-class ServiceAdmin(admin.ModelAdmin):
+class ServiceAdmin(ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
     list_filter = ("categories",)
@@ -162,7 +162,7 @@ class ServiceAdmin(admin.ModelAdmin):
 
 
 @admin.register(Ideas)
-class IdeasAdmin(admin.ModelAdmin):
+class IdeasAdmin(ModelAdmin):
     fieldsets = (
         (
             None,
@@ -182,7 +182,7 @@ class IdeasAdmin(admin.ModelAdmin):
 
 
 @admin.register(Testimonial)
-class TestimonialAdmin(admin.ModelAdmin):
+class TestimonialAdmin(ModelAdmin):
     list_display = ("name", "created_at")
     list_per_page = 10
     readonly_fields = ("thumbnail",)
@@ -225,7 +225,7 @@ class ProjectImageInline(admin.TabularInline):
 
 
 @admin.register(Projects)
-class ProjectsAdmin(admin.ModelAdmin):
+class ProjectsAdmin(ModelAdmin):
     inlines = [ProjectImageInline]
     list_display = ("title", "client", "year", "created_at")
     search_fields = ("title", "client", "year")
