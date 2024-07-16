@@ -1,41 +1,55 @@
 import os
 from .base import *
-from os import getenv
 from dotenv import load_dotenv
 import dj_database_url
 
+# Load environment variables from .env file
 load_dotenv()
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+# Retrieve essential environment variables
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-ALLOWED_HOSTS = (
-    [os.environ["WEBSITE_HOSTNAME"]] if "WEBSITE_HOSTNAME" in os.environ else []
+# Convert DEBUG to boolean
+DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
+print(DEBUG)
+
+# Process WEBSITE_HOSTNAME
+website_hostname = os.getenv("WEBSITE_HOSTNAME", "")
+formatted_website_hostname = ",".join(
+    [f'"{host}"' for host in website_hostname.split(",")]
 )
 
-CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
+# Set allowed hosts
+ALLOWED_HOSTS = website_hostname.split(",") if website_hostname else []
+
+# Process CORS_ALLOWED_ORIGINS
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
 CORS_ALLOW_CREDENTIALS = True
 
+# Set CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = (
-    ["https://" + os.environ["WEBSITE_HOSTNAME"]]
-    if "WEBSITE_HOSTNAME" in os.environ
+    [f"https://{host}" for host in website_hostname.split(",")]
+    if website_hostname
     else []
 )
 
-DEBUG = True
+# Retrieve SITE_NAME
+SITE_NAME = website_hostname
 
-SITE_NAME = os.environ["WEBSITE_HOSTNAME"]
-
+# Configure the default database
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ["DATABASE_URL"], conn_max_age=600
+        default=os.getenv("DATABASE_URL"), conn_max_age=600
     )
 }
 
+# Configure Cloudinary storage
 CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ["CLOUDINARY_CLOUD_NAME"],
-    "API_KEY": os.environ["CLOUDINARY_API_KEY"],
-    "API_SECRET": os.environ["CLOUDINARY_API_SECRET"],
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
 
+# Set media URL and default file storage
 MEDIA_URL = "plantx/media/"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"

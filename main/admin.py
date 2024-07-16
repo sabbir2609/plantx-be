@@ -1,4 +1,6 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin
+
 from .models import (
     PlantCategory,
     Plant,
@@ -194,10 +196,19 @@ class TestimonialAdmin(admin.ModelAdmin):
 
 
 @admin.register(Team)
-class TeamAdmin(admin.ModelAdmin):
+class TeamAdmin(ModelAdmin):
     list_display = ("name", "position")
     search_fields = ("name", "position")
-    list_per_page = 10
+    readonly_fields = ("thumbnail",)
+
+    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
+
+    def thumbnail(self, instance):
+        if instance.image.name != "":
+            return format_html(
+                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
+            )
+        return ""
 
 
 class ProjectImageInline(admin.TabularInline):
