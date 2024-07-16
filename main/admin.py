@@ -1,5 +1,6 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
+from unfold.admin import TabularInline
 
 from .models import (
     PlantCategory,
@@ -32,7 +33,7 @@ class PlantCategoryAdmin(ModelAdmin):
     search_fields = ("name",)
 
 
-class PlantImageInline(admin.TabularInline):
+class PlantImageInline(TabularInline):
     model = PlantImage
     extra = 1
     readonly_fields = ("thumbnail",)
@@ -79,7 +80,7 @@ class PlantAdmin(ModelAdmin):
     list_per_page = 10
 
 
-class PlanterImageInline(admin.TabularInline):
+class PlanterImageInline(TabularInline):
     model = PlanterImage
     extra = 1
     readonly_fields = ("thumbnail",)
@@ -124,7 +125,7 @@ class ServiceCategoryAdmin(ModelAdmin):
     search_fields = ("title",)
 
 
-class ServiceImageInline(admin.TabularInline):
+class ServiceImageInline(TabularInline):
     model = ServiceImage
     extra = 1
     readonly_fields = ("thumbnail",)
@@ -211,7 +212,7 @@ class TeamAdmin(ModelAdmin):
         return ""
 
 
-class ProjectImageInline(admin.TabularInline):
+class ProjectImageInline(TabularInline):
     model = ProjectImage
     extra = 1
     readonly_fields = ("thumbnail",)
