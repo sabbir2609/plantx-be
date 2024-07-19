@@ -5,7 +5,7 @@ from .models import BannerImage, ContactInfo, OurClients, LegalDocument
 class BannerImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = BannerImage
-        fields = ["id", "image", "alt_text"]
+        fields = ["id", "image", "screen_size", "alt_text"]
 
 
 class ContactInfoSerializer(serializers.ModelSerializer):

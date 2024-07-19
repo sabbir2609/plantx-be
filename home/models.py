@@ -1,8 +1,19 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class BannerImage(models.Model):
+
+    class ScreenSizeChoices(models.TextChoices):
+        SMALL_SCREEN = "Small Screen", _("Small Screen")
+        LARGE_SCREEN = "Large Screen", _("Large Screen")
+
     image = models.ImageField(upload_to="banners/")
+    screen_size = models.CharField(
+        max_length=20,
+        choices=ScreenSizeChoices.choices,
+        help_text=_("Select the size of the plant."),
+    )
     alt_text = models.CharField(
         max_length=255,
         help_text="Please provide a short description of the image.",
