@@ -105,6 +105,13 @@ class PlantImage(models.Model):
         null=True,
     )
 
+    def __str__(self):
+        return self.image.url
+
+    class Meta:
+        verbose_name = "Plant Image"
+        verbose_name_plural = "Plant Images"
+
 
 class PlanterCategory(models.Model):
     name = models.CharField(
@@ -198,6 +205,13 @@ class PlanterImage(models.Model):
         null=True,
     )
 
+    def __str__(self):
+        return self.image.url
+
+    class Meta:
+        verbose_name = "Planter Image"
+        verbose_name_plural = "Planter Images"
+
 
 class ServiceCategory(models.Model):
 
@@ -205,7 +219,7 @@ class ServiceCategory(models.Model):
         COMMERCIAL = "Commercial", _("Commercial")
         RESIDENTIAL = "Residential", _("Residential")
 
-    no = models.PositiveIntegerField(
+    serial = models.PositiveSmallIntegerField(
         unique=True, help_text=_("Enter the number of the service category.")
     )
 
@@ -239,7 +253,7 @@ class ServiceCategory(models.Model):
         unique_together = ["title", "type"]
         verbose_name = "Service Category"
         verbose_name_plural = "Service Categories"
-        ordering = ["no"]
+        ordering = ["serial"]
 
     def __str__(self):
         return f"{self.type}-{self.title}"
@@ -339,6 +353,9 @@ class Testimonial(models.Model):
 
 
 class Team(models.Model):
+    serial = models.PositiveSmallIntegerField(
+        unique=True, help_text=_("Enter the serial.")
+    )
     name = models.CharField(
         max_length=100, help_text=_("Enter the name of the team member.")
     )
@@ -385,7 +402,7 @@ class Team(models.Model):
     class Meta:
         verbose_name = "Team Member"
         verbose_name_plural = "Team Members"
-        ordering = ["id"]
+        ordering = ["serial"]
 
     def __str__(self):
         return self.name

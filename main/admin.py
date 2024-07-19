@@ -1,5 +1,5 @@
 from django.contrib import admin
-from unfold.admin import ModelAdmin
+from django.db import models
 
 from .models import (
     PlantCategory,
@@ -21,9 +21,27 @@ from .models import (
 )
 
 from ckeditor.widgets import CKEditorWidget
-from django.db import models
+from unfold.admin import ModelAdmin, TabularInline, StackedInline
 
-from django.utils.html import format_html
+from taggit.models import Tag, TaggedItem
+from taggit.admin import TagAdmin as BaseTagAdmin
+from taggit.admin import TaggedItem
+
+
+admin.site.unregister(Tag)
+
+
+class TaggedItemInline(StackedInline):
+    model = TaggedItem
+
+
+@admin.register(Tag)
+class TagAdmin(BaseTagAdmin, ModelAdmin):
+    inlines = [TaggedItemInline]
+    list_display = ["name", "slug"]
+    ordering = ["name", "slug"]
+    search_fields = ["name"]
+    prepopulated_fields = {"slug": ["name"]}
 
 
 @admin.register(PlantCategory)
@@ -32,17 +50,9 @@ class PlantCategoryAdmin(ModelAdmin):
     search_fields = ("name",)
 
 
-class PlantImageInline(admin.TabularInline):
+class PlantImageInline(TabularInline):
     model = PlantImage
     extra = 1
-    readonly_fields = ("thumbnail",)
-
-    def thumbnail(self, instance):
-        if instance.image.name != "":
-            return format_html(
-                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
-            )
-        return ""
 
 
 @admin.register(PlantFeatures)
@@ -79,17 +89,9 @@ class PlantAdmin(ModelAdmin):
     list_per_page = 10
 
 
-class PlanterImageInline(admin.TabularInline):
+class PlanterImageInline(TabularInline):
     model = PlanterImage
     extra = 1
-    readonly_fields = ("thumbnail",)
-
-    def thumbnail(self, instance):
-        if instance.image.name != "":
-            return format_html(
-                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
-            )
-        return ""
 
 
 @admin.register(PlanterFeatures)
@@ -124,17 +126,9 @@ class ServiceCategoryAdmin(ModelAdmin):
     search_fields = ("title",)
 
 
-class ServiceImageInline(admin.TabularInline):
+class ServiceImageInline(TabularInline):
     model = ServiceImage
     extra = 1
-    readonly_fields = ("thumbnail",)
-
-    def thumbnail(self, instance):
-        if instance.image.name != "":
-            return format_html(
-                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
-            )
-        return ""
 
 
 @admin.register(Service)
@@ -185,43 +179,18 @@ class IdeasAdmin(ModelAdmin):
 class TestimonialAdmin(ModelAdmin):
     list_display = ("name", "created_at")
     list_per_page = 10
-    readonly_fields = ("thumbnail",)
-
-    def thumbnail(self, instance):
-        if instance.image.name != "":
-            return format_html(
-                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
-            )
-        return ""
 
 
 @admin.register(Team)
 class TeamAdmin(ModelAdmin):
     list_display = ("name", "position")
     search_fields = ("name", "position")
-    readonly_fields = ("thumbnail",)
-
     formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
-    def thumbnail(self, instance):
-        if instance.image.name != "":
-            return format_html(
-                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
-            )
-        return ""
 
-
-class ProjectImageInline(admin.TabularInline):
+class ProjectImageInline(TabularInline):
     model = ProjectImage
     extra = 1
-    readonly_fields = ("thumbnail",)
-
-    def thumbnail(self, instance):
-        if instance.image.name != "":
-            return format_html(
-                f'<img src="{instance.image.url}" class="thumbnail" style="max-width: 150px;"/>'
-            )
-        return ""
 
 
 @admin.register(Projects)
