@@ -72,9 +72,11 @@ class Plant(models.Model):
         choices=SizeChoices.choices,
         help_text=_("Select the size of the plant."),
     )
-    description = models.TextField(help_text=_("Provide a description for the plant."))
+    description = models.TextField(
+        blank=True, null=True, help_text=_("Provide a description for the plant.")
+    )
     care_instructions = models.TextField(
-        help_text=_("Provide care instructions for the plant.")
+        blank=True, null=True, help_text=_("Provide care instructions for the plant.")
     )
     features = models.ManyToManyField(
         PlantFeatures,
@@ -118,9 +120,13 @@ class PlanterCategory(models.Model):
         max_length=100, help_text=_("Enter the name of the planter category.")
     )
     description = models.TextField(
-        help_text=_("Provide a description for the planter category.")
+        blank=True,
+        null=True,
+        help_text=_("Provide a description for the planter category."),
     )
     image = models.ImageField(
+        blank=True,
+        null=True,
         upload_to="planter_categories/",
         help_text=_("Upload an image for the planter category."),
     )
@@ -153,10 +159,13 @@ class Planter(models.Model):
         max_length=100, help_text=_("Enter the model of the planter.")
     )
     size = models.CharField(
-        max_length=20, help_text=_("Enter the size of the planter.")
+        blank=True,
+        null=True,
+        max_length=20,
+        help_text=_("Enter the size of the planter."),
     )
     description = models.TextField(
-        help_text=_("Provide a description for the planter.")
+        blank=True, null=True, help_text=_("Provide a description for the planter.")
     )
     short_description = models.CharField(
         max_length=255,
@@ -170,7 +179,10 @@ class Planter(models.Model):
         blank=True,
     )
     color = models.CharField(
-        max_length=50, help_text=_("Enter the color of the planter.")
+        blank=True,
+        null=True,
+        max_length=50,
+        help_text=_("Enter the color of the planter."),
     )
     category = models.ForeignKey(
         PlanterCategory,
@@ -214,7 +226,6 @@ class PlanterImage(models.Model):
 
 
 class ServiceCategory(models.Model):
-
     class TypeChoices(models.TextChoices):
         COMMERCIAL = "Commercial", _("Commercial")
         RESIDENTIAL = "Residential", _("Residential")
@@ -318,7 +329,9 @@ class Ideas(models.Model):
         null=True,
         blank=True,
     )
-    tags = TaggableManager()
+    tags = TaggableManager(
+        blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -340,7 +353,9 @@ class Testimonial(models.Model):
         null=True,
         blank=True,
     )
-    content = models.TextField(help_text=_("Enter the content of the testimonial."))
+    content = models.TextField(
+        blank=True, null=True, help_text=_("Enter the content of the testimonial.")
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
