@@ -1,5 +1,5 @@
 import os
-from .base import *
+from .base import *  # noqa: F403
 from dotenv import load_dotenv
 import dj_database_url
 

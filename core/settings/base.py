@@ -17,7 +17,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Application definition
-
 INSTALLED_APPS = [
     # unfold
     "unfold",  # before django.contrib.admin
@@ -78,7 +77,6 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 
 # Password validation
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -96,7 +94,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -112,12 +109,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 # Default primary key field type
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # settings.py
-
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -141,40 +136,3 @@ REST_FRAMEWORK = {
 }
 
 DEFAULT_IMAGE = "image_not_found.webp"
-
-# CKEditor Settings
-
-CKEDITOR_UPLOAD_PATH = "uploads/"
-
-SILENCED_SYSTEM_CHECKS = ["ckeditor.W001"]  # CKEditor warning suppression
-
-CKEDITOR_CONFIGS = {
-    "default": {
-        "toolbar": "Custom",
-        "width": "100%",
-        "toolbar_Custom": [
-            [
-                "Styles",
-                "Format",
-                "Bold",
-                "Italic",
-                "Underline",
-                "Strike",
-                "SpellChecker",
-                "Undo",
-                "Redo",
-            ],
-            ["Link", "Unlink", "Anchor"],
-            ["Image", "Table", "HorizontalRule"],
-            ["TextColor", "BGColor"],
-            ["Smiley", "SpecialChar"],
-            ["Source"],
-            ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
-            ["NumberedList", "BulletedList"],
-            ["Indent", "Outdent"],
-            ["Maximize"],
-        ],
-        "autoParagraph": False,
-        "enterMode": 2,
-    }
-}
