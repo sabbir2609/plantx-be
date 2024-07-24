@@ -18,13 +18,6 @@ admin.site.site_header = "Viriditas Admin"
 admin.site.site_title = "Viriditas"
 admin.site.index_title = "Welcome to Viriditas Administration"
 
-
-urlpatterns.extend(
-    [
-        path("ckeditor/", include("ckeditor_uploader.urls")),
-    ]
-)
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

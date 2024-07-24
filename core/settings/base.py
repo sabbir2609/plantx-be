@@ -40,11 +40,8 @@ INSTALLED_APPS = [
     "users",
     # third-party apps
     "corsheaders",
-    "taggit",
     "rest_framework",
     "django_filters",
-    "ckeditor",
-    "ckeditor_uploader",
 ]
 
 MIDDLEWARE = [

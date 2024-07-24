@@ -8,16 +8,16 @@ from .models import (
     PlanterFeatures,
     Planter,
     PlanterImage,
-    ProjectImage,
-    Projects,
     ServiceCategory,
-    ServiceImage,
     Service,
+    ServiceImage,
     Ideas,
     Testimonial,
     Team,
+    TeamContact,
+    Projects,
+    ProjectImage,
 )
-from taggit.serializers import TagListSerializerField, TaggitSerializer
 
 
 class PlantCategorySerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class PlantCategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "image"]
 
 
-class FeaturesSerializer(serializers.ModelSerializer):
+class PlantFeaturesSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlantFeatures
         fields = ["id", "name"]
@@ -38,11 +38,10 @@ class PlantImageSerializer(serializers.ModelSerializer):
         fields = ["id", "plant", "image", "short_description"]
 
 
-class PlantSerializer(TaggitSerializer, serializers.ModelSerializer):
-    category = PlantCategorySerializer(read_only=True)
-    features = FeaturesSerializer(many=True)
-    images = PlantImageSerializer(source="plantimage_set", many=True, read_only=True)
-    tags = TagListSerializerField()
+class PlantSerializer(serializers.ModelSerializer):
+    category = PlantCategorySerializer()
+    features = PlantFeaturesSerializer(many=True)
+    images = PlantImageSerializer(many=True, source="plantimage_set", read_only=True)
 
     class Meta:
         model = Plant
@@ -55,9 +54,8 @@ class PlantSerializer(TaggitSerializer, serializers.ModelSerializer):
             "description",
             "care_instructions",
             "features",
-            "created_at",
             "images",
-            "tags",
+            "created_at",
         ]
 
 
@@ -79,34 +77,32 @@ class PlanterImageSerializer(serializers.ModelSerializer):
         fields = ["id", "planter", "image", "short_description"]
 
 
-class PlanterSerializer(TaggitSerializer, serializers.ModelSerializer):
+class PlanterSerializer(serializers.ModelSerializer):
     category = PlanterCategorySerializer()
     features = PlanterFeaturesSerializer(many=True)
     images = PlanterImageSerializer(
-        source="planterimage_set", many=True, read_only=True
+        many=True, source="planterimage_set", read_only=True
     )
-    tags = TagListSerializerField()
 
     class Meta:
         model = Planter
         fields = [
             "id",
             "model",
+            "category",
             "size",
             "description",
-            "short_description",
-            "color",
-            "category",
             "features",
+            "color",
+            "is_custom",
             "images",
-            "tags",
         ]
 
 
 class ServiceCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceCategory
-        fields = ["id", "no", "title", "type", "description", "image"]
+        fields = ["id", "serial", "type", "title", "description", "image"]
 
 
 class LimitedServiceCategorySerializer(serializers.ModelSerializer):
@@ -118,31 +114,22 @@ class LimitedServiceCategorySerializer(serializers.ModelSerializer):
 class ServiceImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceImage
-        fields = ["id", "image", "short_description"]
+        fields = ["id", "service", "image", "short_description"]
 
 
-class ServiceSerializer(TaggitSerializer, serializers.ModelSerializer):
-    categories = LimitedServiceCategorySerializer(read_only=True, many=True)
-    tags = TagListSerializerField()
+class ServiceSerializer(serializers.ModelSerializer):
+    categories = ServiceCategorySerializer(many=True)
     images = ServiceImageSerializer(
-        source="serviceimage_set", many=True, read_only=True
+        many=True, source="serviceimage_set", read_only=True
     )
 
     class Meta:
         model = Service
-        fields = [
-            "id",
-            "title",
-            "description",
-            "images",
-            "categories",
-            "tags",
-        ]
+        fields = ["id", "title", "description", "categories", "images"]
 
 
 class LimitedServiceSerializer(serializers.ModelSerializer):
     categories = LimitedServiceCategorySerializer(read_only=True, many=True)
-    tags = TagListSerializerField()
     image = serializers.SerializerMethodField()
 
     class Meta:
@@ -152,7 +139,6 @@ class LimitedServiceSerializer(serializers.ModelSerializer):
             "title",
             "image",
             "categories",
-            "tags",
         ]
 
     def get_image(self, obj):
@@ -164,36 +150,53 @@ class LimitedServiceSerializer(serializers.ModelSerializer):
         return None
 
 
-class IdeasSerializer(TaggitSerializer, serializers.ModelSerializer):
-    tags = TagListSerializerField()
-
+class IdeasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ideas
-        fields = ["id", "title", "description", "image", "tags", "created_at"]
+        fields = ["id", "title", "description", "image", "created_at"]
 
 
 class TestimonialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Testimonial
-        fields = ["id", "name", "image", "content"]
+        fields = ["id", "name", "image", "content", "created_at"]
+
+
+class TeamContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamContact
+        fields = ["id", "team", "social_media_name", "social_media_link"]
 
 
 class TeamSerializer(serializers.ModelSerializer):
+    contacts = TeamContactSerializer(
+        many=True, source="teamcontact_set", read_only=True
+    )
+
     class Meta:
         model = Team
-        fields = "__all__"
+        fields = [
+            "id",
+            "serial",
+            "name",
+            "position",
+            "image",
+            "bio",
+            "created_at",
+            "contacts",
+        ]
 
 
 class ProjectImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImage
-        fields = ["id", "image", "short_description"]
+        fields = ["id", "project", "image", "short_description"]
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
-    tags = TagListSerializerField()
+    categories = ServiceCategorySerializer(many=True)
     images = ProjectImageSerializer(
-        source="projectimage_set", many=True, read_only=True
+        many=True, source="projectimage_set", read_only=True
     )
 
     class Meta:
@@ -205,6 +208,6 @@ class ProjectsSerializer(serializers.ModelSerializer):
             "description",
             "client",
             "year",
-            "tags",
+            "created_at",
             "images",
         ]

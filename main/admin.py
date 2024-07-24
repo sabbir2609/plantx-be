@@ -1,5 +1,5 @@
 from django.contrib import admin
-from unfold.admin import ModelAdmin
+from unfold.admin import ModelAdmin, TabularInline
 
 from .models import (
     PlantCategory,
@@ -19,28 +19,6 @@ from .models import (
     Testimonial,
     Team,
 )
-
-from unfold.admin import ModelAdmin, TabularInline, StackedInline
-
-from taggit.models import Tag, TaggedItem
-from taggit.admin import TagAdmin as BaseTagAdmin
-from taggit.admin import TaggedItem
-
-
-admin.site.unregister(Tag)
-
-
-class TaggedItemInline(StackedInline):
-    model = TaggedItem
-
-
-@admin.register(Tag)
-class TagAdmin(BaseTagAdmin, ModelAdmin):
-    inlines = [TaggedItemInline]
-    list_display = ["name", "slug"]
-    ordering = ["name", "slug"]
-    search_fields = ["name"]
-    prepopulated_fields = {"slug": ["name"]}
 
 
 @admin.register(PlantCategory)
@@ -79,7 +57,6 @@ class PlantAdmin(ModelAdmin):
                     "description",
                     "care_instructions",
                     "features",
-                    "tags",
                 )
             },
         ),
@@ -142,7 +119,6 @@ class ServiceAdmin(ModelAdmin):
                     "title",
                     "categories",
                     "description",
-                    "tags",
                 )
             },
         ),
@@ -161,7 +137,6 @@ class IdeasAdmin(ModelAdmin):
                     "title",
                     "description",
                     "image",
-                    "tags",
                 )
             },
         ),

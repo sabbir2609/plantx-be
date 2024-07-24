@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import Tag
+from unfold.admin import ModelAdmin
 
 
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    search_fields = ['label']
+class TagAdmin(ModelAdmin):
+    search_fields = ["label"]
