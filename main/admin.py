@@ -20,7 +20,6 @@ from .models import (
     Team,
 )
 
-from ckeditor.widgets import CKEditorWidget
 from unfold.admin import ModelAdmin, TabularInline, StackedInline
 
 from taggit.models import Tag, TaggedItem
@@ -85,7 +84,6 @@ class PlantAdmin(ModelAdmin):
             },
         ),
     )
-    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
     list_per_page = 10
 
 
@@ -108,7 +106,6 @@ class PlanterAdmin(ModelAdmin):
     list_filter = ("category", "size", "color")
     filter_horizontal = ("features",)
     list_per_page = 10
-    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
 
 @admin.register(PlanterCategory)
@@ -150,7 +147,6 @@ class ServiceAdmin(ModelAdmin):
             },
         ),
     )
-    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
     list_per_page = 10
     inlines = [ServiceImageInline]
 
@@ -170,8 +166,6 @@ class IdeasAdmin(ModelAdmin):
             },
         ),
     )
-
-    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
     list_per_page = 10
 
 
@@ -185,7 +179,6 @@ class TestimonialAdmin(ModelAdmin):
 class TeamAdmin(ModelAdmin):
     list_display = ("name", "position")
     search_fields = ("name", "position")
-    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}
 
 
 class ProjectImageInline(TabularInline):
@@ -200,5 +193,3 @@ class ProjectsAdmin(ModelAdmin):
     search_fields = ("title", "client", "year")
     list_filter = ("year",)
     ordering = ("title",)
-
-    formfield_overrides = {models.TextField: {"widget": CKEditorWidget}}

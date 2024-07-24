@@ -1,23 +1,11 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
-from taggit.managers import TaggableManager
 
 
 class PlantCategory(models.Model):
-    name = models.CharField(
-        max_length=100, help_text=_("Enter the name of the plant category.")
-    )
-    description = models.TextField(
-        help_text=_("Provide a description for the plant category."),
-        null=True,
-        blank=True,
-    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
     image = models.ImageField(
-        upload_to="plant_categories/",
-        help_text=_("Upload an image for the plant category."),
-        null=True,
-        blank=True,
-    )
+        upload_to="plant_categories/", null=True, blank=True)
 
     class Meta:
         verbose_name = "Plant Category"
@@ -29,9 +17,7 @@ class PlantCategory(models.Model):
 
 
 class PlantFeatures(models.Model):
-    name = models.CharField(
-        max_length=50, help_text=_("Enter the name of the plant features.")
-    )
+    name = models.CharField(max_length=50)
 
     class Meta:
         verbose_name = "Plant Feature"
@@ -44,46 +30,23 @@ class PlantFeatures(models.Model):
 
 class Plant(models.Model):
     class IndoorOutdoorChoices(models.TextChoices):
-        INDOOR = "Indoor", _("Indoor")
-        OUTDOOR = "Outdoor", _("Outdoor")
+        INDOOR = "Indoor", "Indoor"
+        OUTDOOR = "Outdoor", "Outdoor"
 
     class SizeChoices(models.TextChoices):
-        SMALL = "Small", _("Small")
-        MEDIUM = "Medium", _("Medium")
-        LARGE = "Large", _("Large")
-        EXTRA_LARGE = "Extra Large", _("Extra Large")
+        SMALL = "Small", "Small"
+        MEDIUM = "Medium", "Medium"
+        LARGE = "Large", "Large"
+        EXTRA_LARGE = "Extra Large", "Extra Large"
 
-    title = models.CharField(
-        max_length=100, help_text=_("Enter the name of the plant.")
-    )
-
-    category = models.ForeignKey(
-        PlantCategory,
-        on_delete=models.CASCADE,
-        help_text=_("Select the category for the plant."),
-    )
+    title = models.CharField(max_length=100)
+    category = models.ForeignKey(PlantCategory, on_delete=models.CASCADE)
     indoor_or_outdoor = models.CharField(
-        max_length=10,
-        choices=IndoorOutdoorChoices.choices,
-        help_text=_("Select whether the plant is meant for indoor or outdoor use."),
-    )
-    size = models.CharField(
-        max_length=20,
-        choices=SizeChoices.choices,
-        help_text=_("Select the size of the plant."),
-    )
-    description = models.TextField(
-        blank=True, null=True, help_text=_("Provide a description for the plant.")
-    )
-    care_instructions = models.TextField(
-        blank=True, null=True, help_text=_("Provide care instructions for the plant.")
-    )
-    features = models.ManyToManyField(
-        PlantFeatures,
-        help_text=_("Select the features that describe the plant."),
-        blank=True,
-    )
-    tags = TaggableManager(help_text=_("Add tags that describe the plant."), blank=True)
+        max_length=10, choices=IndoorOutdoorChoices.choices)
+    size = models.CharField(max_length=20, choices=SizeChoices.choices)
+    description = models.TextField(blank=True, null=True)
+    care_instructions = models.TextField(blank=True, null=True)
+    features = models.ManyToManyField(PlantFeatures, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -97,15 +60,8 @@ class Plant(models.Model):
 
 class PlantImage(models.Model):
     plant = models.ForeignKey(Plant, on_delete=models.CASCADE)
-    image = models.ImageField(
-        upload_to="plant_images/", help_text=_("Upload an image for the plant.")
-    )
-    short_description = models.CharField(
-        max_length=255,
-        help_text=_("Enter a short description for the image."),
-        blank=True,
-        null=True,
-    )
+    image = models.ImageField(upload_to="plant_images/")
+    short_description = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.image.url
@@ -116,20 +72,10 @@ class PlantImage(models.Model):
 
 
 class PlanterCategory(models.Model):
-    name = models.CharField(
-        max_length=100, help_text=_("Enter the name of the planter category.")
-    )
-    description = models.TextField(
-        blank=True,
-        null=True,
-        help_text=_("Provide a description for the planter category."),
-    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
     image = models.ImageField(
-        blank=True,
-        null=True,
-        upload_to="planter_categories/",
-        help_text=_("Upload an image for the planter category."),
-    )
+        upload_to="planter_categories/", blank=True, null=True)
 
     class Meta:
         verbose_name = "Planter Category"
@@ -141,9 +87,7 @@ class PlanterCategory(models.Model):
 
 
 class PlanterFeatures(models.Model):
-    name = models.CharField(
-        max_length=50, help_text=_("Enter the name of the planter features.")
-    )
+    name = models.CharField(max_length=50)
 
     class Meta:
         verbose_name = "Planter Feature"
@@ -155,46 +99,13 @@ class PlanterFeatures(models.Model):
 
 
 class Planter(models.Model):
-    model = models.CharField(
-        max_length=100, help_text=_("Enter the model of the planter.")
-    )
-    size = models.CharField(
-        blank=True,
-        null=True,
-        max_length=20,
-        help_text=_("Enter the size of the planter."),
-    )
-    description = models.TextField(
-        blank=True, null=True, help_text=_("Provide a description for the planter.")
-    )
-    short_description = models.CharField(
-        max_length=255,
-        help_text=_("Enter a short description for the plant."),
-        blank=True,
-        null=True,
-    )
-    features = models.ManyToManyField(
-        PlanterFeatures,
-        help_text=_("Select the features that describe the planter."),
-        blank=True,
-    )
-    color = models.CharField(
-        blank=True,
-        null=True,
-        max_length=50,
-        help_text=_("Enter the color of the planter."),
-    )
-    category = models.ForeignKey(
-        PlanterCategory,
-        on_delete=models.CASCADE,
-        help_text=_("Select the category for the planter."),
-    )
-    is_custom = models.BooleanField(
-        default=False, help_text=_("Check if the planter is custom-made.")
-    )
-    tags = TaggableManager(
-        help_text=_("Add tags that describe the planter."), blank=True
-    )
+    model = models.CharField(max_length=100)
+    category = models.ForeignKey(PlanterCategory, on_delete=models.CASCADE)
+    size = models.CharField(max_length=20, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    features = models.ManyToManyField(PlanterFeatures, blank=True)
+    color = models.CharField(max_length=50, blank=True, null=True)
+    is_custom = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Planter"
@@ -207,15 +118,8 @@ class Planter(models.Model):
 
 class PlanterImage(models.Model):
     planter = models.ForeignKey(Planter, on_delete=models.CASCADE)
-    image = models.ImageField(
-        upload_to="planter_images/", help_text=_("Upload an image for the planter.")
-    )
-    short_description = models.CharField(
-        max_length=255,
-        help_text=_("Enter a short description for the image."),
-        blank=True,
-        null=True,
-    )
+    image = models.ImageField(upload_to="planter_images/")
+    short_description = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.image.url
@@ -227,38 +131,20 @@ class PlanterImage(models.Model):
 
 class ServiceCategory(models.Model):
     class TypeChoices(models.TextChoices):
-        COMMERCIAL = "Commercial", _("Commercial")
-        RESIDENTIAL = "Residential", _("Residential")
-
-    serial = models.PositiveSmallIntegerField(
-        unique=True, help_text=_("Enter the number of the service category.")
-    )
-
+        COMMERCIAL = "Commercial", "Commercial"
+        RESIDENTIAL = "Residential", "Residential"
+    serial = models.PositiveSmallIntegerField(unique=True)
     type = models.CharField(
         default=TypeChoices.RESIDENTIAL,
         null=True,
         blank=True,
         max_length=20,
         choices=TypeChoices.choices,
-        help_text=_("Select the type of service."),
     )
-
-    title = models.CharField(
-        max_length=100, help_text=_("Enter the title of the service category.")
-    )
-
-    description = models.TextField(
-        help_text=_("Provide a description for the service category."),
-        null=True,
-        blank=True,
-    )
-
+    title = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
     image = models.ImageField(
-        upload_to="service_categories/",
-        help_text=_("Upload an image for the service category."),
-        null=True,
-        blank=True,
-    )
+        upload_to="service_categories/", null=True, blank=True)
 
     class Meta:
         unique_together = ["title", "type"]
@@ -271,23 +157,9 @@ class ServiceCategory(models.Model):
 
 
 class Service(models.Model):
-    title = models.CharField(
-        max_length=100, help_text=_("Enter the title of the service.")
-    )
-    description = models.TextField(
-        help_text=_("Provide a description for the service."),
-        null=True,
-        blank=True,
-    )
-    categories = models.ManyToManyField(
-        ServiceCategory,
-        help_text=_("Select the categories that describe the service."),
-        blank=True,
-        related_name="services",
-    )
-    tags = TaggableManager(
-        help_text=_("Add tags that describe the service."), blank=True
-    )
+    title = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    categories = models.ManyToManyField(ServiceCategory, blank=True)
 
     class Meta:
         verbose_name = "Service"
@@ -300,15 +172,8 @@ class Service(models.Model):
 
 class ServiceImage(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    image = models.ImageField(
-        upload_to="service_images/", help_text=_("Upload an image for the service.")
-    )
-    short_description = models.CharField(
-        max_length=255,
-        help_text=_("Enter a short description for the image."),
-        blank=True,
-        null=True,
-    )
+    image = models.ImageField(upload_to="service_images/")
+    short_description = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.short_description
@@ -319,19 +184,9 @@ class ServiceImage(models.Model):
 
 
 class Ideas(models.Model):
-    title = models.CharField(
-        max_length=100, help_text=_("Enter the title of the idea.")
-    )
-    description = models.TextField(help_text=_("Provide a description for the idea."))
-    image = models.ImageField(
-        upload_to="ideas/",
-        help_text=_("Upload an image for the idea."),
-        null=True,
-        blank=True,
-    )
-    tags = TaggableManager(
-        blank=True,
-    )
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to="ideas/", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -344,18 +199,9 @@ class Ideas(models.Model):
 
 
 class Testimonial(models.Model):
-    name = models.CharField(
-        max_length=100, help_text=_("Enter the name of the testimonial author.")
-    )
-    image = models.ImageField(
-        upload_to="testimonials/",
-        help_text=_("Upload an image for the testimonial author."),
-        null=True,
-        blank=True,
-    )
-    content = models.TextField(
-        blank=True, null=True, help_text=_("Enter the content of the testimonial.")
-    )
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to="testimonials/", null=True, blank=True)
+    content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -368,50 +214,11 @@ class Testimonial(models.Model):
 
 
 class Team(models.Model):
-    serial = models.PositiveSmallIntegerField(
-        unique=True, help_text=_("Enter the serial.")
-    )
-    name = models.CharField(
-        max_length=100, help_text=_("Enter the name of the team member.")
-    )
-    position = models.CharField(
-        max_length=100, help_text=_("Enter the position of the team member.")
-    )
-    image = models.ImageField(
-        upload_to="team_members/",
-        help_text=_("Upload an image for the team member."),
-        null=True,
-        blank=True,
-    )
-    phone_number = models.CharField(
-        max_length=15,
-        help_text=_("Enter the phone number of the team member."),
-        null=True,
-        blank=True,
-    )
-    facebook_url = models.URLField(
-        help_text=_("Enter the Facebook URL of the team member."),
-        null=True,
-        blank=True,
-    )
-    twitter_url = models.URLField(
-        help_text=_("Enter the Twitter URL of the team member."),
-        null=True,
-        blank=True,
-    )
-    linkedin_url = models.URLField(
-        help_text=_("Enter the LinkedIn URL of the team member."),
-        null=True,
-        blank=True,
-    )
-    instagram_url = models.URLField(
-        help_text=_("Enter the Instagram URL of the team member."),
-        null=True,
-        blank=True,
-    )
-    bio = models.TextField(
-        null=True, blank=True, help_text=_("Enter the bio of the team member.")
-    )
+    serial = models.PositiveSmallIntegerField(unique=True)
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    image = models.ImageField(upload_to="team_members/", null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -423,36 +230,25 @@ class Team(models.Model):
         return self.name
 
 
-class Projects(models.Model):
-    title = models.CharField(
-        max_length=100, help_text=_("Enter the title of the project.")
-    )
-    categories = models.CharField(
-        max_length=100,
-        help_text=_("Enter the categories for the project."),
-        null=True,
-        blank=True,
-    )
-    description = models.TextField(
-        help_text=_("Provide a description for the project."),
-        null=True,
-        blank=True,
-    )
-    client = models.CharField(
-        max_length=100,
-        help_text=_("Enter the name of the client."),
-        null=True,
-        blank=True,
-    )
-    year = models.PositiveIntegerField(
-        help_text=_("Enter the year when the project was completed."),
-        null=True,
-        blank=True,
-    )
+class TeamContact(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    social_media_name = models.CharField(max_length=100)
+    social_media_link = models.URLField()
 
-    tags = TaggableManager(
-        help_text=_("Add tags that describe the project."), blank=True
-    )
+    class Meta:
+        verbose_name = "Team Contact"
+        verbose_name_plural = "Team Contacts"
+
+    def __str__(self):
+        return self.team.name
+
+
+class Projects(models.Model):
+    title = models.CharField(max_length=100)
+    categories = models.ManyToManyField(ServiceCategory, blank=True)
+    description = models.TextField(null=True, blank=True)
+    client = models.CharField(max_length=100, null=True, blank=True)
+    year = models.PositiveIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -466,15 +262,8 @@ class Projects(models.Model):
 
 class ProjectImage(models.Model):
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    image = models.ImageField(
-        upload_to="project_images/", help_text=_("Upload an image for the project.")
-    )
-    short_description = models.CharField(
-        max_length=255,
-        help_text=_("Enter a short description for the image."),
-        blank=True,
-        null=True,
-    )
+    image = models.ImageField(upload_to="project_images/")
+    short_description = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.image.url

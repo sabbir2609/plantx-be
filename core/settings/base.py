@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     # my apps
     "main",
     "home",
+    "tags",
+    "users",
     # third-party apps
     "corsheaders",
     "taggit",
