@@ -1,3 +1,4 @@
+import random
 from django.db import models
 from django.conf import settings
 from django.contrib import admin
@@ -173,6 +174,9 @@ class Plant(BaseProduct):
     )
     care_instructions = models.TextField(blank=True, null=True)
 
+    def generate_sku(self):
+        return f"PL{self.name[:2].upper()}{self.category.name[:3].upper()}{random.randint(100, 999)}"
+
     class Meta:
         ordering = ["-created_at"]
         verbose_name = "Plant"
@@ -206,6 +210,9 @@ class Planter(BaseProduct):
     color = models.CharField(max_length=50, blank=True, null=True)
     is_custom = models.BooleanField(default=False)
 
+    def generate_sku(self):
+        return f"PT{self.name[:2].upper()}{self.category.name[:3].upper()}{random.randint(100, 999)}"
+
     class Meta:
         verbose_name = "Planter"
         verbose_name_plural = "Planters"
@@ -231,6 +238,9 @@ class PlantingAccessoriesCategory(models.Model):
 
 class PlantingAccessories(BaseProduct):
     category = models.ForeignKey(PlantingAccessoriesCategory, on_delete=models.CASCADE)
+
+    def generate_sku(self):
+        return f"PA{self.name[:2].upper()}{self.category.name[:3].upper()}{random.randint(100, 999)}"
 
     class Meta:
         verbose_name = "Planting Accessory"

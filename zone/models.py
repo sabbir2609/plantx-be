@@ -18,6 +18,11 @@ class ProductZone(models.Model):
 
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     available = models.BooleanField(default=True)
+    unit = models.CharField(
+        max_length=10,
+        help_text="Unit of measurement for the product. Eg. kg, m, cm, etc.",
+        blank=True,
+    )
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:

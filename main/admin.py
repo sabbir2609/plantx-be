@@ -100,6 +100,7 @@ class PromotionAdmin(ModelAdmin):
 class PlantCategoryAdmin(ModelAdmin):
     list_display = ("name", "plants_count")
     search_fields = ("name",)
+    prepopulated_fields = {"slug": ("name",)}
 
     @admin.display(ordering="plants_count")
     def plants_count(self, plantcategory):
@@ -127,6 +128,7 @@ class PlantAdmin(ModelAdmin):
         "name",
         "category",
         "sku",
+        "inventory",
         "location_type",
     )
     search_fields = (
@@ -148,6 +150,7 @@ class PlantAdmin(ModelAdmin):
 class PlanterCategoryAdmin(ModelAdmin):
     list_display = ("name", "planters_count")
     search_fields = ("name",)
+    prepopulated_fields = {"slug": ("name",)}
 
     @admin.display(ordering="planters_count")
     def planters_count(self, plantercategory):
