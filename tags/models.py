@@ -15,3 +15,6 @@ class TaggedItem(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
+
+    def __str__(self) -> str:
+        return f"{self.tag} tagged {self.content_object}"

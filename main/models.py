@@ -1,11 +1,145 @@
 from django.db import models
+from django.conf import settings
+from django.contrib import admin
+
+from django.core.validators import MinValueValidator, MaxValueValidator
+from . import validators
+
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
+
+class Customer(models.Model):
+    MEMBERSHIP_BRONZE = "B"
+    MEMBERSHIP_SILVER = "S"
+    MEMBERSHIP_GOLD = "G"
+
+    MEMBERSHIP_CHOICES = [
+        (MEMBERSHIP_BRONZE, "Bronze"),
+        (MEMBERSHIP_SILVER, "Silver"),
+        (MEMBERSHIP_GOLD, "Gold"),
+    ]
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=255)
+    birth_date = models.DateField(null=True)
+    membership = models.CharField(
+        max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE
+    )
+
+    def __str__(self) -> str:
+        return f"{self.user.first_name} {self.user.last_name}"
+
+    class Meta:
+        ordering = ["user__last_name", "user__first_name"]
+        permissions = [("view_history", "Can View History")]
+
+    @admin.display(ordering="user__first_name")
+    def first_name(self):
+        return self.user.first_name
+
+    @admin.display(ordering="user__last_name")
+    def last_name(self):
+        return self.user.last_name
+
+
+class Image(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    image = models.ImageField(
+        upload_to="images/", validators=[validators.validate_file_size]
+    )
+    short_description = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Image"
+        verbose_name_plural = "Images"
+
+    def __str__(self):
+        return self.image.url
+
+
+class Feature(models.Model):
+    name = models.CharField(max_length=50)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    class Meta:
+        verbose_name = "Feature"
+        verbose_name_plural = "Features"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class Promotion(models.Model):
+    description = models.CharField(max_length=255)
+    discount = models.FloatField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        help_text="Discount in percentage, if any",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Promotion"
+        verbose_name_plural = "Promotions"
+
+    def __str__(self):
+        return self.description
+
+
+class BaseProduct(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    sku = models.CharField(
+        max_length=20, blank=True, null=True, unique=True, editable=False
+    )
+    inventory = models.PositiveIntegerField(
+        default=1,
+        validators=[MinValueValidator(1)],
+        help_text="Number of items in stock",
+    )
+    promotion = models.ManyToManyField("Promotion", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+    def generate_sku(self):
+        raise NotImplementedError("Subclasses must implement generate_sku method")
+
+    def save(self, *args, **kwargs):
+        if not self.sku:
+            self.sku = self.generate_sku()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 
 
 class PlantCategory(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(
-        upload_to="plant_categories/", null=True, blank=True)
+        upload_to="plant_categories/",
+        null=True,
+        blank=True,
+        validators=[validators.validate_file_size],
+    )
+
+    featured_plant = models.ForeignKey(
+        "Plant", on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "Plant Category"
@@ -16,22 +150,11 @@ class PlantCategory(models.Model):
         return self.name
 
 
-class PlantFeatures(models.Model):
-    name = models.CharField(max_length=50)
-
-    class Meta:
-        verbose_name = "Plant Feature"
-        verbose_name_plural = "Plant Features"
-        ordering = ["name"]
-
-    def __str__(self):
-        return self.name
-
-
-class Plant(models.Model):
-    class IndoorOutdoorChoices(models.TextChoices):
+class Plant(BaseProduct):
+    class LocationChoices(models.TextChoices):
         INDOOR = "Indoor", "Indoor"
         OUTDOOR = "Outdoor", "Outdoor"
+        BOTH = "Both", "Both"
 
     class SizeChoices(models.TextChoices):
         SMALL = "Small", "Small"
@@ -39,43 +162,32 @@ class Plant(models.Model):
         LARGE = "Large", "Large"
         EXTRA_LARGE = "Extra Large", "Extra Large"
 
-    title = models.CharField(max_length=100)
-    category = models.ForeignKey(PlantCategory, on_delete=models.CASCADE)
-    indoor_or_outdoor = models.CharField(
-        max_length=10, choices=IndoorOutdoorChoices.choices)
-    size = models.CharField(max_length=20, choices=SizeChoices.choices)
-    description = models.TextField(blank=True, null=True)
+    size = models.CharField(max_length=20, blank=True, choices=SizeChoices.choices)
+    category = models.ForeignKey("PlantCategory", on_delete=models.PROTECT)
+    location_type = models.CharField(
+        default=LocationChoices.BOTH,
+        null=True,
+        blank=True,
+        max_length=20,
+        choices=LocationChoices.choices,
+    )
     care_instructions = models.TextField(blank=True, null=True)
-    features = models.ManyToManyField(PlantFeatures, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-created_at"]
         verbose_name = "Plant"
         verbose_name_plural = "Plants"
 
-    def __str__(self):
-        return self.title
-
-
-class PlantImage(models.Model):
-    plant = models.ForeignKey(Plant, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="plant_images/")
-    short_description = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return self.image.url
-
-    class Meta:
-        verbose_name = "Plant Image"
-        verbose_name_plural = "Plant Images"
-
 
 class PlanterCategory(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(
-        upload_to="planter_categories/", blank=True, null=True)
+    image = models.ImageField(upload_to="planter_categories/", blank=True, null=True)
+
+    featured_planter = models.ForeignKey(
+        "Planter", on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "Planter Category"
@@ -86,24 +198,12 @@ class PlanterCategory(models.Model):
         return self.name
 
 
-class PlanterFeatures(models.Model):
-    name = models.CharField(max_length=50)
-
-    class Meta:
-        verbose_name = "Planter Feature"
-        verbose_name_plural = "Planter Features"
-        ordering = ["name"]
-
-    def __str__(self):
-        return self.name
-
-
-class Planter(models.Model):
+class Planter(BaseProduct):
     model = models.CharField(max_length=100)
     category = models.ForeignKey(PlanterCategory, on_delete=models.CASCADE)
-    size = models.CharField(max_length=20, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    features = models.ManyToManyField(PlanterFeatures, blank=True)
+    size = models.CharField(
+        max_length=20, blank=True, null=True, help_text="Size in inches"
+    )
     color = models.CharField(max_length=50, blank=True, null=True)
     is_custom = models.BooleanField(default=False)
 
@@ -112,27 +212,38 @@ class Planter(models.Model):
         verbose_name_plural = "Planters"
         ordering = ["model"]
 
-    def __str__(self):
-        return self.model
 
-
-class PlanterImage(models.Model):
-    planter = models.ForeignKey(Planter, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="planter_images/")
-    short_description = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return self.image.url
+class PlantingAccessoriesCategory(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(
+        upload_to="planting_accessories_categories/", blank=True, null=True
+    )
 
     class Meta:
-        verbose_name = "Planter Image"
-        verbose_name_plural = "Planter Images"
+        verbose_name = "Planting Accessory Category"
+        verbose_name_plural = "Planting Accessory Categories"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class PlantingAccessories(BaseProduct):
+    category = models.ForeignKey(PlantingAccessoriesCategory, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Planting Accessory"
+        verbose_name_plural = "Planting Accessories"
+        ordering = ["name"]
 
 
 class ServiceCategory(models.Model):
     class TypeChoices(models.TextChoices):
         COMMERCIAL = "Commercial", "Commercial"
         RESIDENTIAL = "Residential", "Residential"
+
     serial = models.PositiveSmallIntegerField(unique=True)
     type = models.CharField(
         default=TypeChoices.RESIDENTIAL,
@@ -142,9 +253,14 @@ class ServiceCategory(models.Model):
         choices=TypeChoices.choices,
     )
     title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(
-        upload_to="service_categories/", null=True, blank=True)
+        upload_to="service_categories/",
+        null=True,
+        blank=True,
+        validators=[validators.validate_file_size],
+    )
 
     class Meta:
         unique_together = ["title", "type"]
@@ -158,6 +274,7 @@ class ServiceCategory(models.Model):
 
 class Service(models.Model):
     title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
     description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(ServiceCategory, blank=True)
 
@@ -170,23 +287,16 @@ class Service(models.Model):
         return self.title
 
 
-class ServiceImage(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="service_images/")
-    short_description = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return self.short_description
-
-    class Meta:
-        verbose_name = "Service Image"
-        verbose_name_plural = "Service Images"
-
-
 class Ideas(models.Model):
     title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
     description = models.TextField()
-    image = models.ImageField(upload_to="ideas/", null=True, blank=True)
+    image = models.ImageField(
+        upload_to="ideas/",
+        null=True,
+        blank=True,
+        validators=[validators.validate_file_size],
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -199,8 +309,14 @@ class Ideas(models.Model):
 
 
 class Testimonial(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to="testimonials/", null=True, blank=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
+    image = models.ImageField(
+        upload_to="testimonials/",
+        null=True,
+        blank=True,
+        validators=[validators.validate_file_size],
+    )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -215,19 +331,34 @@ class Testimonial(models.Model):
 
 class Team(models.Model):
     serial = models.PositiveSmallIntegerField(unique=True)
-    name = models.CharField(max_length=100)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
     position = models.CharField(max_length=100)
-    image = models.ImageField(upload_to="team_members/", null=True, blank=True)
+    image = models.ImageField(
+        upload_to="team_members/",
+        null=True,
+        blank=True,
+        validators=[validators.validate_file_size],
+    )
     bio = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        verbose_name = "Team Member"
-        verbose_name_plural = "Team Members"
-        ordering = ["serial"]
+    def __str__(self) -> str:
+        return f"{self.user.first_name} {self.user.last_name}"
 
-    def __str__(self):
-        return self.name
+    class Meta:
+        verbose_name = "Team"
+        verbose_name_plural = "Team"
+        ordering = ["serial"]
+        permissions = [("view_history", "Can View History")]
+
+    @admin.display(ordering="user__first_name")
+    def first_name(self):
+        return self.user.first_name
+
+    @admin.display(ordering="user__last_name")
+    def last_name(self):
+        return self.user.last_name
 
 
 class TeamContact(models.Model):
@@ -245,6 +376,7 @@ class TeamContact(models.Model):
 
 class Projects(models.Model):
     title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
     categories = models.ManyToManyField(ServiceCategory, blank=True)
     description = models.TextField(null=True, blank=True)
     client = models.CharField(max_length=100, null=True, blank=True)
@@ -258,16 +390,3 @@ class Projects(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class ProjectImage(models.Model):
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="project_images/")
-    short_description = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return self.image.url
-
-    class Meta:
-        verbose_name = "Project Image"
-        verbose_name_plural = "Project Images"

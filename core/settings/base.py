@@ -35,15 +35,20 @@ INSTALLED_APPS = [
     # my apps
     "main",
     "home",
+    "zone",
     "tags",
     "users",
+    "decouple",
     # third-party apps
     "corsheaders",
     "rest_framework",
     "django_filters",
+    # debug toolbar
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",  # debug_toolbar
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

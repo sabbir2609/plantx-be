@@ -11,7 +11,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Convert DEBUG to boolean
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
-print(DEBUG)
 
 # Process WEBSITE_HOSTNAME
 website_hostname = os.getenv("WEBSITE_HOSTNAME", "")
