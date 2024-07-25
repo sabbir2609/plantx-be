@@ -22,5 +22,10 @@
             "dest": "core/wsgi.py"
         }
     ],
-    "outputDirectory": "staticfiles"
+    "outputDirectory": "staticfiles",
+    "git": {
+        "deploymentEnabled": {
+            "main": false
+        }
+    }
 }
