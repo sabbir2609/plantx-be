@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
-from main.admin import PlantAdmin, PlanterAdmin, PlantingAccessoriesAdmin
-from main.models import Plant, Planter, PlantingAccessories
+from main.admin import PlantAdmin, PlanterAdmin, PlantingAccessoriesAdmin, ServiceAdmin
+from main.models import Plant, Planter, PlantingAccessories, Service
 from tags.models import TaggedItem
 from zone.models import ProductZone
 from unfold.admin import TabularInline
@@ -40,3 +40,11 @@ class CustomPlantingAccessoriesAdmin(PlantingAccessoriesAdmin):
 
 admin.site.unregister(PlantingAccessories)
 admin.site.register(PlantingAccessories, CustomPlantingAccessoriesAdmin)
+
+
+class CustomServiceAdmin(ServiceAdmin):
+    inlines = ServiceAdmin.inlines + [TagInline]
+
+
+admin.site.unregister(Service)
+admin.site.register(Service, CustomServiceAdmin)

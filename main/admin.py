@@ -41,6 +41,7 @@ class CustomerAdmin(ModelAdmin):
 
 class ImageInline(GenericTabularInline, TabularInline):
     model = Image
+    extra = 1
 
 
 @admin.register(Image)
