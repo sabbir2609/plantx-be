@@ -199,7 +199,6 @@ class PlanterCategory(models.Model):
 
 
 class Planter(BaseProduct):
-    model = models.CharField(max_length=100)
     category = models.ForeignKey(PlanterCategory, on_delete=models.CASCADE)
     size = models.CharField(
         max_length=20, blank=True, null=True, help_text="Size in inches"
@@ -210,7 +209,7 @@ class Planter(BaseProduct):
     class Meta:
         verbose_name = "Planter"
         verbose_name_plural = "Planters"
-        ordering = ["model"]
+        ordering = ["-updated_at"]
 
 
 class PlantingAccessoriesCategory(models.Model):

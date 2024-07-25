@@ -146,22 +146,38 @@ class PlantAdmin(ModelAdmin):
 
 @admin.register(PlanterCategory)
 class PlanterCategoryAdmin(ModelAdmin):
-    list_display = ("name", "description")
+    list_display = ("name", "planters_count")
     search_fields = ("name",)
+
+    @admin.display(ordering="planters_count")
+    def planters_count(self, plantercategory):
+        url = (
+            reverse("admin:main_planter_changelist")
+            + "?"
+            + urlencode({"category__id": str(plantercategory.id)})
+        )
+        return format_html('<a href="{}">{}</a>', url, plantercategory.planters_count)
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(planters_count=Count("planter", distinct=True))
+        )
 
 
 @admin.register(Planter)
 class PlanterAdmin(ModelAdmin):
     inlines = [ImageInline, FeatureInline]
-    list_display = ("model", "sku", "color")
+    list_display = ("name", "category", "sku", "color")
+    prepopulated_fields = {"slug": ("name",)}
     search_fields = (
-        "model",
+        "name",
         "size",
         "color",
     )
     list_filter = (
         "category",
-        "size",
         "color",
     )
     filter_horizontal = ("promotion",)
