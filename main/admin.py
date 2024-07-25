@@ -189,11 +189,14 @@ class PlantingAccessoriesCategoryAdmin(ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
 
+    prepopulated_fields = {"slug": ("name",)}
+
 
 @admin.register(PlantingAccessories)
 class PlantingAccessoriesAdmin(ModelAdmin):
     inlines = [ImageInline, FeatureInline]
     list_display = ("name", "sku", "category")
+    prepopulated_fields = {"slug": ("name",)}
     search_fields = (
         "name",
         "sku",
@@ -209,12 +212,14 @@ class ServiceCategoryAdmin(ModelAdmin):
         "title",
         "type",
     )
+    prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title",)
 
 
 @admin.register(Service)
 class ServiceAdmin(ModelAdmin):
     list_display = ("title",)
+    prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title",)
     list_filter = ("categories",)
     filter_horizontal = ("categories",)
@@ -224,6 +229,7 @@ class ServiceAdmin(ModelAdmin):
             {
                 "fields": (
                     "title",
+                    "slug",
                     "categories",
                     "description",
                 )
@@ -249,6 +255,8 @@ class IdeasAdmin(ModelAdmin):
         ),
     )
     list_per_page = 10
+
+    prepopulated_fields = {"slug": ("title",)}
 
 
 @admin.register(Testimonial)
@@ -279,3 +287,5 @@ class ProjectsAdmin(ModelAdmin):
     search_fields = ("title", "client", "year")
     list_filter = ("year",)
     ordering = ("title",)
+
+    prepopulated_fields = {"slug": ("title",)}
