@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+from django.templatetags.static import static
+from django.urls import reverse_lazy  # noqa: F401
+from django.utils.translation import gettext_lazy as _
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "django_filters",
+    "taggit",
     # debug toolbar
     "debug_toolbar",
 ]
@@ -141,3 +146,23 @@ REST_FRAMEWORK = {
 }
 
 DEFAULT_IMAGE = "image_not_found.webp"
+
+
+UNFOLD = {
+    "SITE_TITLE": "Viriditas",
+    "SITE_HEADER": "Viriditas Admin",
+    "SITE_URL": "/",
+    "SITE_FAVICONS": [
+        {
+            "rel": "icon",
+            "sizes": "32x32",
+            "type": "image/svg+xml",
+            "href": lambda request: static("favicon.ico"),
+        },
+    ],
+    "SHOW_HISTORY": True,  # show/hide "History" button, default: True
+    "SIDEBAR": {
+        "show_search": True,  # Search in applications and models names
+        "show_all_applications": True,  # Dropdown with all applications and models
+    },
+}

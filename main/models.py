@@ -1,13 +1,14 @@
 import random
-from django.db import models
+
 from django.conf import settings
 from django.contrib import admin
-
-from django.core.validators import MinValueValidator, MaxValueValidator
-from . import validators
-
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from taggit.managers import TaggableManager
+
+from . import validators
 
 
 class Customer(models.Model):
@@ -173,6 +174,10 @@ class Plant(BaseProduct):
         choices=LocationChoices.choices,
     )
     care_instructions = models.TextField(blank=True, null=True)
+    tags = TaggableManager(
+        help_text="A comma-separated list of tags.",
+        blank=True,
+    )
 
     def generate_sku(self):
         return f"PL{self.name[:2].upper()}{self.category.name[:3].upper()}{random.randint(100, 999)}"

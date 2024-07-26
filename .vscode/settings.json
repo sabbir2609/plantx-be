@@ -4,6 +4,7 @@
         "CLOUDINARY",
         "corsheaders",
         "dotenv",
+        "FAVICONS",
         "filebrowser",
         "Inde",
         "Nonrelated",

@@ -1,28 +1,28 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
-from unfold.admin import ModelAdmin, TabularInline
+from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
-from django.db.models import Count
+from unfold.admin import ModelAdmin, TabularInline
 
 from .models import (
     Customer,
     Feature,
-    Image,
-    Promotion,
-    PlantCategory,
-    Plant,
-    PlanterCategory,
-    Planter,
-    PlantingAccessoriesCategory,
-    PlantingAccessories,
-    Projects,
-    ServiceCategory,
-    Service,
     Ideas,
-    Testimonial,
+    Image,
+    Plant,
+    PlantCategory,
+    Planter,
+    PlanterCategory,
+    PlantingAccessories,
+    PlantingAccessoriesCategory,
+    Projects,
+    Promotion,
+    Service,
+    ServiceCategory,
     Team,
     TeamContact,
+    Testimonial,
 )
 
 
@@ -44,38 +44,38 @@ class ImageInline(GenericTabularInline, TabularInline):
     extra = 1
 
 
-@admin.register(Image)
-class ImageAdmin(ModelAdmin):
-    list_display = ("get_object_name", "image", "content_type", "object_id")
-    list_filter = ("content_type",)
-    search_fields = ("short_description",)
+# @admin.register(Image)
+# class ImageAdmin(ModelAdmin):
+#     list_display = ("get_object_name", "image", "content_type", "object_id")
+#     list_filter = ("content_type",)
+#     search_fields = ("short_description",)
 
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        return queryset.select_related("content_type")
+#     def get_queryset(self, request):
+#         queryset = super().get_queryset(request)
+#         return queryset.select_related("content_type")
 
-    def get_object_name(self, obj):
-        return obj.content_object.name
+#     def get_object_name(self, obj):
+#         return obj.content_object.name
+
+
+# @admin.register(Feature)
+# class FeatureAdmin(ModelAdmin):
+#     list_display = ("name", "content_type", "get_object_name", "object_id")
+#     list_filter = ("content_type",)
+#     search_fields = ("name",)
+#     list_per_page = 10
+
+#     def get_queryset(self, request):
+#         queryset = super().get_queryset(request)
+#         return queryset.select_related("content_type")
+
+#     def get_object_name(self, obj):
+#         return obj.content_object.name
 
 
 class FeatureInline(GenericTabularInline, TabularInline):
     model = Feature
     extra = 1
-
-
-@admin.register(Feature)
-class FeatureAdmin(ModelAdmin):
-    list_display = ("name", "content_type", "get_object_name", "object_id")
-    list_filter = ("content_type",)
-    search_fields = ("name",)
-    list_per_page = 10
-
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        return queryset.select_related("content_type")
-
-    def get_object_name(self, obj):
-        return obj.content_object.name
 
 
 class InventoryFilter(admin.SimpleListFilter):
@@ -179,6 +179,7 @@ class PlanterAdmin(ModelAdmin):
         "name",
         "size",
         "color",
+        "sku",
     )
     list_filter = (
         "category",
@@ -192,7 +193,6 @@ class PlanterAdmin(ModelAdmin):
 class PlantingAccessoriesCategoryAdmin(ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
-
     prepopulated_fields = {"slug": ("name",)}
 
 
@@ -227,39 +227,13 @@ class ServiceAdmin(ModelAdmin):
     search_fields = ("title",)
     list_filter = ("categories",)
     filter_horizontal = ("categories",)
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "title",
-                    "slug",
-                    "categories",
-                    "description",
-                )
-            },
-        ),
-    )
     list_per_page = 10
     inlines = [ImageInline]
 
 
 @admin.register(Ideas)
 class IdeasAdmin(ModelAdmin):
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "title",
-                    "description",
-                    "image",
-                )
-            },
-        ),
-    )
     list_per_page = 10
-
     prepopulated_fields = {"slug": ("title",)}
 
 
@@ -291,5 +265,4 @@ class ProjectsAdmin(ModelAdmin):
     search_fields = ("title", "client", "year")
     list_filter = ("year",)
     ordering = ("title",)
-
     prepopulated_fields = {"slug": ("title",)}
