@@ -11,11 +11,15 @@ class TagInline(TabularInline, GenericTabularInline):
     autocomplete_fields = ["tag"]
     model = TaggedItem
     extra = 1
+    tab = True
+    hide_title = True
 
 
 class ProductZoneInline(TabularInline, GenericTabularInline):
     model = ProductZone
     extra = 1
+    tab = True
+    hide_title = True
 
 
 class CustomPlantAdmin(PlantAdmin):

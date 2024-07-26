@@ -7,6 +7,12 @@ from django.urls import reverse
 from django.utils.html import format_html, urlencode
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.contrib.forms.widgets import ArrayWidget, WysiwygWidget
+from import_export.admin import ImportExportModelAdmin
+from unfold.contrib.import_export.forms import (
+    ExportForm,
+    ImportForm,
+    SelectableFieldsExportForm,
+)
 
 from .models import (
     Customer,
@@ -45,41 +51,15 @@ class CustomerAdmin(ModelAdmin):
 class ImageInline(GenericTabularInline, TabularInline):
     model = Image
     extra = 1
-    tabs = True
-
-
-# @admin.register(Image)
-# class ImageAdmin(ModelAdmin):
-#     list_display = ("get_object_name", "image", "content_type", "object_id")
-#     list_filter = ("content_type",)
-#     search_fields = ("short_description",)
-
-#     def get_queryset(self, request):
-#         queryset = super().get_queryset(request)
-#         return queryset.select_related("content_type")
-
-#     def get_object_name(self, obj):
-#         return obj.content_object.name
-
-
-# @admin.register(Feature)
-# class FeatureAdmin(ModelAdmin):
-#     list_display = ("name", "content_type", "get_object_name", "object_id")
-#     list_filter = ("content_type",)
-#     search_fields = ("name",)
-#     list_per_page = 10
-
-#     def get_queryset(self, request):
-#         queryset = super().get_queryset(request)
-#         return queryset.select_related("content_type")
-
-#     def get_object_name(self, obj):
-#         return obj.content_object.name
+    tab = True
+    hide_title = True
 
 
 class FeatureInline(GenericTabularInline, TabularInline):
     model = Feature
     extra = 1
+    tab = True
+    hide_title = True
 
 
 class InventoryFilter(admin.SimpleListFilter):
@@ -125,26 +105,26 @@ class PlantCategoryAdmin(ModelAdmin):
 
 
 @admin.register(Plant)
-class PlantAdmin(ModelAdmin):
+class PlantAdmin(ModelAdmin, ImportExportModelAdmin):
     autocomplete_fields = ("category",)
     prepopulated_fields = {"slug": ("name",)}
     inlines = [ImageInline, FeatureInline]
-    list_display = (
+    list_display = [
         "name",
         "category",
         "sku",
         "inventory",
         "location_type",
-    )
-    search_fields = (
+    ]
+    search_fields = [
         "name",
         "sku",
-    )
+    ]
     list_filter = (
         "category",
         "location_type",
         "size",
-        InventoryFilter,
+        # InventoryFilter,
     )
     filter_horizontal = ("promotion",)
     readonly_fields = ("sku",)
@@ -158,6 +138,9 @@ class PlantAdmin(ModelAdmin):
             "widget": ArrayWidget,
         },
     }
+
+    import_form_class = ImportForm
+    export_form_class = ExportForm
 
 
 @admin.register(PlanterCategory)
@@ -279,3 +262,32 @@ class ProjectsAdmin(ModelAdmin):
     list_filter = ("year",)
     ordering = ("title",)
     prepopulated_fields = {"slug": ("title",)}
+
+
+# @admin.register(Image)
+# class ImageAdmin(ModelAdmin):
+#     list_display = ("get_object_name", "image", "content_type", "object_id")
+#     list_filter = ("content_type",)
+#     search_fields = ("short_description",)
+
+#     def get_queryset(self, request):
+#         queryset = super().get_queryset(request)
+#         return queryset.select_related("content_type")
+
+#     def get_object_name(self, obj):
+#         return obj.content_object.name
+
+
+# @admin.register(Feature)
+# class FeatureAdmin(ModelAdmin):
+#     list_display = ("name", "content_type", "get_object_name", "object_id")
+#     list_filter = ("content_type",)
+#     search_fields = ("name",)
+#     list_per_page = 10
+
+#     def get_queryset(self, request):
+#         queryset = super().get_queryset(request)
+#         return queryset.select_related("content_type")
+
+#     def get_object_name(self, obj):
+#         return obj.content_object.name
