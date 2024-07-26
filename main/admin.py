@@ -1,9 +1,12 @@
 from django.contrib import admin
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
 from unfold.admin import ModelAdmin, TabularInline
+from unfold.contrib.forms.widgets import ArrayWidget, WysiwygWidget
 
 from .models import (
     Customer,
@@ -42,6 +45,7 @@ class CustomerAdmin(ModelAdmin):
 class ImageInline(GenericTabularInline, TabularInline):
     model = Image
     extra = 1
+    tabs = True
 
 
 # @admin.register(Image)
@@ -145,6 +149,15 @@ class PlantAdmin(ModelAdmin):
     filter_horizontal = ("promotion",)
     readonly_fields = ("sku",)
     list_per_page = 10
+
+    formfield_overrides = {
+        models.TextField: {
+            "widget": WysiwygWidget,
+        },
+        ArrayField: {
+            "widget": ArrayWidget,
+        },
+    }
 
 
 @admin.register(PlanterCategory)
