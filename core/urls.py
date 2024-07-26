@@ -1,15 +1,16 @@
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from home.views import HomePageTemplateView
+from django.contrib import admin
+from django.urls import include, path
 
+from home.views import HomePageTemplateView
 
 urlpatterns = [
     path("", HomePageTemplateView.as_view(), name="home"),
     path("api/main/", include("main.urls")),
     path("api/home/", include("home.urls")),
     path("admin/", admin.site.urls),
+    path("auth/", include("users.urls"), name="users"),
     # path("api-auth/", include("rest_framework.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

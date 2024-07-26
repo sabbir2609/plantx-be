@@ -1,18 +1,15 @@
 from django.contrib import admin
-from django.contrib.postgres.fields import ArrayField
-from django.db import models
 from django.contrib.contenttypes.admin import GenericTabularInline
+from django.templatetags.static import static
+from django.db import models
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
-from unfold.admin import ModelAdmin, TabularInline
-from unfold.contrib.forms.widgets import ArrayWidget, WysiwygWidget
 from import_export.admin import ImportExportModelAdmin
-from unfold.contrib.import_export.forms import (
-    ExportForm,
-    ImportForm,
-    SelectableFieldsExportForm,
-)
+from unfold.admin import ModelAdmin, TabularInline
+from unfold.decorators import display
+from unfold.contrib.forms.widgets import WysiwygWidget
+from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
 from .models import (
     Customer,
@@ -38,14 +35,30 @@ from .models import (
 @admin.register(Customer)
 class CustomerAdmin(ModelAdmin):
     list_display = [
-        "first_name",
-        "last_name",
+        "display_header",
+        "phone",
         "membership",
     ]
     search_fields = ("phone",)
     list_editable = ("membership",)
     list_per_page = 10
     autocomplete_fields = ("user",)
+
+    list_filter = ("membership",)
+
+    @display(description="Customer", header=True)
+    def display_header(self, instance: Customer):
+        image_url = (
+            instance.image.url if instance.image else static("images/avatar.jpg")
+        )
+        return [
+            instance.user.full_name,
+            None,
+            instance.user.last_name,
+            {
+                "path": image_url,
+            },
+        ]
 
 
 class ImageInline(GenericTabularInline, TabularInline):
@@ -106,7 +119,10 @@ class PlantCategoryAdmin(ModelAdmin):
 
 @admin.register(Plant)
 class PlantAdmin(ModelAdmin, ImportExportModelAdmin):
-    autocomplete_fields = ("category",)
+    autocomplete_fields = [
+        "category",
+        "promotion",
+    ]
     prepopulated_fields = {"slug": ("name",)}
     inlines = [ImageInline, FeatureInline]
     list_display = [
@@ -133,9 +149,6 @@ class PlantAdmin(ModelAdmin, ImportExportModelAdmin):
     formfield_overrides = {
         models.TextField: {
             "widget": WysiwygWidget,
-        },
-        ArrayField: {
-            "widget": ArrayWidget,
         },
     }
 
@@ -219,12 +232,21 @@ class ServiceCategoryAdmin(ModelAdmin):
 @admin.register(Service)
 class ServiceAdmin(ModelAdmin):
     list_display = ("title",)
+    autocomplete_fields = [
+        "categories",
+    ]
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title",)
     list_filter = ("categories",)
     filter_horizontal = ("categories",)
     list_per_page = 10
     inlines = [ImageInline]
+
+    formfield_overrides = {
+        models.TextField: {
+            "widget": WysiwygWidget,
+        },
+    }
 
 
 @admin.register(Ideas)

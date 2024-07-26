@@ -8,7 +8,9 @@ from unfold.admin import TabularInline
 
 
 class TagInline(TabularInline, GenericTabularInline):
-    autocomplete_fields = ["tag"]
+    autocomplete_fields = [
+        "tag",
+    ]
     model = TaggedItem
     extra = 1
     tab = True

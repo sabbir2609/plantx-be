@@ -1,44 +1,62 @@
+# user/models.py
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-
-from django.utils.translation import gettext_lazy as _
-
-
-class UserRole(models.Model):
-    role = models.CharField(
-        max_length=100, help_text=_("Enter the name of the user role.")
-    )
-    description = models.TextField(
-        help_text=_("Provide a description for the user role.")
-    )
+from .managers import UserManager
 
 
-class User(models.Model):
+class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(
-        max_length=100, help_text=_("Enter the first name of the user.")
+        max_length=255, blank=True, help_text="The user's first name."
     )
     last_name = models.CharField(
-        max_length=100, help_text=_("Enter the last name of the user.")
+        max_length=255, blank=True, help_text="The user's last name."
     )
-    email = models.EmailField(help_text=_("Enter the email of the user."))
-    password = models.CharField(
-        max_length=100, help_text=_("Enter the password of the user.")
+    username = models.CharField(
+        max_length=255,
+        unique=True,
+        blank=True,
+        null=True,
+        help_text="The user's username.",
     )
-    role = models.ForeignKey(
-        UserRole, on_delete=models.CASCADE, help_text=_("Select the role for the user.")
+    email = models.EmailField(unique=True, help_text="The user's email address.")
+
+    is_active = models.BooleanField(
+        default=True, help_text="Whether the user is active."
     )
-    image = models.ImageField(
-        upload_to="users/", help_text=_("Upload an image for the user.")
+
+    is_admin = models.BooleanField(
+        default=False, help_text="Whether the user is an admin."
     )
-    phone = models.CharField(
-        max_length=20, help_text=_("Enter the phone number of the user.")
+    is_superuser = models.BooleanField(
+        default=False, help_text="Whether the user is a superuser."
     )
-    address = models.TextField(help_text=_("Enter the address of the user."))
-    city = models.CharField(max_length=100, help_text=_("Enter the city of the user."))
-    country = models.CharField(
-        max_length=100, help_text=_("Enter the country of the user.")
+
+    created_at = models.DateTimeField(
+        auto_now_add=True, help_text="The date and time the user was created."
     )
-    postal_code = models.CharField(
-        max_length=20, help_text=_("Enter the postal code of the user.")
+    last_login = models.DateTimeField(
+        auto_now=True, help_text="The date and time the user last logged in."
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name"]
+
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        return self.is_admin
+
+    @property
+    def full_name(self):
+        if self.first_name and self.last_name:
+            return f"{self.last_name}, {self.first_name}"
+        return None

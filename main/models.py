@@ -6,7 +6,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from taggit.managers import TaggableManager
 
 from . import validators
 
@@ -22,8 +21,16 @@ class Customer(models.Model):
         (MEMBERSHIP_GOLD, "Gold"),
     ]
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to="customers/",
+        null=True,
+        blank=True,
+        validators=[validators.validate_file_size],
+    )
     phone = models.CharField(max_length=255)
-    birth_date = models.DateField(null=True)
+    address = models.TextField(
+        blank=True, null=True, help_text="Address of the customer"
+    )
     membership = models.CharField(
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE
     )
@@ -174,10 +181,6 @@ class Plant(BaseProduct):
         choices=LocationChoices.choices,
     )
     care_instructions = models.TextField(blank=True, null=True)
-    tags = TaggableManager(
-        help_text="A comma-separated list of tags.",
-        blank=True,
-    )
 
     def generate_sku(self):
         return f"PL{self.name[:2].upper()}{self.category.name[:3].upper()}{random.randint(100, 999)}"

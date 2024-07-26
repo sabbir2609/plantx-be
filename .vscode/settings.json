@@ -3,6 +3,7 @@
         "Browsable",
         "CLOUDINARY",
         "corsheaders",
+        "djoser",
         "dotenv",
         "FAVICONS",
         "filebrowser",

@@ -1,3 +1,5 @@
+from datetime import timedelta
+import os
 from pathlib import Path
 
 from django.templatetags.static import static
@@ -36,24 +38,24 @@ INSTALLED_APPS = [
     # third-party apps
     "corsheaders",
     "rest_framework",
+    "djoser",
     "django_filters",
-    "taggit",
     "import_export",
     # debug toolbar
     "debug_toolbar",
 ]
 
 MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",  # debug_toolbar
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # whitenoise middleware
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",  # corsheaders
     "django.middleware.common.CommonMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # cors middleware
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",  # debug toolbar middleware
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -97,11 +99,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Dhaka"
 
 USE_I18N = True
 
 USE_TZ = True
+
+LANGUAGES = [
+    ("en", _("English")),
+    ("bn", _("Bangla")),
+]
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
@@ -113,36 +120,80 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# settings.py
+AUTHENTICATION_BACKENDS = [
+    "users.backends.EmailAndUsernameBackend",  # custom backend for email and username login
+    "social_core.backends.facebook.FacebookOAuth2",
+    "social_core.backends.google.GoogleOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
-    ],
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ],
-    "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
-        "rest_framework.parsers.FormParser",
-        "rest_framework.parsers.MultiPartParser",
-    ],
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_AUTHENTICATION_CLASSES": ("users.authentication.CustomJWTAuthentication",),
+    # "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-DEFAULT_IMAGE = "image_not_found.webp"
+AUTH_USER_MODEL = "users.User"
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=3),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": False,
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "ACTIVATION_URL": "auth/activation/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "PASSWORD_RESET_CONFIRM_URL": "auth/password-reset/{uid}/{token}",
+    "SET_PASSWORD_RETYPE": True,
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "TOKEN_MODEL": None,
+    "SERIALIZERS": {
+        "user_create": "users.serializers.UserCreateSerializer",
+        "users": "users.serializers.UserCreateSerializer",
+        "user_delete": "djoser.serializers.UserDeleteSerializer",
+    },
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": os.getenv("REDIRECT_URLS", "").split(","),
+}
+
+
+AUTH_COOKIE = "access"
+AUTH_COOKIE_MAX_AGE = 60 * 60 * 24
+AUTH_COOKIE_SECURE = os.getenv("AUTH_COOKIE_SECURE", "True") == "True"
+AUTH_COOKIE_HTTP_ONLY = True
+AUTH_COOKIE_PATH = "/"
+AUTH_COOKIE_SAMESITE = "None"
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("GOOGLE_AUTH_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("GOOGLE_AUTH_SECRET_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["username"]
+
+SOCIAL_AUTH_FACEBOOK_KEY = os.getenv("FACEBOOK_AUTH_KEY")
+SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv("FACEBOOK_AUTH_SECRET_KEY")
+
+SOCIAL_AUTH_FACEBOOK_SCOPE = ["email"]
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {"fields": "email, first_name, last_name"}
+
+DEFAULT_IMAGE = "image_not_found.webp"
 
 UNFOLD = {
     "SITE_TITLE": "Viriditas",
     "SITE_HEADER": "Viriditas Admin",
-    "SITE_URL": "/",
+    "SITE_SYMBOL": "home",
     "SITE_FAVICONS": [
         {
             "rel": "icon",
@@ -152,9 +203,199 @@ UNFOLD = {
         },
     ],
     "SHOW_HISTORY": True,  # show/hide "History" button, default: True
+    "TABS": [
+        {
+            "models": ["main.Customer", "main.Promotion"],
+            "items": [
+                {
+                    "title": _("Customers"),
+                    "icon": "person",
+                    "link": reverse_lazy("admin:main_customer_changelist"),
+                },
+                {
+                    "title": _("Promotions"),
+                    "icon": "local_offer",
+                    "link": reverse_lazy("admin:main_promotion_changelist"),
+                },
+            ],
+        },
+        {
+            "models": ["main.PlantCategory", "main.Plant"],
+            "items": [
+                {
+                    "title": _("Plant Categories"),
+                    "icon": "category",
+                    "link": reverse_lazy("admin:main_plantcategory_changelist"),
+                },
+                {
+                    "title": _("Plants"),
+                    "icon": "nature",
+                    "link": reverse_lazy("admin:main_plant_changelist"),
+                },
+            ],
+        },
+        {
+            "models": [
+                "main.PlanterCategory",
+                "main.Planter",
+                "main.PlantingAccessoriesCategory",
+                "main.PlantingAccessories",
+            ],
+            "items": [
+                {
+                    "title": _("Planter Categories"),
+                    "icon": "category",
+                    "link": reverse_lazy("admin:main_plantercategory_changelist"),
+                },
+                {
+                    "title": _("Planters"),
+                    "icon": "spa",
+                    "link": reverse_lazy("admin:main_planter_changelist"),
+                },
+                {
+                    "title": _("Accessories Categories"),
+                    "icon": "category",
+                    "link": reverse_lazy(
+                        "admin:main_plantingaccessoriescategory_changelist"
+                    ),
+                },
+                {
+                    "title": _("Accessories"),
+                    "icon": "build",
+                    "link": reverse_lazy("admin:main_plantingaccessories_changelist"),
+                },
+            ],
+        },
+        {
+            "models": ["auth.User", "auth.Group"],
+            "items": [
+                {
+                    "title": _("Users"),
+                    "icon": "person",
+                    "link": reverse_lazy("admin:users_user_changelist"),
+                },
+                {
+                    "title": _("Groups"),
+                    "icon": "group",
+                    "link": reverse_lazy("admin:auth_group_changelist"),
+                },
+            ],
+        },
+        {
+            "models": ["zone.Zone", "tags.Tag"],
+            "items": [
+                {
+                    "title": _("Zones"),
+                    "icon": "map",
+                    "link": reverse_lazy("admin:zone_zone_changelist"),
+                },
+                {
+                    "title": _("Tags"),
+                    "icon": "label",
+                    "link": reverse_lazy("admin:tags_tag_changelist"),
+                },
+            ],
+        },
+    ],
     "SIDEBAR": {
         "show_search": True,  # Search in applications and models names
         "show_all_applications": True,  # Dropdown with all applications and models
+        "navigation": [
+            {
+                "title": _("Navigation"),
+                "items": [
+                    {
+                        "title": _("Dashboard"),
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                    {
+                        "title": _("Customers"),
+                        "icon": "person",
+                        "link": reverse_lazy("admin:main_customer_changelist"),
+                    },
+                    {
+                        "title": _("Promotions"),
+                        "icon": "local_offer",
+                        "link": reverse_lazy("admin:main_promotion_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Plant Categories"),
+                        "icon": "category",
+                        "link": reverse_lazy("admin:main_plantcategory_changelist"),
+                    },
+                    {
+                        "title": _("Plants"),
+                        "icon": "nature",
+                        "link": reverse_lazy("admin:main_plant_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Planter Categories"),
+                        "icon": "category",
+                        "link": reverse_lazy("admin:main_plantercategory_changelist"),
+                    },
+                    {
+                        "title": _("Planters"),
+                        "icon": "spa",
+                        "link": reverse_lazy("admin:main_planter_changelist"),
+                    },
+                    {
+                        "title": _("Accessories Categories"),
+                        "icon": "category",
+                        "link": reverse_lazy(
+                            "admin:main_plantingaccessoriescategory_changelist"
+                        ),
+                    },
+                    {
+                        "title": _("Accessories"),
+                        "icon": "build",
+                        "link": reverse_lazy(
+                            "admin:main_plantingaccessories_changelist"
+                        ),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Users"),
+                        "icon": "person",
+                        "link": reverse_lazy("admin:users_user_changelist"),
+                    },
+                    {
+                        "title": _("Groups"),
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Zones"),
+                        "icon": "map",
+                        "link": reverse_lazy("admin:zone_zone_changelist"),
+                    },
+                    {
+                        "title": _("Tags"),
+                        "icon": "label",
+                        "link": reverse_lazy("admin:tags_tag_changelist"),
+                    },
+                ],
+            },
+        ],
     },
 }
 
