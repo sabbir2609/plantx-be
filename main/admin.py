@@ -223,10 +223,12 @@ class PlantingAccessoriesAdmin(ModelAdmin):
 class ServiceCategoryAdmin(ModelAdmin):
     list_display = (
         "title",
+        "serial",
         "type",
     )
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title",)
+    list_editable = ("serial",)
 
 
 @admin.register(Service)
@@ -266,14 +268,35 @@ class TestimonialAdmin(ModelAdmin):
 class TeamContactInline(TabularInline):
     model = TeamContact
     extra = 1
+    tab = True
+    hide_title = True
 
 
 @admin.register(Team)
 class TeamAdmin(ModelAdmin):
-    list_display = ("first_name", "last_name", "position")
-    search_fields = ("first_name", "last_name", "position")
+    list_display = (
+        "user",
+        "serial",
+        "position",
+    )
     inlines = [TeamContactInline]
-    prepopulated_fields = {"slug": ("user",)}
+    list_editable = ("serial",)
+
+    fieldsets = (
+        (
+            "Member",
+            {
+                "fields": (
+                    "user",
+                    "slug",
+                    "position",
+                    "serial",
+                    "bio",
+                    "image",
+                )
+            },
+        ),
+    )
 
 
 @admin.register(Projects)

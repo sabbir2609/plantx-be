@@ -327,7 +327,7 @@ class Ideas(models.Model):
 
 class Testimonial(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
     image = models.ImageField(
         upload_to="testimonials/",
         null=True,
@@ -337,19 +337,31 @@ class Testimonial(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def generate_slug(self):
+        return (
+            f"{self.customer.user.first_name}-{self.customer.user.last_name}".replace(
+                " ", "-"
+            )
+        )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self.generate_slug()
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Testimonial"
         verbose_name_plural = "Testimonials"
         ordering = ["-created_at"]
 
     def __str__(self):
-        return self.name
+        return self.customer.user.full_name
 
 
 class Team(models.Model):
     serial = models.PositiveSmallIntegerField(unique=True)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
     position = models.CharField(max_length=100)
     image = models.ImageField(
         upload_to="team_members/",
@@ -360,26 +372,25 @@ class Team(models.Model):
     bio = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) -> str:
-        return f"{self.user.first_name} {self.user.last_name}"
+    def generate_slug(self):
+        return f"{self.user.first_name}-{self.user.last_name}".replace(" ", "-")
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self.generate_slug()
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Team"
         verbose_name_plural = "Team"
         ordering = ["serial"]
-        permissions = [("view_history", "Can View History")]
 
-    @admin.display(ordering="user__first_name")
-    def first_name(self):
-        return self.user.first_name
-
-    @admin.display(ordering="user__last_name")
-    def last_name(self):
-        return self.user.last_name
+    def __str__(self):
+        return self.user.full_name
 
 
 class TeamContact(models.Model):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    team = models.OneToOneField(Team, on_delete=models.CASCADE)
     social_media_name = models.CharField(max_length=100)
     social_media_link = models.URLField()
 
