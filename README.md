@@ -1,14 +1,17 @@
-# Indoor Plants Showcase
+# Viriditas
 
-Welcome to the Indoor Plants Showcase project! This website is designed to help users discover, learn about, and find the perfect indoor plants for their home or office. It features detailed information about various types of indoor plants, categorized by their light requirements, air-purifying qualities, pet-friendliness, and more.
+Welcome to the Viriditas project! This website is designed to help users discover, learn about, and find the perfect indoor plants for their home or office. It features a comprehensive plant database, categorized plant listings, user reviews, and more.
 
 ## Features
 
-- **Plant Database:** Comprehensive details about various indoor plants, including care instructions, light and water requirements, and more.
-- **Categories:** Plants are categorized for easy browsing (e.g., Low Light, Air Purifying, Pet Friendly).
-- **User Reviews:** Users can leave reviews and ratings for plants.
-- **Blog:** Informative articles about plant care, tips, and trends.
-- **Responsive Design:** Mobile-friendly layout for a seamless experience on any device.
+- **Customer Management:** Manage customer profiles, including user details, memberships, and contact information.
+- **Plant Management:** Detailed information on various indoor plants, including their care instructions, categories (e.g., Low Light, Air Purifying), and other attributes.
+- **Planter Management:** Information about different planters, including sizes, colors, and custom options.
+- **Planting Accessories:** Manage accessories related to plant care.
+- **Service Management:** Categories and services offered, including details and associated projects.
+- **Content Management:** Ideas, testimonials, team members, and projects to enhance the website's content and showcase.
+- **Zone-Based Pricing:** Pricing adjustments based on geographic zones to ensure accurate shipping costs and availability.
+- **Tags:** Add and manage tags for plants, planters, and accessories to help users filter and find products more easily.
 
 ## Table of Contents
 
@@ -23,11 +26,11 @@ Welcome to the Indoor Plants Showcase project! This website is designed to help 
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/sabbir2609/plantx.git
+    git clone https://github.com/sabbir2609/viriditas.git
     ```
 2. Navigate to the project directory:
     ```bash
-    cd plantx
+    cd viriditas
     ```
 3. Install the required dependencies:
     ```bash
@@ -51,10 +54,37 @@ Welcome to the Indoor Plants Showcase project! This website is designed to help 
 - Visit the homepage at `http://127.0.0.1:8000/` to explore the website.
 - Use the admin panel at `http://127.0.0.1:8000/admin/` to manage content.
 
+## Homepage Layout
+
+The homepage of Viriditas showcases featured plants, planters, and accessories. It provides easy navigation to various categories and sections of the website.
+
+## Pages
+
+- **Plant Listings:** View and browse plants by category and tags.
+- **Planters:** Browse available planters and their details.
+- **Accessories:** Explore planting accessories.
+- **Services:** Information on services offered.
+- **Blog:** Read articles about plant care and trends.
+- **Testimonials:** Read customer reviews and feedback.
+- **Team:** Meet the team behind Viriditas.
+- **Projects:** View projects and case studies.
+
+## Zone-Based Pricing
+
+Viriditas includes zone-based pricing to accommodate shipping costs and availability. Pricing may vary based on the customer's location, ensuring accurate and fair pricing.
+
+## Tags
+
+Plants, planters, and accessories can be tagged with relevant keywords. Tags help users filter products by characteristics such as type, size, or features.
+
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes. Make sure to follow the project's coding standards and include appropriate tests.
+Contributions are welcome! Please fork the repository and submit a pull request with your changes. Ensure that you follow the project's coding standards and include appropriate tests.
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For any questions or feedback, please reach out to [your-email@example.com](mailto:your-email@example.com).
