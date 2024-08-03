@@ -260,7 +260,6 @@ class IdeasAdmin(ModelAdmin):
 @admin.register(Testimonial)
 class TestimonialAdmin(ModelAdmin):
     list_display = ("customer", "created_at")
-    prepopulated_fields = {"slug": ("customer",)}  # Use 'customer' directly
     autocomplete_fields = ("customer",)
     list_per_page = 10
 
