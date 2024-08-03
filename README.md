@@ -26,11 +26,11 @@ Welcome to the Viriditas project! This website is designed to help users discove
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/sabbir2609/viriditas.git
+    git clone https://github.com/sabbir2609/plantx-be.git
     ```
 2. Navigate to the project directory:
     ```bash
-    cd viriditas
+    cd plantx-be
     ```
 3. Install the required dependencies:
     ```bash
@@ -87,4 +87,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For any questions or feedback, please reach out to [your-email@example.com](mailto:your-email@example.com).
+For any questions or feedback, please reach out to [sabbirhasan2999@gmail.com.com](mailto: sabbirhasan2999@gmail.com.com).
