@@ -11,6 +11,8 @@ from unfold.decorators import display
 from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
+from tinymce.widgets import TinyMCE
+
 from .models import (
     Customer,
     Feature,
@@ -148,7 +150,7 @@ class PlantAdmin(ModelAdmin, ImportExportModelAdmin):
 
     formfield_overrides = {
         models.TextField: {
-            "widget": WysiwygWidget,
+            "widget": TinyMCE,
         },
     }
 

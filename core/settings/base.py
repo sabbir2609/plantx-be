@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "django_filters",
+    "tinymce",
     "import_export",
     # debug toolbar
     "debug_toolbar",
@@ -369,6 +370,61 @@ UNFOLD = {
                 "separator": True,
                 "items": [
                     {
+                        "title": _("Service Categories"),
+                        "icon": "category",
+                        "link": reverse_lazy("admin:main_servicecategory_changelist"),
+                    },
+                    {
+                        "title": _("Services"),
+                        "icon": "build",
+                        "link": reverse_lazy("admin:main_service_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Ideas"),
+                        "icon": "lightbulb",
+                        "link": reverse_lazy("admin:main_ideas_changelist"),
+                    },
+                    {
+                        "title": _("Projects"),
+                        "icon": "work",
+                        "link": reverse_lazy("admin:main_projects_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Our Clients"),
+                        "icon": "business",
+                        "link": reverse_lazy("admin:home_ourclients_changelist"),
+                    },
+                    {
+                        "title": _("Testimonials"),
+                        "icon": "star",
+                        "link": reverse_lazy("admin:main_testimonial_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Team Members"),
+                        "icon": "group",
+                        "link": reverse_lazy("admin:main_team_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
                         "title": _("Users"),
                         "icon": "person",
                         "link": reverse_lazy("admin:users_user_changelist"),
@@ -405,3 +461,88 @@ IMPORT_EXPORT_FORMATS = [
     CSV,
     JSON,
 ]
+
+
+# TinyMCE Settings
+'''
+TINYMCE_DEFAULT_CONFIG = {
+    "entity_encoding": "raw",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "print preview paste importcss searchreplace autolink autosave save code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap emoticons quickbars",
+    "toolbar": "fullscreen preview | undo redo | bold italic forecolor backcolor | formatselect | image link | "
+    "alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | fontsizeselect "
+    "emoticons | ",
+    "custom_undo_redo_levels": 50,
+    "promotion": False,
+    "image_advtab": True,
+    "quickbars_insert_toolbar": False,
+    "file_picker_callback": """function (cb, value, meta) {
+        var input = document.createElement("input");
+        input.setAttribute("type", "file");
+        if (meta.filetype == "image") {
+            input.setAttribute("accept", "image/*");
+        }
+        if (meta.filetype == "media") {
+            input.setAttribute("accept", "video/*");
+        }
+
+        input.onchange = function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.onload = function () {
+                var id = "blobid" + (new Date()).getTime();
+                var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                var base64 = reader.result.split(",")[1];
+                var blobInfo = blobCache.create(id, file, base64);
+                blobCache.add(blobInfo);
+                cb(blobInfo.blobUri(), { title: file.name });
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }""",
+    "content_style": "body { font-family:Roboto,Helvetica,Arial,sans-serif; font-size:14px }",
+}
+'''
+
+TINYMCE_DEFAULT_CONFIG = {
+    "entity_encoding": "raw",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "preview importcss searchreplace autolink autosave save code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap emoticons quickbars",
+    "toolbar": "fullscreen preview | undo redo | bold italic forecolor backcolor | formatselect | image link | "
+    "alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | fontsizeselect "
+    "emoticons | ",
+    "custom_undo_redo_levels": 50,
+    "promotion": False,
+    "image_advtab": True,
+    "quickbars_insert_toolbar": False,
+    "file_picker_callback": """function (cb, value, meta) {
+        var input = document.createElement("input");
+        input.setAttribute("type", "file");
+        if (meta.filetype == "image") {
+            input.setAttribute("accept", "image/*");
+        }
+        if (meta.filetype == "media") {
+            input.setAttribute("accept", "video/*");
+        }
+
+        input.onchange = function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.onload = function () {
+                var id = "blobid" + (new Date()).getTime();
+                var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                var base64 = reader.result.split(",")[1];
+                var blobInfo = blobCache.create(id, file, base64);
+                blobCache.add(blobInfo);
+                cb(blobInfo.blobUri(), { title: file.name });
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }""",
+    "content_style": "body { font-family:Roboto,Helvetica,Arial,sans-serif; font-size:14px }",
+}
+
+TINYMCE_SPELLCHECKER = True
+TINYMCE_COMPRESSOR = False
