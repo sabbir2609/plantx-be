@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "asgi",
         "Browsable",
         "CLOUDINARY",
         "corsheaders",
@@ -8,6 +9,7 @@
         "FAVICONS",
         "filebrowser",
         "grappelli",
+        "gunicorn",
         "Inde",
         "Nonrelated",
         "PGDATABASE",

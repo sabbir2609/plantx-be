@@ -1,0 +1,12 @@
+services:
+  - type: web
+    plan: free
+    name: core
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn core.asgi:application --bind"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
