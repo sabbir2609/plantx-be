@@ -546,3 +546,19 @@ TINYMCE_DEFAULT_CONFIG = {
 
 TINYMCE_SPELLCHECKER = True
 TINYMCE_COMPRESSOR = False
+
+
+# Additional security settings
+
+# SECURE_HSTS_SECONDS = 31536000  # 1 year
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # include subdomains
+# SECURE_HSTS_PRELOAD = True  # preload
+# SECURE_SSL_REDIRECT = (
+#     os.getenv("SECURE_SSL_REDIRECT", "True") == "True"
+# )  # redirect to https
+
+# SESSION_COOKIE_SECURE = (
+#     os.getenv("SESSION_COOKIE_SECURE", "True") == "True"
+# )  # secure cookie
+
+# CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True") == "True"  # secure cookie
