@@ -5,9 +5,11 @@ from django.contrib.auth.models import Group
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from unfold.admin import ModelAdmin
-from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
+from unfold.forms import AdminPasswordChangeForm
 from unfold.decorators import display
 from unfold.contrib.forms.widgets import WysiwygWidget
+
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 from .models import User
 
@@ -17,8 +19,8 @@ admin.site.unregister(Group)
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin, ModelAdmin):
-    form = UserChangeForm
-    add_form = UserCreationForm
+    form = CustomUserChangeForm
+    add_form = CustomUserCreationForm
     change_password_form = AdminPasswordChangeForm
     list_display = [
         "display_header",
@@ -29,13 +31,13 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
     ]
     list_filter = ["is_admin", "is_superuser", "is_active"]
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {"fields": ("email", "password")}),
         (
             _("Personal info"),
             {
                 "fields": (
                     ("first_name", "last_name"),
-                    "email",
+                    "username",
                 ),
                 "classes": ["tab"],
             },
@@ -61,6 +63,15 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
             },
         ),
     )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ["wide"],
+                "fields": ("email", "password1", "password2"),
+            },
+        ),
+    )
     filter_horizontal = (
         "groups",
         "user_permissions",
@@ -74,7 +85,7 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
 
     @display(description=_("User"))
     def display_header(self, instance: User):
-        return instance.username
+        return instance.email
 
     @display(description=_("Admin"), boolean=True)
     def display_admin(self, instance: User):

@@ -2,10 +2,11 @@
 from django import forms
 from .models import User
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from unfold.forms import UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
 
 
-class UserCreationForm(forms.ModelForm):
+class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
     password2 = forms.CharField(
         label="Password confirmation", widget=forms.PasswordInput
@@ -13,9 +14,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = [
-            "email",
-        ]
+        fields = ("email",)
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -33,14 +32,18 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+    def add_view(self, request, form_url="", extra_context=None):
+        if extra_context is None:
+            extra_context = {}
+        extra_context["custom_message"] = (
+            "First, enter an email and password. Then, you’ll be able to edit more user options."
+        )
+        return super().add_view(request, form_url, extra_context)
 
-class UserChangeForm(forms.ModelForm):
+
+class CustomUserChangeForm(UserChangeForm):
     password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = User
-        fields = [
-            "email",
-            "password",
-            "is_active",
-        ]
+        fields = ("email",)
