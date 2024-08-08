@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .pagination import DefaultPagination
 
 from .models import (
+    Image,
     PlantCategory,
     Plant,
     PlanterCategory,
@@ -17,12 +18,14 @@ from .models import (
     Projects,
 )
 from .serializers import (
+    ImageSerializer,
     PlantCategorySerializer,
     PlantSerializer,
-    LimitedPlantSerializer,
+    PlantListSerializer,
     PlanterCategorySerializer,
+    PlantCategoryListSerializer,
     PlanterSerializer,
-    LimitedPlanterSerializer,
+    PlanterListSerializer,
     ServiceCategorySerializer,
     ServiceSerializer,
     LimitedServiceSerializer,
@@ -33,9 +36,18 @@ from .serializers import (
 )
 
 
+class ImageViewSet(viewsets.ModelViewSet):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
+
+
 class PlantCategoryViewSet(viewsets.ModelViewSet):
     queryset = PlantCategory.objects.all()
-    serializer_class = PlantCategorySerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PlantCategoryListSerializer
+        return PlantCategorySerializer
 
 
 class PlantViewSet(viewsets.ModelViewSet):
@@ -44,7 +56,7 @@ class PlantViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "list":
-            return LimitedPlantSerializer
+            return PlantListSerializer
         return PlantSerializer
 
     def get_queryset(self):
@@ -93,7 +105,7 @@ class PlanterViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "list":
-            return LimitedPlanterSerializer
+            return PlanterListSerializer
         return PlanterSerializer
 
     def get_queryset(self):

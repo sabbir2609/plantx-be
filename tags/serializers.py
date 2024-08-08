@@ -5,10 +5,21 @@ from .models import Tag, TaggedItem
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = "__all__"
+        fields = [
+            "id",
+            "label",
+        ]
 
 
 class TaggedItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaggedItem
-        fields = "__all__"
+        fields = [
+            "id",
+            "tag",
+        ]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["tag"] = instance.tag.label
+        return response

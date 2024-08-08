@@ -9,6 +9,7 @@ urlpatterns = [
     path("", HomePageTemplateView.as_view(), name="home"),
     path("api/main/", include("main.urls")),
     path("api/home/", include("home.urls")),
+    path("api/tags/", include("tags.urls")),
     path("admin/", admin.site.urls),
     path("auth/", include("users.urls"), name="users"),
     path("tinymce/", include("tinymce.urls")),

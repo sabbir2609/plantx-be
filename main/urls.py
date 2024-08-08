@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework_nested import routers
 from .views import (
+    ImageViewSet,
     PlantCategoryViewSet,
     PlantViewSet,
     PlanterCategoryViewSet,
@@ -59,6 +60,8 @@ router.register("testimonials", TestimonialViewSet, basename="testimonials")
 router.register("team", TeamViewSet, basename="team")
 
 router.register("projects", ProjectsViewSet, basename="projects")
+
+router.register("images", ImageViewSet, basename="images")
 
 urlpatterns = [
     path("", include(router.urls)),

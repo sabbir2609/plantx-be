@@ -5,10 +5,25 @@ from .models import Zone, ProductZone
 class ZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Zone
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "description",
+        ]
 
 
 class ProductZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductZone
-        fields = "__all__"
+        fields = [
+            "id",
+            "zone",
+            "available",
+            "unit",
+            "unit_price",
+        ]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["zone"] = instance.zone.name
+        return response

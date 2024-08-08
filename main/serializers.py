@@ -1,25 +1,30 @@
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
+
+from tags.models import TaggedItem
+from tags.serializers import TaggedItemSerializer
+from zone.models import ProductZone
+from zone.serializers import ProductZoneSerializer
+
 from .models import (
-    Plant,
-    Planter,
-    PlantingAccessories,
     Customer,
-    Promotion,
-    PlantCategory,
-    PlanterCategory,
-    PlantingAccessoriesCategory,
     Feature,
-    Image,
     Ideas,
+    Image,
+    Plant,
+    PlantCategory,
+    Planter,
+    PlanterCategory,
+    PlantingAccessories,
+    PlantingAccessoriesCategory,
+    Projects,
+    Promotion,
     Service,
     ServiceCategory,
-    Testimonial,
     Team,
     TeamContact,
-    Projects,
+    Testimonial,
 )
-from tags.serializers import TaggedItemSerializer
-from zone.serializers import ProductZoneSerializer
 
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -41,62 +46,214 @@ class PromotionSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = "__all__"
+        fields = [
+            "id",
+            "image",
+            "short_description",
+        ]
 
 
 class FeatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feature
-        fields = "__all__"
-
-
-class PlantCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PlantCategory
-        fields = "__all__"
-
-
-class PlantSerializer(serializers.ModelSerializer):
-    tagged_items = TaggedItemSerializer(many=True, read_only=True)
-    product_zones = ProductZoneSerializer(many=True, read_only=True)
-    promotion = PromotionSerializer(read_only=True, many=True)
-    features = FeatureSerializer(many=True, read_only=True)
-    images = ImageSerializer(many=True, read_only=True)
-    category = PlantCategorySerializer(read_only=True)
-
-    class Meta:
-        model = Plant
-        fields = "__all__"
-
-
-class LimitedPlantSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Plant
         fields = [
             "id",
             "name",
         ]
 
 
+class PlantCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlantCategory
+        fields = [
+            "id",
+            "name",
+            "description",
+            "image",
+        ]
+
+
+class PlantCategoryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlantCategory
+        fields = [
+            "id",
+            "name",
+            "image",
+        ]
+
+
+class LimitedPlantCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlantCategory
+        fields = [
+            "name",
+        ]
+
+
+class PlantSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
+    zone = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Plant
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "sku",
+            "category",
+            "location_type",
+            "size",
+            "images",
+            "description",
+            "care_instructions",
+            "promotion",
+            "features",
+            "zone",
+            "tags",
+        ]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["category"] = instance.category.name
+        return response
+
+    def get_features(self, plant):
+        features = Feature.objects.filter(
+            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
+        )
+        return FeatureSerializer(features, many=True).data
+
+    def get_images(self, plant):
+        images = Image.objects.filter(
+            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
+        )
+        return ImageSerializer(images, many=True).data
+
+    def get_tags(self, plant):
+        tags = TaggedItem.objects.filter(
+            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
+        )
+        return TaggedItemSerializer(tags, many=True).data
+
+    def get_zone(self, plant):
+        zones = ProductZone.objects.filter(
+            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
+        )
+        return ProductZoneSerializer(zones, many=True).data
+
+
+class PlantListSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+    promotion = PromotionSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Plant
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "sku",
+            "image_url",
+            "category",
+            "features",
+            "promotion",
+            "location_type",
+            "size",
+        ]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["category"] = instance.category.name
+
+        return response
+
+    def get_features(self, plant):
+        features = Feature.objects.filter(
+            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
+        )
+        return FeatureSerializer(features, many=True).data
+
+    def get_image_url(self, plant):
+        # Get the first image associated with the plant
+        image = Image.objects.filter(
+            content_type=ContentType.objects.get_for_model(Plant),
+            object_id=plant.id,
+        ).first()
+        return image.image.url if image and image.image else None
+
+
 class PlanterCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanterCategory
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "description",
+            "image",
+        ]
+
+
+class PlanterListSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()  # Renamed field to `image_url`
+    features = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Planter
+        fields = [
+            "id",
+            "name",
+            "sku",
+            "category",
+            "size",
+            "color",
+            "is_custom",
+            "image_url",  # Renamed field to `image_url`
+            "features",
+        ]
+
+    def get_image_url(self, planter):
+        # Get the first image associated with the planter
+        image = Image.objects.filter(
+            content_type=ContentType.objects.get_for_model(Planter),
+            object_id=planter.id,
+        ).first()
+        return image.image.url if image and image.image else None
+
+    def get_features(self, planter):
+        features = Feature.objects.filter(
+            content_type=ContentType.objects.get_for_model(Planter),
+            object_id=planter.id,
+        )
+        return FeatureSerializer(features, many=True).data
 
 
 class PlanterSerializer(serializers.ModelSerializer):
-    tagged_items = TaggedItemSerializer(many=True, read_only=True)
-    product_zones = ProductZoneSerializer(many=True, read_only=True)
+    features = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
+    zone = serializers.SerializerMethodField()
 
     class Meta:
         model = Planter
-        fields = "__all__"
-
-
-class LimitedPlanterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Planter
-        fields = ["id", "name"]
+        fields = [
+            "id",
+            "name",
+            "sku",
+            "category",
+            "size",
+            "color",
+            "is_custom",
+            "images",
+            "description",
+            "features",
+            "zone",
+            "tags",
+        ]
 
 
 class PlantingAccessoriesCategorySerializer(serializers.ModelSerializer):

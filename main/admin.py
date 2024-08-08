@@ -31,7 +31,23 @@ from .models import (
     Team,
     TeamContact,
     Testimonial,
+    Feature,
 )
+
+
+@admin.register(Feature)
+class FeatureAdmin(ModelAdmin):
+    list_display = ("name", "content_type", "object_id")
+    list_filter = ("content_type",)
+    search_fields = ("name",)
+    list_per_page = 10
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related("content_type")
+
+    def get_object_name(self, obj):
+        return obj.content_object.name
 
 
 @admin.register(Customer)
@@ -186,6 +202,10 @@ class PlanterAdmin(ModelAdmin):
     inlines = [ImageInline, FeatureInline]
     list_display = ("name", "category", "sku", "color")
     prepopulated_fields = {"slug": ("name",)}
+    autocomplete_fields = [
+        "category",
+        "promotion",
+    ]
     search_fields = (
         "name",
         "size",
