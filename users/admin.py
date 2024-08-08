@@ -21,6 +21,7 @@ admin.site.unregister(Group)
 class UserAdmin(BaseUserAdmin, ModelAdmin):
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
+    add_form_template = "admin/auth/user/add_form.html"
     change_password_form = AdminPasswordChangeForm
     list_display = [
         "display_header",
