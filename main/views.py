@@ -22,6 +22,7 @@ from .serializers import (
     PlantCategorySerializer,
     PlantSerializer,
     PlantListSerializer,
+    PlanterCategoryListSerializer,
     PlanterCategorySerializer,
     PlantCategoryListSerializer,
     PlanterSerializer,
@@ -43,6 +44,7 @@ class ImageViewSet(viewsets.ModelViewSet):
 
 class PlantCategoryViewSet(viewsets.ModelViewSet):
     queryset = PlantCategory.objects.all()
+    lookup_field = "slug"
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -61,47 +63,53 @@ class PlantViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        plant_category_pk = self.kwargs.get("plant_category_pk")
-        if plant_category_pk:
-            queryset = queryset.filter(category_id=plant_category_pk)
+        plant_category_slug = self.kwargs.get("plant_category_slug")
+        if plant_category_slug:
+            queryset = queryset.filter(category__slug=plant_category_slug)
         return queryset
 
     @action(detail=False, url_path="indoor")
-    def indoor(self, request, plant_category_pk=None):
+    def indoor(self, request, plant_category_slug=None):
         queryset = self.get_queryset().filter(location_type="Indoor")
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = PlantListSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = PlantListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, url_path="outdoor")
-    def outdoor(self, request, plant_category_pk=None):
+    def outdoor(self, request, plant_category_slug=None):
         queryset = self.get_queryset().filter(location_type="Outdoor")
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = PlantListSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = PlantListSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
 class PlanterCategoryViewSet(viewsets.ModelViewSet):
     queryset = PlanterCategory.objects.all()
-    serializer_class = PlanterCategorySerializer
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PlanterCategoryListSerializer
+        return PlanterCategorySerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()
         planter_category_pk = self.kwargs.get("planter_category_pk")
         if planter_category_pk:
-            queryset = queryset.filter(category_id=planter_category_pk)
+            queryset = queryset.filter(category_slug=planter_category_pk)
         return queryset
 
 
 class PlanterViewSet(viewsets.ModelViewSet):
     queryset = Planter.objects.all()
     pagination_class = DefaultPagination
+    lookup_field = "slug"
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -110,13 +118,13 @@ class PlanterViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        planter_category_pk = self.kwargs.get("planter_category_pk")
-        if planter_category_pk:
-            queryset = queryset.filter(category_id=planter_category_pk)
+        planter_category_slug = self.kwargs.get("planter_category_slug")
+        if planter_category_slug:
+            queryset = queryset.filter(category__slug=planter_category_slug)
         return queryset
 
     @action(detail=False, url_path="custom")
-    def custom(self, request, planter_category_pk=None):
+    def custom(self, request, planter_category_slug=None):
         queryset = self.get_queryset().filter(is_custom=True)
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -125,11 +133,11 @@ class PlanterViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, url_path="featured")
-    def featured(self, request, planter_category_pk=None):
-        queryset = self.get_queryset().filter(tags__name__in=["featured"])
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    # @action(detail=False, url_path="featured")
+    # def featured(self, request, planter_category_slug=None):
+    #     queryset = self.get_queryset().filter(tags__name__in=["featured"])
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
 
 
 class ServiceCategoryViewSet(viewsets.ModelViewSet):

@@ -31,7 +31,6 @@ from .models import (
     Team,
     TeamContact,
     Testimonial,
-    Feature,
 )
 
 
