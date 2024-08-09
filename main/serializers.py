@@ -5,6 +5,7 @@ from tags.models import TaggedItem
 from tags.serializers import TaggedItemSerializer
 from zone.models import ProductZone
 from zone.serializers import ProductZoneSerializer
+from django.contrib.auth import get_user_model
 
 from .models import (
     Customer,
@@ -27,10 +28,26 @@ from .models import (
 )
 
 
-class CustomerSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+        ]
+
+
+class LimitedCustomerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Customer
-        fields = "__all__"
+        fields = [
+            "id",
+            "user",
+            "image",
+        ]
 
 
 class PromotionSerializer(serializers.ModelSerializer):
@@ -316,6 +333,7 @@ class PlanterSerializer(serializers.ModelSerializer):
         return ProductZoneSerializer(zones, many=True).data
 
 
+# TODO: add planting accessories serializers
 class PlantingAccessoriesCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PlantingAccessoriesCategory
@@ -331,51 +349,237 @@ class PlantingAccessoriesSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ServiceCategoryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceCategory
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "type",
+            "image",
+        ]
+
+
 class ServiceCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceCategory
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "type",
+            "description",
+            "image",
+        ]
+
+
+class LimitedServiceCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceCategory
+        fields = [
+            "id",
+            "type",
+            "title",
+        ]
+
+
+class ServiceListSerializer(serializers.ModelSerializer):
+    categories = LimitedServiceCategorySerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Service
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "categories",
+            "description",
+            "image_url",
+        ]
+
+    def get_image_url(self, service):
+        # Get the first image associated with the service
+        image = Image.objects.filter(
+            content_type=ContentType.objects.get_for_model(Service),
+            object_id=service.id,
+        ).first()
+        return image.image.url if image and image.image else None
 
 
 class ServiceSerializer(serializers.ModelSerializer):
+    categories = LimitedServiceCategorySerializer(many=True, read_only=True)
+    images = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
+
     class Meta:
         model = Service
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "categories",
+            "description",
+            "images",
+            "tags",
+        ]
+
+    def get_images(self, service):
+        images = Image.objects.filter(
+            content_type=ContentType.objects.get_for_model(Service),
+            object_id=service.id,
+        )
+        return ImageSerializer(images, many=True).data
+
+    def get_tags(self, service):
+        tags = TaggedItem.objects.filter(
+            content_type=ContentType.objects.get_for_model(Service),
+            object_id=service.id,
+        )
+        return TaggedItemSerializer(tags, many=True).data
 
 
-class LimitedServiceSerializer(serializers.ModelSerializer):
+class IdeasListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Service
-        fields = ["id", "name"]
+        model = Ideas
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "image",
+        ]
 
 
 class IdeasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ideas
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "description",
+            "image",
+        ]
 
 
 class TestimonialSerializer(serializers.ModelSerializer):
+    customer = LimitedCustomerSerializer()
+
     class Meta:
         model = Testimonial
-        fields = "__all__"
+        fields = [
+            "id",
+            "customer",
+            "slug",
+            "content",
+        ]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["customer"] = (
+            f"{instance.customer.user.first_name} {instance.customer.user.last_name}"
+        )
+        response["image"] = (
+            instance.customer.image.url if instance.customer.image else None
+        )
+        return response
 
 
-class TeamContact(serializers.ModelSerializer):
+class TeamContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamContact
-        fields = "__all__"
+        fields = [
+            "id",
+            "social_media_name",
+            "social_media_link",
+        ]
 
 
-class TeamSerializer(serializers.ModelSerializer):
-    contact = TeamContact(many=True, read_only=True)
+class TeamListSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
 
     class Meta:
         model = Team
-        fields = "__all__"
+        fields = [
+            "id",
+            "serial",
+            "user",
+            "slug",
+            "image",
+            "position",
+        ]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["user"] = f"{instance.user.first_name} {instance.user.last_name}"
+        return response
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    contacts = TeamContactSerializer(many=True, read_only=True)
+    user = UserSerializer()
+
+    class Meta:
+        model = Team
+        fields = [
+            "id",
+            "serial",
+            "user",
+            "slug",
+            "position",
+            "bio",
+            "contacts",
+        ]
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["user"] = f"{instance.user.first_name} {instance.user.last_name}"
+        return response
+
+
+class ProjectsListSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Projects
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "client",
+            "year",
+            "image_url",
+        ]
+
+    def get_image_url(self, project):
+        # Get the first image associated with the project
+        image = Image.objects.filter(
+            content_type=ContentType.objects.get_for_model(Projects),
+            object_id=project.id,
+        ).first()
+        return image.image.url if image and image.image else None
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+    categories = LimitedServiceCategorySerializer(many=True, read_only=True)
+
     class Meta:
         model = Projects
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "categories",
+            "client",
+            "year",
+            "description",
+            "images",
+        ]
+
+    def get_images(self, project):
+        images = Image.objects.filter(
+            content_type=ContentType.objects.get_for_model(Projects),
+            object_id=project.id,
+        )
+        return ImageSerializer(images, many=True).data

@@ -18,6 +18,7 @@ from .models import (
     Projects,
 )
 from .serializers import (
+    IdeasListSerializer,
     ImageSerializer,
     PlantCategorySerializer,
     PlantSerializer,
@@ -27,10 +28,13 @@ from .serializers import (
     PlantCategoryListSerializer,
     PlanterSerializer,
     PlanterListSerializer,
+    ProjectsListSerializer,
     ServiceCategorySerializer,
+    ServiceCategoryListSerializer,
     ServiceSerializer,
-    LimitedServiceSerializer,
+    ServiceListSerializer,
     IdeasSerializer,
+    TeamListSerializer,
     TestimonialSerializer,
     TeamSerializer,
     ProjectsSerializer,
@@ -142,7 +146,12 @@ class PlanterViewSet(viewsets.ModelViewSet):
 
 class ServiceCategoryViewSet(viewsets.ModelViewSet):
     queryset = ServiceCategory.objects.all()
-    serializer_class = ServiceCategorySerializer
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ServiceCategoryListSerializer
+        return ServiceCategorySerializer
 
     @action(detail=False, url_path="commercial")
     def commercial(self, request):
@@ -160,28 +169,33 @@ class ServiceCategoryViewSet(viewsets.ModelViewSet):
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     pagination_class = DefaultPagination
+    lookup_field = "slug"
 
     def get_serializer_class(self):
-        print(f"Current action: {self.action}")  # Debugging line
         if self.action == "list":
-            return LimitedServiceSerializer
+            return ServiceListSerializer
         return ServiceSerializer
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        service_category_pk = self.kwargs.get("service_categories_pk")
-        if service_category_pk:
-            queryset = queryset.filter(categories__pk=service_category_pk)
-        return queryset
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     service_category_pk = self.kwargs.get("service_categories_pk")
+    #     if service_category_pk:
+    #         queryset = queryset.filter(categories__pk=service_category_pk)
+    #     return queryset
 
 
 class IdeasViewSet(viewsets.ModelViewSet):
     queryset = Ideas.objects.all()
-    serializer_class = IdeasSerializer
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return IdeasListSerializer
+        return IdeasSerializer
 
     @action(detail=False, url_path="featured")
     def featured(self, request):
-        queryset = self.get_queryset().filter(tags__name__in=["featured"])
+        queryset = self.get_queryset().filter(is_featured=True)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -189,14 +203,24 @@ class IdeasViewSet(viewsets.ModelViewSet):
 class TestimonialViewSet(viewsets.ModelViewSet):
     queryset = Testimonial.objects.all()
     serializer_class = TestimonialSerializer
+    lookup_field = "slug"
 
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
-    serializer_class = TeamSerializer
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return TeamListSerializer
+        return TeamSerializer
 
 
 class ProjectsViewSet(viewsets.ModelViewSet):
     queryset = Projects.objects.all()
-    serializer_class = ProjectsSerializer
-    pagination_class = DefaultPagination
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ProjectsListSerializer
+        return ProjectsSerializer

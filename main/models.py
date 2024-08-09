@@ -314,6 +314,7 @@ class Ideas(models.Model):
         blank=True,
         validators=[validators.validate_file_size],
     )
+    is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -328,12 +329,6 @@ class Ideas(models.Model):
 class Testimonial(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
-    image = models.ImageField(
-        upload_to="testimonials/",
-        null=True,
-        blank=True,
-        validators=[validators.validate_file_size],
-    )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -390,7 +385,7 @@ class Team(models.Model):
 
 
 class TeamContact(models.Model):
-    team = models.OneToOneField(Team, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, related_name="contacts", on_delete=models.CASCADE)
     social_media_name = models.CharField(max_length=100)
     social_media_link = models.URLField()
 
@@ -399,7 +394,7 @@ class TeamContact(models.Model):
         verbose_name_plural = "Team Contacts"
 
     def __str__(self):
-        return self.team.name
+        return f"{self.team.user.full_name} - {self.social_media_name}"
 
 
 class Projects(models.Model):

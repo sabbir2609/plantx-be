@@ -288,8 +288,6 @@ class TestimonialAdmin(ModelAdmin):
 class TeamContactInline(TabularInline):
     model = TeamContact
     extra = 1
-    tab = True
-    hide_title = True
 
 
 @admin.register(Team)
@@ -327,6 +325,8 @@ class ProjectsAdmin(ModelAdmin):
     list_filter = ("year",)
     ordering = ("title",)
     prepopulated_fields = {"slug": ("title",)}
+
+    autocomplete_fields = ("categories",)
 
 
 # @admin.register(Image)
