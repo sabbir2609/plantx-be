@@ -167,7 +167,7 @@ class PlantSerializer(serializers.ModelSerializer):
 class PlantListSerializer(serializers.ModelSerializer):
     features = serializers.SerializerMethodField()
     promotion = PromotionSerializer(many=True, read_only=True)
-    image_url = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Plant
@@ -176,7 +176,7 @@ class PlantListSerializer(serializers.ModelSerializer):
             "name",
             "slug",
             "sku",
-            "image_url",
+            "image",
             "category",
             "features",
             "promotion",
@@ -196,7 +196,7 @@ class PlantListSerializer(serializers.ModelSerializer):
         )
         return FeatureSerializer(features, many=True).data
 
-    def get_image_url(self, plant):
+    def get_image(self, plant):
         # Get the first image associated with the plant
         image = Image.objects.filter(
             content_type=ContentType.objects.get_for_model(Plant),
@@ -236,7 +236,7 @@ class LimitedPlanterCategorySerializer(serializers.ModelSerializer):
 
 
 class PlanterListSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
     features = serializers.SerializerMethodField()
     category = LimitedPlanterCategorySerializer()
 
@@ -251,7 +251,7 @@ class PlanterListSerializer(serializers.ModelSerializer):
             "size",
             "color",
             "is_custom",
-            "image_url",
+            "image",
             "features",
         ]
 
@@ -260,7 +260,7 @@ class PlanterListSerializer(serializers.ModelSerializer):
         response["category"] = instance.category.name
         return response
 
-    def get_image_url(self, planter):
+    def get_image(self, planter):
         # Get the first image associated with the planter
         image = Image.objects.filter(
             content_type=ContentType.objects.get_for_model(Planter),
@@ -367,6 +367,7 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "slug",
             "type",
             "description",
             "image",
@@ -380,12 +381,13 @@ class LimitedServiceCategorySerializer(serializers.ModelSerializer):
             "id",
             "type",
             "title",
+            "slug",
         ]
 
 
 class ServiceListSerializer(serializers.ModelSerializer):
     categories = LimitedServiceCategorySerializer(many=True, read_only=True)
-    image_url = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
@@ -395,10 +397,10 @@ class ServiceListSerializer(serializers.ModelSerializer):
             "slug",
             "categories",
             "description",
-            "image_url",
+            "image",
         ]
 
-    def get_image_url(self, service):
+    def get_image(self, service):
         # Get the first image associated with the service
         image = Image.objects.filter(
             content_type=ContentType.objects.get_for_model(Service),
@@ -538,7 +540,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
 
 class ProjectsListSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Projects
@@ -548,10 +550,10 @@ class ProjectsListSerializer(serializers.ModelSerializer):
             "slug",
             "client",
             "year",
-            "image_url",
+            "image",
         ]
 
-    def get_image_url(self, project):
+    def get_image(self, project):
         # Get the first image associated with the project
         image = Image.objects.filter(
             content_type=ContentType.objects.get_for_model(Projects),

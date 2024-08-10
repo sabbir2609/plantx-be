@@ -12,9 +12,15 @@ urlpatterns = [
     path("api/tags/", include("tags.urls")),
     path("admin/", admin.site.urls),
     path("auth/", include("users.urls"), name="users"),
-    path("tinymce/", include("tinymce.urls")),
     # path("api-auth/", include("rest_framework.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns.extend(
+    [
+        path("ckeditor/", include("ckeditor_uploader.urls")),
+    ]
+)
+
 
 # Admin Site Config
 admin.site.site_header = "Viriditas Admin"

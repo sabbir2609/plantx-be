@@ -11,7 +11,7 @@ from unfold.decorators import display
 from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
-from tinymce.widgets import TinyMCE
+from ckeditor.widgets import CKEditorWidget as CustomWysiwygWidget
 
 from .models import (
     Customer,
@@ -165,7 +165,7 @@ class PlantAdmin(ModelAdmin, ImportExportModelAdmin):
 
     formfield_overrides = {
         models.TextField: {
-            "widget": TinyMCE,
+            "widget": CustomWysiwygWidget,
         },
     }
 
@@ -218,6 +218,12 @@ class PlanterAdmin(ModelAdmin):
     filter_horizontal = ("promotion",)
     list_per_page = 10
 
+    formfield_overrides = {
+        models.TextField: {
+            "widget": WysiwygWidget,
+        },
+    }
+
 
 @admin.register(PlantingAccessoriesCategory)
 class PlantingAccessoriesCategoryAdmin(ModelAdmin):
@@ -238,6 +244,12 @@ class PlantingAccessoriesAdmin(ModelAdmin):
     list_filter = ("category",)
     filter_horizontal = ("promotion",)
     list_per_page = 10
+
+    formfield_overrides = {
+        models.TextField: {
+            "widget": WysiwygWidget,
+        },
+    }
 
 
 @admin.register(ServiceCategory)
@@ -267,7 +279,7 @@ class ServiceAdmin(ModelAdmin):
 
     formfield_overrides = {
         models.TextField: {
-            "widget": WysiwygWidget,
+            "widget": CustomWysiwygWidget,
         },
     }
 
@@ -277,12 +289,24 @@ class IdeasAdmin(ModelAdmin):
     list_per_page = 10
     prepopulated_fields = {"slug": ("title",)}
 
+    formfield_overrides = {
+        models.TextField: {
+            "widget": CustomWysiwygWidget,
+        },
+    }
+
 
 @admin.register(Testimonial)
 class TestimonialAdmin(ModelAdmin):
     list_display = ("customer", "created_at")
     autocomplete_fields = ("customer",)
     list_per_page = 10
+
+    formfield_overrides = {
+        models.TextField: {
+            "widget": WysiwygWidget,
+        },
+    }
 
 
 class TeamContactInline(TabularInline):
@@ -316,6 +340,12 @@ class TeamAdmin(ModelAdmin):
         ),
     )
 
+    formfield_overrides = {
+        models.TextField: {
+            "widget": WysiwygWidget,
+        },
+    }
+
 
 @admin.register(Projects)
 class ProjectsAdmin(ModelAdmin):
@@ -327,6 +357,12 @@ class ProjectsAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 
     autocomplete_fields = ("categories",)
+
+    formfield_overrides = {
+        models.TextField: {
+            "widget": CustomWysiwygWidget,
+        },
+    }
 
 
 # @admin.register(Image)

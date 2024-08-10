@@ -28,7 +28,15 @@ class BannerImage(models.Model):
 class ContactInfo(models.Model):
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=20)
+    whatsapp = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
+
+    facebook = models.URLField(null=True, blank=True)
+    x = models.URLField(null=True, blank=True)
+    linkedin = models.URLField(null=True, blank=True)
+    instagram = models.URLField(null=True, blank=True)
+    youtube = models.URLField(null=True, blank=True)
+    pinterest = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.email

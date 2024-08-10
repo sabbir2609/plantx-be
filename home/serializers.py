@@ -11,7 +11,7 @@ class BannerImageSerializer(serializers.ModelSerializer):
 class ContactInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactInfo
-        fields = ["address", "phone", "email"]
+        fields = "__all__"
 
 
 class OurClientsSerializer(serializers.ModelSerializer):

@@ -7,7 +7,6 @@ from unfold.admin import ModelAdmin
 class BannerImageAdmin(ModelAdmin):
     list_display = ("id", "alt_text", "screen_size")
     search_fields = ("alt_text",)
-
     list_filter = ("screen_size",)
 
 

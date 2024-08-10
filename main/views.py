@@ -59,6 +59,7 @@ class PlantCategoryViewSet(viewsets.ModelViewSet):
 class PlantViewSet(viewsets.ModelViewSet):
     queryset = Plant.objects.all()
     pagination_class = DefaultPagination
+    lookup_field = "slug"
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -132,9 +133,9 @@ class PlanterViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(is_custom=True)
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = PlanterListSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = PlanterListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     # @action(detail=False, url_path="featured")
@@ -218,6 +219,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 
 class ProjectsViewSet(viewsets.ModelViewSet):
     queryset = Projects.objects.all()
+    pagination_class = DefaultPagination
     lookup_field = "slug"
 
     def get_serializer_class(self):
