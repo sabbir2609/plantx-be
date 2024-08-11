@@ -302,12 +302,6 @@ class TestimonialAdmin(ModelAdmin):
     autocomplete_fields = ("customer",)
     list_per_page = 10
 
-    formfield_overrides = {
-        models.TextField: {
-            "widget": WysiwygWidget,
-        },
-    }
-
 
 class TeamContactInline(TabularInline):
     model = TeamContact
