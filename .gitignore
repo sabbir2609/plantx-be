@@ -3,3 +3,4 @@
 .env
 staticfiles/*
 .prod.env
+db.sqlite3
