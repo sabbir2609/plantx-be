@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BannerImage, ContactInfo, OurClients, LegalDocument
+from .models import BannerImage, ContactInfo, ContactMessage, OurClients, LegalDocument
 
 
 class BannerImageSerializer(serializers.ModelSerializer):
@@ -24,3 +24,9 @@ class LegalDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = LegalDocument
         fields = "__all__"
+
+
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = ["name", "email", "message"]

@@ -3,6 +3,7 @@
         "asgi",
         "Browsable",
         "CLOUDINARY",
+        "contactmessage",
         "corsheaders",
         "djoser",
         "dotenv",

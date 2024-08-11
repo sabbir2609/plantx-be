@@ -1,6 +1,5 @@
 .venv
 *.pyc
-.env
+*.env
 staticfiles/*
-.prod.env
 db.sqlite3

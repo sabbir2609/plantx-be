@@ -327,6 +327,16 @@ UNFOLD = {
                 "separator": True,
                 "items": [
                     {
+                        "title": _("Messages"),
+                        "icon": "message",
+                        "link": reverse_lazy("admin:home_contactmessage_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
                         "title": _("Plant Categories"),
                         "icon": "category",
                         "link": reverse_lazy("admin:main_plantcategory_changelist"),

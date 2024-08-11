@@ -1,13 +1,17 @@
 from django.views.generic import TemplateView
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .models import BannerImage, ContactInfo, OurClients, LegalDocument
+from rest_framework import status
+
+from .models import BannerImage, ContactInfo, ContactMessage, LegalDocument, OurClients
 from .serializers import (
     BannerImageSerializer,
     ContactInfoSerializer,
-    OurClientsSerializer,
+    ContactMessageSerializer,
     LegalDocumentSerializer,
+    OurClientsSerializer,
 )
 
 
@@ -45,3 +49,15 @@ class OurClientsViewSet(viewsets.ModelViewSet):
 class LegalDocumentViewSet(viewsets.ModelViewSet):
     queryset = LegalDocument.objects.all()
     serializer_class = LegalDocumentSerializer
+
+
+class ContactMessageViewSet(viewsets.ModelViewSet):
+    queryset = ContactMessage.objects.all()
+    serializer_class = ContactMessageSerializer
+    permission_classes = [AllowAny]
+
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_403_FORBIDDEN)
