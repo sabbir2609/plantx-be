@@ -23,7 +23,13 @@ ALLOWED_HOSTS = website_hostname.split(",") if website_hostname else []
 
 # Process CORS_ALLOWED_ORIGINS
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
+print(CORS_ALLOWED_ORIGINS)
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+]
 
 # Set CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = (
