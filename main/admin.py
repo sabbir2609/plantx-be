@@ -165,7 +165,7 @@ class PlantAdmin(ModelAdmin, ImportExportModelAdmin):
 
     formfield_overrides = {
         models.TextField: {
-            "widget": CustomWysiwygWidget,
+            "widget": WysiwygWidget,
         },
     }
 
