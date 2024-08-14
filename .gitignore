@@ -1,5 +1,4 @@
 .venv
 *.pyc
-*.env
 staticfiles/*
-db.sqlite3
+backups/

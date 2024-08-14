@@ -5,6 +5,7 @@
         "CLOUDINARY",
         "contactmessage",
         "corsheaders",
+        "DBBACKUP",
         "djoser",
         "dotenv",
         "FAVICONS",
