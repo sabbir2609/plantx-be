@@ -1,10 +1,14 @@
 import os
-from .base import *  # noqa: F403
-from dotenv import load_dotenv
+from pathlib import Path
+
 import dj_database_url
+from dotenv import load_dotenv
+
+from .base import *  # noqa: F403
 
 # Load environment variables from .env file
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 # Retrieve essential environment variables
 SECRET_KEY = os.getenv("SECRET_KEY")
