@@ -15,6 +15,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Convert DEBUG to boolean
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
+print(DEBUG)
 
 # Process WEBSITE_HOSTNAME
 website_hostname = os.getenv("WEBSITE_HOSTNAME", "")
@@ -33,6 +34,8 @@ CORS_ALLOW_METHODS = [
     "GET",
     "POST",
 ]
+
+INTERNAL_IPS=["127.0.0.1"]
 
 # Set CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = (
