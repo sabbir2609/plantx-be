@@ -59,10 +59,8 @@ class PlantCategoryViewSet(viewsets.ModelViewSet):
 class PlantViewSet(viewsets.ModelViewSet):
     queryset = Plant.objects.prefetch_related(
         "category",
-        "images",
+        "promotion",
         "features",
-        "tags",
-        "zones",
     ).all()
     pagination_class = DefaultPagination
     lookup_field = "slug"
