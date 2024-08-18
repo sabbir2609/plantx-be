@@ -3,9 +3,13 @@ import random
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from tags.models import TaggedItem
+from zone.models import ProductZone
 
 from . import validators
 
@@ -181,6 +185,11 @@ class Plant(BaseProduct):
         choices=LocationChoices.choices,
     )
     care_instructions = models.TextField(blank=True, null=True)
+
+    images = GenericRelation(Image)
+    features = GenericRelation(Feature)
+    tags = GenericRelation(TaggedItem)
+    zones = GenericRelation(ProductZone)
 
     def generate_sku(self):
         return f"PL{self.name[:2].upper()}{self.category.name[:3].upper()}{random.randint(100, 999)}"
