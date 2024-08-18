@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-# import dj_database_url
+import dj_database_url
 from dotenv import load_dotenv
 
 from .base import *  # noqa: F403
@@ -45,17 +45,11 @@ CSRF_TRUSTED_ORIGINS = (
 SITE_NAME = website_hostname
 
 # Configure the default database
-# DATABASES = {
-#     "default": dj_database_url.config(
-#         default=os.getenv("DATABASE_URL"), conn_max_age=600
-#     )
-# }
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=os.getenv("DATABASE_URL"), conn_max_age=600
+    )
 }
 
 # Configure Cloudinary storage
