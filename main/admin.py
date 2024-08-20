@@ -359,18 +359,21 @@ class ProjectsAdmin(ModelAdmin):
     }
 
 
-# @admin.register(Image)
-# class ImageAdmin(ModelAdmin):
-#     list_display = ("get_object_name", "image", "content_type", "object_id")
-#     list_filter = ("content_type",)
-#     search_fields = ("short_description",)
+@admin.register(Image)
+class ImageAdmin(ModelAdmin, ImportExportModelAdmin):
+    list_display = ("get_object_name", "image", "content_type", "object_id")
+    list_filter = ("content_type",)
+    search_fields = ("short_description",)
 
-#     def get_queryset(self, request):
-#         queryset = super().get_queryset(request)
-#         return queryset.select_related("content_type")
+    import_form_class = ImportForm
+    export_form_class = ExportForm
 
-#     def get_object_name(self, obj):
-#         return obj.content_object.name
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related("content_type")
+
+    def get_object_name(self, obj):
+        return obj.content_object
 
 
 # @admin.register(Feature)

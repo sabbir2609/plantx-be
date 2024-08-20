@@ -70,7 +70,7 @@ class Image(models.Model):
         verbose_name_plural = "Images"
 
     def __str__(self):
-        return self.image.url
+        return f"{self.content_type.name}: {self.content_object} - {self.image}"
 
 
 class Feature(models.Model):
@@ -82,7 +82,7 @@ class Feature(models.Model):
     class Meta:
         verbose_name = "Feature"
         verbose_name_plural = "Features"
-        ordering = ["name"]
+        ordering = ["id"]
 
     def __str__(self):
         return self.name
@@ -120,6 +120,12 @@ class BaseProduct(models.Model):
         validators=[MinValueValidator(1)],
         help_text="Number of items in stock",
     )
+
+    images = GenericRelation(Image, related_name="images")
+    features = GenericRelation(Feature, related_name="features")
+    zones = GenericRelation(ProductZone, related_name="zones")
+    tags = GenericRelation(TaggedItem, related_name="tags")
+
     promotion = models.ManyToManyField("Promotion", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

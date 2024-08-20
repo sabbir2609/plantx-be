@@ -1,43 +1,47 @@
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .pagination import DefaultPagination
+from zone.models import ProductZone
 
 from .models import (
-    Image,
-    PlantCategory,
-    Plant,
-    PlanterCategory,
-    Planter,
-    ServiceCategory,
-    Service,
+    Feature,
     Ideas,
-    Testimonial,
-    Team,
+    Image,
+    Plant,
+    PlantCategory,
+    Planter,
+    PlanterCategory,
     Projects,
+    Service,
+    ServiceCategory,
+    Team,
+    Testimonial,
 )
+from .pagination import DefaultPagination
 from .serializers import (
     IdeasListSerializer,
+    IdeasSerializer,
     ImageSerializer,
+    PlantCategoryListSerializer,
     PlantCategorySerializer,
-    PlantSerializer,
-    PlantListSerializer,
     PlanterCategoryListSerializer,
     PlanterCategorySerializer,
-    PlantCategoryListSerializer,
-    PlanterSerializer,
     PlanterListSerializer,
+    PlanterSerializer,
+    PlantListSerializer,
+    PlantSerializer,
     ProjectsListSerializer,
-    ServiceCategorySerializer,
-    ServiceCategoryListSerializer,
-    ServiceSerializer,
-    ServiceListSerializer,
-    IdeasSerializer,
-    TeamListSerializer,
-    TestimonialSerializer,
-    TeamSerializer,
     ProjectsSerializer,
+    ServiceCategoryListSerializer,
+    ServiceCategorySerializer,
+    ServiceListSerializer,
+    ServiceSerializer,
+    TeamListSerializer,
+    TeamSerializer,
+    TestimonialSerializer,
 )
 
 
@@ -57,11 +61,7 @@ class PlantCategoryViewSet(viewsets.ModelViewSet):
 
 
 class PlantViewSet(viewsets.ModelViewSet):
-    queryset = Plant.objects.prefetch_related(
-        "category",
-        "promotion",
-        "features",
-    ).all()
+    queryset = Plant.objects.all()
     pagination_class = DefaultPagination
     lookup_field = "slug"
 
@@ -72,9 +72,36 @@ class PlantViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        content_type = ContentType.objects.get_for_model(Plant)
         plant_category_slug = self.kwargs.get("plant_category_slug")
+
         if plant_category_slug:
             queryset = queryset.filter(category__slug=plant_category_slug)
+
+        # Prefetch related images
+        queryset = queryset.select_related("category").prefetch_related(
+            "promotion",
+            Prefetch(
+                "images",
+                queryset=Image.objects.filter(content_type=content_type).order_by("id"),
+                to_attr="prefetched_images",
+            ),
+            Prefetch(
+                "features",
+                queryset=Feature.objects.filter(content_type=content_type).order_by(
+                    "id"
+                ),
+                to_attr="prefetched_features",
+            ),
+            Prefetch(
+                "zones",
+                queryset=ProductZone.objects.filter(content_type=content_type).order_by(
+                    "id"
+                ),
+                to_attr="prefetched_zones",
+            ),
+        )
+
         return queryset
 
     @action(detail=False, url_path="indoor")

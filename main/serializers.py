@@ -114,7 +114,7 @@ class PlantSerializer(serializers.ModelSerializer):
     features = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
-    zone = serializers.SerializerMethodField()
+    zones = serializers.SerializerMethodField()
 
     class Meta:
         model = Plant
@@ -130,7 +130,7 @@ class PlantSerializer(serializers.ModelSerializer):
             "care_instructions",
             "promotion",
             "features",
-            "zone",
+            "zones",
             "tags",
         ]
 
@@ -139,35 +139,23 @@ class PlantSerializer(serializers.ModelSerializer):
         response["category"] = instance.category.name
         return response
 
-    def get_features(self, plant):
-        features = Feature.objects.filter(
-            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
-        )
-        return FeatureSerializer(features, many=True).data
+    def get_images(self, obj):
+        return ImageSerializer(obj.images.all(), many=True).data
 
-    def get_images(self, plant):
-        images = Image.objects.filter(
-            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
-        )
-        return ImageSerializer(images, many=True).data
+    def get_features(self, obj):
+        return FeatureSerializer(obj.features.all(), many=True).data
 
-    def get_tags(self, plant):
-        tags = TaggedItem.objects.filter(
-            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
-        )
-        return TaggedItemSerializer(tags, many=True).data
+    def get_zones(self, obj):
+        return ProductZoneSerializer(obj.zones.all(), many=True).data
 
-    def get_zone(self, plant):
-        zones = ProductZone.objects.filter(
-            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
-        )
-        return ProductZoneSerializer(zones, many=True).data
+    def get_tags(self, obj):
+        return TaggedItemSerializer(obj.tags.all(), many=True).data
 
 
 class PlantListSerializer(serializers.ModelSerializer):
     features = serializers.SerializerMethodField()
-    promotion = PromotionSerializer(many=True, read_only=True)
     image = serializers.SerializerMethodField()
+    promotion = PromotionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Plant
@@ -190,19 +178,19 @@ class PlantListSerializer(serializers.ModelSerializer):
 
         return response
 
-    def get_features(self, plant):
-        features = Feature.objects.filter(
-            content_type=ContentType.objects.get_for_model(Plant), object_id=plant.id
-        )
+    def get_features(self, obj):
+        features = obj.prefetched_features[:2]
         return FeatureSerializer(features, many=True).data
 
-    def get_image(self, plant):
-        # Get the first image associated with the plant
-        image = Image.objects.filter(
-            content_type=ContentType.objects.get_for_model(Plant),
-            object_id=plant.id,
-        ).first()
-        return image.image.url if image and image.image else None
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.prefetched_images:
+            first_image = obj.prefetched_images[0]
+            image_url = first_image.image.url  # This is a relative URL
+            if request is not None:
+                return request.build_absolute_uri(image_url)  # Converts to absolute URL
+            return image_url  # Fallback to relative URL if no request in context
+        return None
 
 
 class PlanterCategorySerializer(serializers.ModelSerializer):

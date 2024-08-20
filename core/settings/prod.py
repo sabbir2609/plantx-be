@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Convert DEBUG to boolean
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
-print(DEBUG)
+print(f"DEBUG In Prod: {DEBUG}")
 
 # Process WEBSITE_HOSTNAME
 website_hostname = os.getenv("WEBSITE_HOSTNAME", "")
@@ -35,7 +35,7 @@ CORS_ALLOW_METHODS = [
     "POST",
 ]
 
-INTERNAL_IPS=["127.0.0.1"]
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Set CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = (
@@ -54,6 +54,14 @@ DATABASES = {
         default=os.getenv("DATABASE_URL"), conn_max_age=600
     )
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 
 # Configure Cloudinary storage
 CLOUDINARY_STORAGE = {
