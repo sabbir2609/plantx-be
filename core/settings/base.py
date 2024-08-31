@@ -338,6 +338,16 @@ UNFOLD = {
                         "icon": "message",
                         "link": reverse_lazy("admin:home_contactmessage_changelist"),
                     },
+                    {
+                        "title": _("Announcements"),
+                        "icon": "announcement",
+                        "link": reverse_lazy("admin:home_announcement_changelist"),
+                    },
+                    {
+                        "title": _("Events"),
+                        "icon": "event",
+                        "link": reverse_lazy("admin:main_event_changelist"),
+                    },
                 ],
             },
             {

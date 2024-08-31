@@ -6,6 +6,7 @@ from .views import (
     OurClientsViewSet,
     LegalDocumentViewSet,
     ContactMessageViewSet,
+    AnnouncementViewSet,
 )
 
 router = DefaultRouter()
@@ -14,6 +15,7 @@ router.register("contact-info", ContactInfoViewSet, basename="contact-info")
 router.register("our-clients", OurClientsViewSet, basename="our-clients")
 router.register("legal-documents", LegalDocumentViewSet, basename="legal-document")
 router.register("contact", ContactMessageViewSet, basename="contact-message")
+router.register("announcements", AnnouncementViewSet, basename="announcement")
 
 urlpatterns = [
     path("", include(router.urls)),

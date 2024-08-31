@@ -19,6 +19,7 @@ from .models import (
     ServiceCategory,
     Team,
     Testimonial,
+    Event,
 )
 from .pagination import DefaultPagination
 from .serializers import (
@@ -42,6 +43,8 @@ from .serializers import (
     TeamListSerializer,
     TeamSerializer,
     TestimonialSerializer,
+    EventListSerializer,
+    EventSerializer,
 )
 
 
@@ -285,3 +288,14 @@ class ProjectsViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return ProjectsListSerializer
         return ProjectsSerializer
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    pagination_class = DefaultPagination
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return EventListSerializer
+        return EventSerializer

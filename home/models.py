@@ -88,3 +88,17 @@ class ContactMessage(models.Model):
     class Meta:
         verbose_name = "Contact Message"
         verbose_name_plural = "Contact Messages"
+
+
+class Announcement(models.Model):
+    title = models.CharField(max_length=255)
+    body = models.TextField()
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Announcement"
+        verbose_name_plural = "Announcements"

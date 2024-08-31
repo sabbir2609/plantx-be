@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from os import getenv
+import dj_database_url
 from dotenv import load_dotenv
 
 from .base import *  # noqa: F403
@@ -50,24 +50,32 @@ CSRF_TRUSTED_ORIGINS = (
 SITE_NAME = website_hostname
 
 # Configure the default database
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": getenv("PGDATABASE"),
+#         "USER": getenv("PGUSER"),
+#         "PASSWORD": getenv("PGPASSWORD"),
+#         "HOST": getenv("PGHOST"),
+#         "PORT": getenv("PGPORT", 5432),
+#         "OPTIONS": {
+#             "sslmode": "require",
+#             # "pool": {
+#             #     "min_size": 2,
+#             #     "max_size": 4,
+#             #     "timeout": 10,
+#             # },
+#         },
+#         "DISABLE_SERVER_SIDE_CURSORS": True,
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": getenv("PGDATABASE"),
-        "USER": getenv("PGUSER"),
-        "PASSWORD": getenv("PGPASSWORD"),
-        "HOST": getenv("PGHOST"),
-        "PORT": getenv("PGPORT", 5432),
-        "OPTIONS": {
-            "sslmode": "require",
-            # "pool": {
-            #     "min_size": 2,
-            #     "max_size": 4,
-            #     "timeout": 10,
-            # },
-        },
-        "DISABLE_SERVER_SIDE_CURSORS": True,
-    }
+    "default": dj_database_url.config(
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 

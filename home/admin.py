@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import BannerImage, ContactInfo, OurClients, LegalDocument, ContactMessage
+from .models import (
+    BannerImage,
+    ContactInfo,
+    OurClients,
+    LegalDocument,
+    ContactMessage,
+    Announcement,
+)
 from unfold.admin import ModelAdmin
 
 
@@ -49,3 +56,12 @@ class ContactMessageAdmin(ModelAdmin):
         self.message_user(request, "Selected messages marked as read.")
 
     mark_as_read.short_description = "Mark selected messages as read"
+
+
+@admin.register(Announcement)
+class AnnouncementAdmin(ModelAdmin):
+    list_display = ("title", "is_active", "created_at")
+    search_fields = ("title", "body")
+    list_filter = ("created_at",)
+    date_hierarchy = "created_at"
+    list_per_page = 10

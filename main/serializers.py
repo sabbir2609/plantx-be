@@ -25,6 +25,7 @@ from .models import (
     Team,
     TeamContact,
     Testimonial,
+    Event,
 )
 
 
@@ -572,3 +573,30 @@ class ProjectsSerializer(serializers.ModelSerializer):
             object_id=project.id,
         )
         return ImageSerializer(images, many=True).data
+
+
+class EventListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "date",
+            "location",
+            "image",
+        ]
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "date",
+            "location",
+            "description",
+            "image",
+        ]

@@ -31,6 +31,7 @@ from .models import (
     Team,
     TeamContact,
     Testimonial,
+    Event,
 )
 
 
@@ -374,6 +375,21 @@ class ImageAdmin(ModelAdmin, ImportExportModelAdmin):
 
     def get_object_name(self, obj):
         return obj.content_object
+
+
+@admin.register(Event)
+class EventAdmin(ModelAdmin):
+    list_display = ("title", "start_date", "end_date", "location", "created_at")
+    prepopulated_fields = {"slug": ("title",)}
+    search_fields = ("title", "location")
+    list_filter = ("start_date", "end_date", "location")
+    list_per_page = 10
+
+    formfield_overrides = {
+        models.TextField: {
+            "widget": CustomWysiwygWidget,
+        },
+    }
 
 
 # @admin.register(Feature)

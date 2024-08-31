@@ -11,6 +11,7 @@ from .views import (
     TestimonialViewSet,
     TeamViewSet,
     ProjectsViewSet,
+    EventViewSet,
 )
 
 app_name = "main"
@@ -59,6 +60,7 @@ router.register("testimonials", TestimonialViewSet, basename="testimonials")
 router.register("team", TeamViewSet, basename="team")
 
 router.register("projects", ProjectsViewSet, basename="projects")
+router.register("events", EventViewSet, basename="events")
 
 urlpatterns = [
     path("", include(router.urls)),

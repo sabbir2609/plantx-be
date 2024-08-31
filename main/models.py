@@ -436,3 +436,28 @@ class Projects(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Event(models.Model):
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
+    description = models.TextField()
+    image = models.ImageField(
+        upload_to="events/",
+        null=True,
+        blank=True,
+        validators=[validators.validate_file_size],
+    )
+    start_date = models.DateField()
+    end_date = models.DateField()
+    location = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_upcoming = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Event"
+        verbose_name_plural = "Events"
+        ordering = ["-start_date"]
+
+    def __str__(self):
+        return self.title
