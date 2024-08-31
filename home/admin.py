@@ -5,9 +5,11 @@ from unfold.admin import ModelAdmin
 
 @admin.register(BannerImage)
 class BannerImageAdmin(ModelAdmin):
-    list_display = ("id", "alt_text", "screen_size")
+    list_display = ("alt_text", "screen_size")
     search_fields = ("alt_text",)
     list_filter = ("screen_size",)
+
+    prepopulated_fields = {"alt_text": ("image",)}
 
 
 @admin.register(ContactInfo)

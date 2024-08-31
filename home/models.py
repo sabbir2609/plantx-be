@@ -12,9 +12,8 @@ class BannerImage(models.Model):
         choices=ScreenSizeChoices.choices,
     )
     alt_text = models.CharField(
+        default="Banner Image",
         max_length=255,
-        null=True,
-        blank=True,
     )
 
     def __str__(self):
