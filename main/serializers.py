@@ -175,7 +175,6 @@ class PlantListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response["category"] = instance.category.name
-
         return response
 
     def get_features(self, obj):
@@ -224,9 +223,9 @@ class LimitedPlanterCategorySerializer(serializers.ModelSerializer):
 
 
 class PlanterListSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
     features = serializers.SerializerMethodField()
-    category = LimitedPlanterCategorySerializer()
+    image = serializers.SerializerMethodField()
+    promotion = PromotionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Planter
@@ -241,6 +240,7 @@ class PlanterListSerializer(serializers.ModelSerializer):
             "is_custom",
             "image",
             "features",
+            "promotion",
         ]
 
     def to_representation(self, instance):
@@ -248,20 +248,19 @@ class PlanterListSerializer(serializers.ModelSerializer):
         response["category"] = instance.category.name
         return response
 
-    def get_image(self, planter):
-        # Get the first image associated with the planter
-        image = Image.objects.filter(
-            content_type=ContentType.objects.get_for_model(Planter),
-            object_id=planter.id,
-        ).first()
-        return image.image.url if image and image.image else None
-
-    def get_features(self, planter):
-        features = Feature.objects.filter(
-            content_type=ContentType.objects.get_for_model(Planter),
-            object_id=planter.id,
-        )
+    def get_features(self, obj):
+        features = obj.prefetched_features[:2]
         return FeatureSerializer(features, many=True).data
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.prefetched_images:
+            first_image = obj.prefetched_images[0]
+            image_url = first_image.image.url  # This is a relative URL
+            if request is not None:
+                return request.build_absolute_uri(image_url)
+            return image_url
+        return None
 
 
 class PlanterSerializer(serializers.ModelSerializer):

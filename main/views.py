@@ -78,7 +78,7 @@ class PlantViewSet(viewsets.ModelViewSet):
         if plant_category_slug:
             queryset = queryset.filter(category__slug=plant_category_slug)
 
-        # Prefetch related images
+        # Prefetch related
         queryset = queryset.select_related("category").prefetch_related(
             "promotion",
             Prefetch(
@@ -154,9 +154,37 @@ class PlanterViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        content_type = ContentType.objects.get_for_model(Planter)
+
         planter_category_slug = self.kwargs.get("planter_category_slug")
+
         if planter_category_slug:
             queryset = queryset.filter(category__slug=planter_category_slug)
+
+        # Prefetch related
+        queryset = queryset.select_related("category").prefetch_related(
+            "promotion",
+            Prefetch(
+                "images",
+                queryset=Image.objects.filter(content_type=content_type).order_by("id"),
+                to_attr="prefetched_images",
+            ),
+            Prefetch(
+                "features",
+                queryset=Feature.objects.filter(content_type=content_type).order_by(
+                    "id"
+                ),
+                to_attr="prefetched_features",
+            ),
+            Prefetch(
+                "zones",
+                queryset=ProductZone.objects.filter(content_type=content_type).order_by(
+                    "id"
+                ),
+                to_attr="prefetched_zones",
+            ),
+        )
+
         return queryset
 
     @action(detail=False, url_path="custom")

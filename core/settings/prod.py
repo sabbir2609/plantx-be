@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-import dj_database_url
+from os import getenv
 from dotenv import load_dotenv
 
 from .base import *  # noqa: F403
@@ -15,7 +15,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Convert DEBUG to boolean
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
-print(f"DEBUG In Prod: {DEBUG}")
+
+if DEBUG == "True":
+    print("DEBUG is True in prod.py")
 
 # Process WEBSITE_HOSTNAME
 website_hostname = os.getenv("WEBSITE_HOSTNAME", "")
@@ -48,19 +50,25 @@ CSRF_TRUSTED_ORIGINS = (
 SITE_NAME = website_hostname
 
 # Configure the default database
-
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL"), conn_max_age=600
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": getenv("PGDATABASE"),
+        "USER": getenv("PGUSER"),
+        "PASSWORD": getenv("PGPASSWORD"),
+        "HOST": getenv("PGHOST"),
+        "PORT": getenv("PGPORT", 5432),
+        "OPTIONS": {
+            "sslmode": "require",
+            # "pool": {
+            #     "min_size": 2,
+            #     "max_size": 4,
+            #     "timeout": 10,
+            # },
+        },
+        "DISABLE_SERVER_SIDE_CURSORS": True,
+    }
 }
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 
 
 # Configure Cloudinary storage
