@@ -1,12 +1,12 @@
+import os
 import random
-
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.text import slugify
 
 from tags.models import TaggedItem
 from zone.models import ProductZone
@@ -55,13 +55,21 @@ class Customer(models.Model):
         return self.user.last_name
 
 
+def upload_to(instance, filename):
+    model_name = slugify(instance.content_type.model)
+    instance_slug = slugify(
+        getattr(instance.content_object, "slug", instance.object_id)
+    )
+    return os.path.join("images", model_name, instance_slug, filename)
+
+
 class Image(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
     image = models.ImageField(
-        upload_to="images/", validators=[validators.validate_file_size]
+        upload_to=upload_to, validators=[validators.validate_file_size]
     )
     short_description = models.CharField(max_length=255, blank=True, null=True)
 
