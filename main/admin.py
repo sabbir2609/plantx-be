@@ -348,7 +348,6 @@ class ProjectsAdmin(ModelAdmin):
     list_display = ("title", "client", "year", "created_at")
     search_fields = ("title", "client", "year")
     list_filter = ("year",)
-    ordering = ("title",)
     prepopulated_fields = {"slug": ("title",)}
 
     autocomplete_fields = ("categories",)
