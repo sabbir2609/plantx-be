@@ -343,7 +343,7 @@ class Ideas(models.Model):
     class Meta:
         verbose_name = "Idea"
         verbose_name_plural = "Ideas"
-        ordering = ["title"]
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.title

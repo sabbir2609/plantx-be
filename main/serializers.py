@@ -582,7 +582,8 @@ class EventListSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "slug",
-            "date",
+            "start_date",
+            "end_date",
             "location",
             "image",
         ]
@@ -591,12 +592,4 @@ class EventListSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = [
-            "id",
-            "title",
-            "slug",
-            "date",
-            "location",
-            "description",
-            "image",
-        ]
+        fields = "__all__"

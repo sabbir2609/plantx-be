@@ -287,6 +287,11 @@ class ServiceAdmin(ModelAdmin):
 
 @admin.register(Ideas)
 class IdeasAdmin(ModelAdmin):
+    list_display = (
+        "title",
+        "is_featured",
+    )
+    list_editable = ("is_featured",)
     list_per_page = 10
     prepopulated_fields = {"slug": ("title",)}
 
@@ -378,11 +383,12 @@ class ImageAdmin(ModelAdmin, ImportExportModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(ModelAdmin):
-    list_display = ("title", "start_date", "end_date", "location", "created_at")
+    list_display = ("title", "start_date", "end_date", "location", "is_upcoming")
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title", "location")
     list_filter = ("start_date", "end_date", "location")
     list_per_page = 10
+    list_editable = ("is_upcoming",)
 
     formfield_overrides = {
         models.TextField: {
