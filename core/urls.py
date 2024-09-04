@@ -3,6 +3,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+# dev import
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
+
 from home.views import HomePageTemplateView
 
 urlpatterns = [
@@ -10,8 +17,8 @@ urlpatterns = [
     path("api/main/", include("main.urls"), name="main"),
     path("api/home/", include("home.urls")),
     path("api/tags/", include("tags.urls")),
+    path("api/auth/", include("users.urls"), name="users"),
     path("admin/", admin.site.urls),
-    path("auth/", include("users.urls"), name="users"),
     # path("api-auth/", include("rest_framework.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
@@ -33,3 +40,19 @@ if settings.DEBUG:
     urlpatterns += debug_toolbar_urls()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# dev
+if settings.DEBUG:
+    urlpatterns += [
+        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+        path(
+            "api/schema/swagger-ui/",
+            SpectacularSwaggerView.as_view(url_name="schema"),
+            name="swagger-ui",
+        ),
+        path(
+            "api/schema/redoc/",
+            SpectacularRedocView.as_view(url_name="schema"),
+            name="redoc",
+        ),
+    ]

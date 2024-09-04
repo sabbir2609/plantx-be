@@ -11,8 +11,8 @@ from unfold.decorators import display
 from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
-from ckeditor.widgets import CKEditorWidget as CustomWysiwygWidget
-
+# from ckeditor.widgets import RichTextUploadingField as CustomWysiwygWidget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget as CustomWysiwygWidget
 from .models import (
     Customer,
     Feature,

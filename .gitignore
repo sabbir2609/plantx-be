@@ -3,3 +3,5 @@
 staticfiles/*
 backups/
 .env
+logs/
+media/

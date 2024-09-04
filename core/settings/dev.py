@@ -46,6 +46,7 @@ INTERNAL_IPS = [
 ]
 
 SITE_NAME = "plantx"
+DOMAIN = os.environ["DOMAIN"]
 
 
 DATABASES = {
@@ -68,3 +69,25 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = "noreply@zenith.com"
+
+
+INSTALLED_APPS += [  # noqa: F405
+    "drf_spectacular",
+]
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Viriditas API",
+    "DESCRIPTION": "API for Viriditas",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # OTHER SETTINGS
+}
+
+
+# Email Settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")

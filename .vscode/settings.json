@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "asgi",
+        "Bangla",
         "Browsable",
         "CLOUDINARY",
         "contactmessage",
@@ -24,9 +25,11 @@
         "plantimage",
         "plantx",
         "projectimage",
+        "redoc",
         "servicecategory",
         "serviceimage",
         "servicetype",
+        "simplejwt",
         "taggit",
         "tinymce",
         "vercel",

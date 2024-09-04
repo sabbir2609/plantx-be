@@ -1,11 +1,11 @@
-from datetime import timedelta
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from django.templatetags.static import static
 from django.urls import reverse_lazy  # noqa: F401
 from django.utils.translation import gettext_lazy as _  # noqa: F401
-from import_export.formats.base_formats import XLSX, CSV, JSON
+from import_export.formats.base_formats import CSV, JSON, XLSX
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -48,12 +48,13 @@ INSTALLED_APPS = [
     "debug_toolbar",
 ]
 
-
+# Dbbackup settings
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {
     "location": BASE_DIR / "backups/db",
 }
 
+# Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # whitenoise middleware
@@ -69,6 +70,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "core.urls"
 
+# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -107,13 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Asia/Dhaka"
-
 USE_I18N = True
-
 USE_TZ = True
-
 LANGUAGES = [
     ("en", _("English")),
     ("bn", _("Bangla")),
@@ -125,10 +123,11 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
+# Authentication settings
 AUTHENTICATION_BACKENDS = [
     "users.backends.EmailAndUsernameBackend",  # custom backend for email and username login
     "social_core.backends.facebook.FacebookOAuth2",
@@ -136,16 +135,19 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
+
+# REST Framework settings
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": ("users.authentication.CustomJWTAuthentication",),
-    # "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 AUTH_USER_MODEL = "users.User"
 
+# JWT settings
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=3),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
@@ -157,11 +159,11 @@ SIMPLE_JWT = {
 DJOSER = {
     "LOGIN_FIELD": "email",
     "USER_CREATE_PASSWORD_RETYPE": True,
-    "ACTIVATION_URL": "auth/activation/{uid}/{token}",
+    "ACTIVATION_URL": "api/auth/activation/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
-    "PASSWORD_RESET_CONFIRM_URL": "auth/password-reset/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "api/auth/password-reset/{uid}/{token}",
     "SET_PASSWORD_RETYPE": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     "TOKEN_MODEL": None,
@@ -190,13 +192,10 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["username"]
-
 SOCIAL_AUTH_FACEBOOK_KEY = os.getenv("FACEBOOK_AUTH_KEY")
 SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv("FACEBOOK_AUTH_SECRET_KEY")
-
 SOCIAL_AUTH_FACEBOOK_SCOPE = ["email"]
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {"fields": "email, first_name, last_name"}
-
 DEFAULT_IMAGE = "image_not_found.webp"
 
 UNFOLD = {
@@ -506,8 +505,7 @@ IMPORT_EXPORT_FORMATS = [
 
 # CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True") == "True"  # secure cookie
 
-CKEDITOR_UPLOAD_PATH = "content/ckeditor"
-
+CKEDITOR_UPLOAD_PATH = "content/assets/"
 CKEDITOR_CONFIGS = {
     "default": {
         "toolbar": "Custom",
@@ -540,3 +538,40 @@ CKEDITOR_CONFIGS = {
 }
 
 SILENCED_SYSTEM_CHECKS = ["ckeditor.W001"]
+
+#####################
+# LOGGING SETTINGS #
+#####################
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+        "logfile": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / "logs/debug.log",
+            "maxBytes": 50000,
+            "backupCount": 2,
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["console", "logfile"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        },
+    },
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} ({levelname}) - {name} - {message}",
+            "style": "{",
+        },
+    },
+}
+
+# Ensure the logs directory exists
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
