@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "django_filters",
+    # editor
     "ckeditor",
     "ckeditor_uploader",
+    # dev
     "import_export",
     "dbbackup",  # django-dbbackup
     # debug toolbar
