@@ -59,7 +59,7 @@ def upload_to(instance, filename):
     model_name = slugify(instance.content_type.model)
     instance_slug = slugify(
         getattr(instance.content_object, "slug", instance.object_id)
-    )
+    )[:20]  # Use the first 20 characters of instance_slug
     return os.path.join("images", model_name, instance_slug, filename)
 
 
@@ -317,6 +317,8 @@ class Service(models.Model):
     slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(ServiceCategory, blank=True)
+
+    images = GenericRelation(Image)
 
     def get_categories(self):
         return ", ".join(

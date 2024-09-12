@@ -16,22 +16,31 @@ from .views import (
 
 app_name = "main"
 
-# the root router
+# Root router
 router = routers.DefaultRouter()
-
 router.register("plant_categories", PlantCategoryViewSet, basename="plantcategory")
 router.register("plants", PlantViewSet, basename="plant")
+router.register(
+    "planter_categories", PlanterCategoryViewSet, basename="plantercategory"
+)
+router.register("planters", PlanterViewSet, basename="planter")
+router.register(
+    "service_categories", ServiceCategoryViewSet, basename="servicecategory"
+)
+router.register("services", ServiceViewSet, basename="services")
+router.register("ideas", IdeasViewSet, basename="ideas")
+router.register("testimonials", TestimonialViewSet, basename="testimonials")
+router.register("team", TeamViewSet, basename="team")
+router.register("projects", ProjectsViewSet, basename="projects")
+router.register("events", EventViewSet, basename="events")
+
+# Nested routers
 plant_categories_router = routers.NestedDefaultRouter(
     router, "plant_categories", lookup="plant_category"
 )
 plant_categories_router.register(
     "plants", PlantViewSet, basename="plant-category-plants"
 )
-
-router.register(
-    "planter_categories", PlanterCategoryViewSet, basename="plantercategory"
-)
-router.register("planters", PlanterViewSet, basename="planter")
 
 planter_categories_router = routers.NestedDefaultRouter(
     router, "planter_categories", lookup="planter_category"
@@ -40,13 +49,6 @@ planter_categories_router.register(
     "planters", PlanterViewSet, basename="planter-category-planters"
 )
 
-
-router.register(
-    "service_categories", ServiceCategoryViewSet, basename="servicecategory"
-)
-
-router.register("services", ServiceViewSet, basename="services")
-
 service_categories_router = routers.NestedDefaultRouter(
     router, "service_categories", lookup="service_categories"
 )
@@ -54,14 +56,7 @@ service_categories_router.register(
     "services", ServiceViewSet, basename="service-categories-services"
 )
 
-router.register("ideas", IdeasViewSet, basename="ideas")
-
-router.register("testimonials", TestimonialViewSet, basename="testimonials")
-router.register("team", TeamViewSet, basename="team")
-
-router.register("projects", ProjectsViewSet, basename="projects")
-router.register("events", EventViewSet, basename="events")
-
+# URL patterns
 urlpatterns = [
     path("", include(router.urls)),
     path("", include(plant_categories_router.urls)),
