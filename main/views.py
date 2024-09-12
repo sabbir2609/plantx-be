@@ -211,6 +211,22 @@ class ServiceCategoryViewSet(viewsets.ModelViewSet):
     queryset = ServiceCategory.objects.all()
     lookup_field = "slug"
 
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     content_type = ContentType.objects.get_for_model(ServiceCategory)
+    #     service_categories_slug = self.kwargs.get("service_categories_slug")
+    #     if service_categories_slug:
+    #         queryset = queryset.filter(slug=service_categories_slug)
+    #     queryset = queryset.prefetch_related(
+    #         "categories",
+    #         Prefetch(
+    #             "images",
+    #             queryset=Image.objects.filter(content_type=content_type).order_by("id"),
+    #             to_attr="prefetched_images",
+    #         ),
+    #     )
+    #     return queryset
+
     def get_serializer_class(self):
         if self.action == "list":
             return ServiceCategoryListSerializer

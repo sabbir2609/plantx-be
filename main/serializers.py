@@ -388,13 +388,15 @@ class ServiceListSerializer(serializers.ModelSerializer):
             "image",
         ]
 
-    def get_image(self, service):
-        # Get the first image associated with the service
-        image = Image.objects.filter(
-            content_type=ContentType.objects.get_for_model(Service),
-            object_id=service.id,
-        ).first()
-        return image.image.url if image and image.image else None
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if hasattr(obj, "prefetched_images") and obj.prefetched_images:
+            first_image = obj.prefetched_images[0]
+            image_url = first_image.image.url  # This is a relative URL
+            if request is not None:
+                return request.build_absolute_uri(image_url)  # Converts to absolute URL
+            return image_url  # Fallback to relative URL if no request in context
+        return None
 
 
 class ServiceSerializer(serializers.ModelSerializer):

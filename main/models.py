@@ -117,8 +117,8 @@ class Promotion(models.Model):
 
 
 class BaseProduct(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField(blank=True, null=True)
     sku = models.CharField(
         max_length=20, blank=True, null=True, unique=True, editable=False
@@ -154,8 +154,8 @@ class BaseProduct(models.Model):
 
 
 class PlantCategory(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(
         upload_to="plant_categories/",
@@ -215,8 +215,8 @@ class Plant(BaseProduct):
 
 
 class PlanterCategory(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to="planter_categories/", blank=True, null=True)
 
@@ -251,8 +251,8 @@ class Planter(BaseProduct):
 
 
 class PlantingAccessoriesCategory(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(
         upload_to="planting_accessories_categories/", blank=True, null=True
@@ -292,8 +292,8 @@ class ServiceCategory(models.Model):
         max_length=20,
         choices=TypeChoices.choices,
     )
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(
         upload_to="service_categories/",
@@ -313,10 +313,20 @@ class ServiceCategory(models.Model):
 
 
 class Service(models.Model):
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(ServiceCategory, blank=True)
+
+    def get_categories(self):
+        return ", ".join(
+            [
+                f"{category.title} ({category.type})"
+                for category in self.categories.all()
+            ]
+        )
+
+    get_categories.short_description = "Categories"
 
     class Meta:
         verbose_name = "Service"
@@ -328,8 +338,8 @@ class Service(models.Model):
 
 
 class Ideas(models.Model):
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField()
     image = models.ImageField(
         upload_to="ideas/",
@@ -351,7 +361,7 @@ class Ideas(models.Model):
 
 class Testimonial(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -379,8 +389,8 @@ class Testimonial(models.Model):
 class Team(models.Model):
     serial = models.PositiveSmallIntegerField(unique=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
-    position = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
+    position = models.CharField(max_length=255)
     image = models.ImageField(
         upload_to="team_members/",
         null=True,
@@ -409,7 +419,7 @@ class Team(models.Model):
 
 class TeamContact(models.Model):
     team = models.ForeignKey(Team, related_name="contacts", on_delete=models.CASCADE)
-    social_media_name = models.CharField(max_length=100)
+    social_media_name = models.CharField(max_length=255)
     social_media_link = models.URLField()
 
     class Meta:
@@ -421,11 +431,11 @@ class TeamContact(models.Model):
 
 
 class Projects(models.Model):
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     categories = models.ManyToManyField(ServiceCategory, blank=True)
     description = models.TextField(null=True, blank=True)
-    client = models.CharField(max_length=100, null=True, blank=True)
+    client = models.CharField(max_length=255, null=True, blank=True)
     year = models.PositiveIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -439,8 +449,8 @@ class Projects(models.Model):
 
 
 class Event(models.Model):
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
     description = models.TextField()
     image = models.ImageField(
         upload_to="events/",
@@ -450,7 +460,7 @@ class Event(models.Model):
     )
     start_date = models.DateField()
     end_date = models.DateField()
-    location = models.CharField(max_length=100)
+    location = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     is_upcoming = models.BooleanField(default=True)
 

@@ -269,13 +269,15 @@ class ServiceCategoryAdmin(ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(ModelAdmin):
-    list_display = ("title",)
+    list_display = ("title", "get_categories")
     autocomplete_fields = [
         "categories",
     ]
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title",)
-    list_filter = ("categories",)
+    list_filter = [
+        "categories",
+    ]
     filter_horizontal = ("categories",)
     list_per_page = 10
     inlines = [ImageInline]
