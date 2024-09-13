@@ -238,7 +238,6 @@ class ServiceViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         content_type = ContentType.objects.get_for_model(Service)
         service_category_slug = self.kwargs.get("service_categories_slug")
-        print(service_category_slug)
         if service_category_slug:
             queryset = queryset.filter(categories__slug=service_category_slug)
         # Prefetch related images through the reverse relationship
