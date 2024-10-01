@@ -1,5 +1,6 @@
 from django.conf import settings
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from djoser.social.views import ProviderAuthView
@@ -8,6 +9,10 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from django.contrib.auth.models import Group
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
+from users.serializers import GroupSerializer
 
 
 class CustomProviderAuthView(ProviderAuthView):
@@ -111,3 +116,15 @@ class LogoutView(APIView):
         response.delete_cookie("refresh")
 
         return response
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    serializer_class = GroupSerializer
+    queryset = Group.objects.all()
+    pagination_class = None
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    lookup_field = "pk"
+    http_method_names = ("get", "post", "patch", "delete")
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, fields=("id", "name"), *args, **kwargs)

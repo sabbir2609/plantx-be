@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "tags",
     "users",
     "decouple",
+    "blog",
     # third-party apps
     "corsheaders",
     "rest_framework",
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     "dbbackup",  # django-dbbackup
     # debug toolbar
     "debug_toolbar",
+    "django_extensions",
 ]
 
 # Dbbackup settings
@@ -348,6 +350,21 @@ UNFOLD = {
                         "title": _("Events"),
                         "icon": "event",
                         "link": reverse_lazy("admin:main_event_changelist"),
+                    },
+                ],
+            },
+            {
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Blog Categories"),
+                        "icon": "category",
+                        "link": reverse_lazy("admin:blog_category_changelist"),
+                    },
+                    {
+                        "title": _("Blog Posts"),
+                        "icon": "article",
+                        "link": reverse_lazy("admin:blog_post_changelist"),
                     },
                 ],
             },

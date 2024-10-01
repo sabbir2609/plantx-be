@@ -8,11 +8,13 @@ from .views import (
     CustomTokenRefreshView,
     CustomTokenVerifyView,
     LogoutView,
+    GroupViewSet,
 )
 
 app_name = "users"
 
 router = DefaultRouter()
+router.register("groups", GroupViewSet)
 
 urlpatterns = [
     re_path(
