@@ -25,7 +25,7 @@ class LimitedCategorySerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(read_only=True)
+    author_name = serializers.SerializerMethodField()
     categories = LimitedCategorySerializer(many=True)
 
     class Meta:
@@ -35,14 +35,20 @@ class PostSerializer(serializers.ModelSerializer):
             "title",
             "slug",
             "content",
-            "author",
+            "image",
+            "author_name",
             "categories",
             "created_at",
         ]
 
+    def get_author_name(self, obj):
+        return obj.author.full_name
+
 
 class PostListSerializer(serializers.ModelSerializer):
     content = serializers.SerializerMethodField()
+    author_name = serializers.SerializerMethodField()
+    categories = LimitedCategorySerializer(many=True)
 
     class Meta:
         model = Post
@@ -51,13 +57,16 @@ class PostListSerializer(serializers.ModelSerializer):
             "title",
             "slug",
             "content",
-            "author",
+            "author_name",
             "categories",
             "created_at",
         ]
 
     def get_content(self, obj):
         return obj.content[:109]
+
+    def get_author_name(self, obj):
+        return obj.author.full_name
 
 
 class PostCreateSerializer(serializers.ModelSerializer):

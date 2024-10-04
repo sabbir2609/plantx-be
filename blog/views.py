@@ -27,3 +27,10 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        blog_category_slug = self.kwargs.get("category_slug")
+        if blog_category_slug:
+            queryset = queryset.filter(categories__slug=blog_category_slug)
+        return queryset

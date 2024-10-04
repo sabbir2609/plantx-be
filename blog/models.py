@@ -35,6 +35,12 @@ class Post(models.Model):
         unique=True, help_text=_("Enter a unique slug for the post")
     )
     content = models.TextField(help_text=_("Enter the content of the post"))
+    image = models.ImageField(
+        upload_to="blog/posts/",
+        blank=True,
+        null=True,
+        help_text=_("Upload an image for the post"),
+    )
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

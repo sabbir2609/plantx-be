@@ -139,9 +139,9 @@ class PlanterCategoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        planter_category_pk = self.kwargs.get("planter_category_pk")
-        if planter_category_pk:
-            queryset = queryset.filter(category_slug=planter_category_pk)
+        planter_category_slug = self.kwargs.get("planter_category_slug")
+        if planter_category_slug:
+            queryset = queryset.filter(category_slug=planter_category_slug)
         return queryset
 
 
