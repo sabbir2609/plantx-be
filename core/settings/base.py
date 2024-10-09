@@ -41,9 +41,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "django_filters",
+    "froala_editor",
     # editor
     "ckeditor",
     "ckeditor_uploader",
+    "django_summernote",
     # dev
     "import_export",
     "dbbackup",  # django-dbbackup
@@ -558,6 +560,8 @@ CKEDITOR_CONFIGS = {
 
 SILENCED_SYSTEM_CHECKS = ["ckeditor.W001"]
 
+SUMMERNOTE_THEME = "bs3"
+
 #####################
 # LOGGING SETTINGS #
 #####################
@@ -594,3 +598,6 @@ SILENCED_SYSTEM_CHECKS = ["ckeditor.W001"]
 # # Ensure the logs directory exists
 # LOG_DIR = BASE_DIR / "logs"
 # LOG_DIR.mkdir(exist_ok=True)
+
+
+FROALA_IMAGE_UPLOAD_PATH = "content/images/"

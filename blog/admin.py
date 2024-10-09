@@ -1,23 +1,13 @@
 from django.contrib import admin
+from django.db import models
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 from unfold.admin import ModelAdmin
+from froala_editor.widgets import FroalaEditor
 
 from .models import Category, Post
-
-
-@admin.register(Post)
-class PostAdmin(ModelAdmin):
-    list_display = ("title", "author", "created_at")
-    prepopulated_fields = {"slug": ("title",)}
-
-    autocomplete_fields = ["categories"]
-
-    search_fields = ["title", "content"]
-
-    list_filter = ["author", "categories"]
 
 
 @admin.register(Category)
@@ -42,3 +32,19 @@ class CategoryAdmin(ModelAdmin):
             .get_queryset(request)
             .annotate(post_count=Count("posts", distinct=True))
         )
+
+
+@admin.register(Post)
+class PostAdmin(ModelAdmin):
+    list_display = ("title", "author", "created_at")
+    prepopulated_fields = {"slug": ("title",)}
+
+    autocomplete_fields = ["categories"]
+
+    search_fields = ["title", "content"]
+
+    list_filter = ["author", "categories"]
+
+    formfield_overrides = {
+        models.TextField: {"widget": FroalaEditor(theme="dark", image_upload=True)},
+    }

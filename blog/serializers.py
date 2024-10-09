@@ -57,6 +57,7 @@ class PostListSerializer(serializers.ModelSerializer):
             "title",
             "slug",
             "content",
+            "image",
             "author_name",
             "categories",
             "created_at",

@@ -19,6 +19,7 @@ urlpatterns = [
     path("api/blog/", include("blog.urls")),
     path("api/auth/", include("users.urls"), name="users"),
     path("admin/", admin.site.urls),
+    path("froala_editor/", include("froala_editor.urls")),
     # path("api-auth/", include("rest_framework.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
