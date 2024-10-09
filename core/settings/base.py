@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     # editor
     "ckeditor",
     "ckeditor_uploader",
-    "django_summernote",
     # dev
     "import_export",
     "dbbackup",  # django-dbbackup
