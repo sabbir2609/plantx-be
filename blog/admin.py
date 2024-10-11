@@ -1,11 +1,10 @@
 from django.contrib import admin
-from django.db import models
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 from unfold.admin import ModelAdmin
-from froala_editor.widgets import FroalaEditor
+from django_summernote.admin import SummernoteModelAdmin
 
 from .models import Category, Post
 
@@ -35,7 +34,7 @@ class CategoryAdmin(ModelAdmin):
 
 
 @admin.register(Post)
-class PostAdmin(ModelAdmin):
+class PostAdmin(ModelAdmin, SummernoteModelAdmin):
     list_display = ("title", "author", "created_at")
     prepopulated_fields = {"slug": ("title",)}
 
@@ -45,6 +44,4 @@ class PostAdmin(ModelAdmin):
 
     list_filter = ["author", "categories"]
 
-    formfield_overrides = {
-        models.TextField: {"widget": FroalaEditor(theme="dark", image_upload=True)},
-    }
+    summernote_fields = ("content",)

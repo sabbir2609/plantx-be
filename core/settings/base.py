@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "django_filters",
-    "froala_editor",
+    "django_summernote",
     # editor
     "ckeditor",
     "ckeditor_uploader",
@@ -559,7 +559,7 @@ CKEDITOR_CONFIGS = {
 
 SILENCED_SYSTEM_CHECKS = ["ckeditor.W001"]
 
-SUMMERNOTE_THEME = "bs3"
+SUMMERNOTE_THEME = "bs4"
 
 #####################
 # LOGGING SETTINGS #
@@ -598,5 +598,17 @@ SUMMERNOTE_THEME = "bs3"
 # LOG_DIR = BASE_DIR / "logs"
 # LOG_DIR.mkdir(exist_ok=True)
 
-
-FROALA_IMAGE_UPLOAD_PATH = "content/images/"
+SUMMERNOTE_CONFIG = {
+    # Using SummernoteWidget - iframe mode, default
+    "iframe": True,
+    # You can put custom Summernote settings
+    "summernote": {
+        # As an example, using Summernote Air-mode
+        "airMode": False,
+        # Change editor size
+        "width": "100%",
+        "height": "480",
+        # Use proper language setting automatically (default)
+        "lang": None,
+    },
+}

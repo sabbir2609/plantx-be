@@ -12,7 +12,7 @@ from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
 # from ckeditor.widgets import RichTextUploadingField as CustomWysiwygWidget
-from ckeditor_uploader.widgets import CKEditorUploadingWidget as CustomWysiwygWidget
+from django_summernote.widgets import SummernoteWidget as CustomWysiwygWidget
 
 
 from .models import (
