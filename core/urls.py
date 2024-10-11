@@ -19,13 +19,12 @@ urlpatterns = [
     path("api/blog/", include("blog.urls")),
     path("api/auth/", include("users.urls"), name="users"),
     path("admin/", admin.site.urls),
-    path("summernote/", include("django_summernote.urls")),
     # path("api-auth/", include("rest_framework.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns.extend(
     [
-        path("ckeditor/", include("ckeditor_uploader.urls")),
+        path("summernote/", include("django_summernote.urls")),
     ]
 )
 

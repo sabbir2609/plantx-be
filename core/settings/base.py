@@ -41,10 +41,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "django_filters",
-    "django_summernote",
     # editor
-    "ckeditor",
-    "ckeditor_uploader",
+    "django_summernote",
     # dev
     "import_export",
     "dbbackup",  # django-dbbackup
@@ -525,41 +523,6 @@ IMPORT_EXPORT_FORMATS = [
 
 # CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True") == "True"  # secure cookie
 
-CKEDITOR_UPLOAD_PATH = "content/assets/"
-CKEDITOR_CONFIGS = {
-    "default": {
-        "toolbar": "Custom",
-        "width": "100%",
-        "toolbar_Custom": [
-            [
-                "Styles",
-                "Format",
-                "Bold",
-                "Italic",
-                "Underline",
-                "Strike",
-                "SpellChecker",
-                "Undo",
-                "Redo",
-            ],
-            ["Link", "Unlink", "Anchor"],
-            ["Image", "Table", "HorizontalRule"],
-            ["TextColor", "BGColor"],
-            ["Smiley", "SpecialChar"],
-            ["Source"],
-            ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
-            ["NumberedList", "BulletedList"],
-            ["Indent", "Outdent"],
-            ["Maximize"],
-        ],
-        "autoParagraph": False,
-        "enterMode": 2,
-    },
-}
-
-SILENCED_SYSTEM_CHECKS = ["ckeditor.W001"]
-
-SUMMERNOTE_THEME = "bs4"
 
 #####################
 # LOGGING SETTINGS #
@@ -597,6 +560,8 @@ SUMMERNOTE_THEME = "bs4"
 # # Ensure the logs directory exists
 # LOG_DIR = BASE_DIR / "logs"
 # LOG_DIR.mkdir(exist_ok=True)
+
+SUMMERNOTE_THEME = "bs4"
 
 SUMMERNOTE_CONFIG = {
     # Using SummernoteWidget - iframe mode, default
