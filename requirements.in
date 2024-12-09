@@ -21,6 +21,7 @@ drf-nested-routers
 drf-spectacular
 gunicorn
 pillow
+psycopg[binary]
 psycopg
 psycopg-pool
 python-dotenv
@@ -28,3 +29,4 @@ ruff
 social-auth-app-django
 social-auth-core
 whitenoise
+Werkzeug
