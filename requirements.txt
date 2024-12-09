@@ -37,6 +37,7 @@ oauthlib==3.2.2
 packaging==24.2
 pillow==11.0.0
 psycopg==3.2.3
+psycopg-binary==3.2.3
 psycopg-pool==3.2.4
 pycparser==2.22
 PyJWT==2.10.1
