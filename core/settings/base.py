@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "users",
     "decouple",
     "blog",
+    "mailer",
     # third-party apps
     "corsheaders",
     "rest_framework",

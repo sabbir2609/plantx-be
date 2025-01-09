@@ -19,7 +19,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text="The user's username.",
     )
     email = models.EmailField(unique=True, help_text="The user's email address.")
-
+    company_mail = models.EmailField(
+        unique=True, blank=True, null=True, help_text="The user's company email address."
+    )
     is_active = models.BooleanField(
         default=True, help_text="Whether the user is active."
     )
