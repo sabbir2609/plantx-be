@@ -18,6 +18,7 @@ urlpatterns = [
     path("api/home/", include("home.urls")),
     path("api/blog/", include("blog.urls")),
     path("mail/", include("mailer.urls")),
+    path("api/track/", include("tracker.urls")),
     path("api/auth/", include("users.urls"), name="users"),
     path("admin/", admin.site.urls),
     # path("api-auth/", include("rest_framework.urls")),
